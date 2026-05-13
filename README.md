@@ -60,14 +60,31 @@ pnpm db:studio    # Prisma Studio 起動
 ## プロジェクト構成
 
 ```
-web/
-├── src/
-│   ├── app/          # App Router ページ
-│   └── components/   # UI コンポーネント
-├── prisma/
-│   ├── schema.prisma # DB スキーマ
-│   └── seed.ts       # シードスクリプト
-├── prisma.config.ts  # Prisma 設定
-├── Dockerfile
-└── docker-compose.yml
+demolition/                    # リポジトリルート
+└── web/                       # Next.js アプリ
+    ├── src/
+    │   ├── app/               # App Router ページ
+    │   │   ├── layout.tsx
+    │   │   ├── page.tsx
+    │   │   └── globals.css
+    │   └── components/
+    │       └── ui/
+    │           └── provider.tsx   # Chakra UI Provider
+    ├── prisma/
+    │   ├── schema.prisma      # DB スキーマ（Company / User / Review）
+    │   ├── seed.ts            # シードスクリプト
+    │   └── migrations/        # マイグレーションファイル
+    ├── scripts/               # Python データ収集スクリプト
+    │   ├── 01_download_houjin.py
+    │   ├── 02_filter_kaitai.py
+    │   ├── 03_scrape_biznav.py
+    │   ├── 04_merge_and_export.py
+    │   └── run_collect.py
+    ├── data/
+    │   ├── processed/         # 処理済みデータ（JSON / CSV）
+    │   └── raw/               # 元データ ZIP（gitignore）
+    ├── prisma.config.ts       # Prisma 設定
+    ├── Dockerfile
+    ├── docker-compose.yml
+    └── package.json
 ```
