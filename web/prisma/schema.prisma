@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// 解体業者マスタ
+// ─────────────────────────────────────────
+model Company {
+  id              Int       @id @default(autoincrement())
+  corporateNumber String?   @unique @map("corporate_number") // 法人番号
+  name            String
+  furigana        String?
+  prefectureName  String?   @map("prefecture_name")
+  cityName        String?   @map("city_name")
+  streetNumber    String?   @map("street_number")
+  postCode        String?   @map("post_code")
+  addressFull     String?   @map("address_full")
+  phoneNumber     String?   @map("phone_number")
+  websiteUrl      String?   @map("website_url")
+  sources         String?
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  reviews         Review[]
+
+  @@index([prefectureName])
+  @@index([name])
+  @@map("companies")
+}
+
+// ─────────────────────────────────────────
+// 口コミ投稿者
+// ─────────────────────────────────────────
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  reviews   Review[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// 口コミ
+// ─────────────────────────────────────────
+model Review {
+  id          Int       @id @default(autoincrement())
+  companyId   Int       @map("company_id")
+  userId      Int       @map("user_id")
+  rating      Int       // 1-5
+  title       String?
+  body        String
+  workType    String?   @map("work_type")   // 例: 木造, RC, 解体+廃材処理
+  workYear    Int?      @map("work_year")   // 施工年
+  isPublished Boolean   @default(false) @map("is_published")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  company     Company   @relation(fields: [companyId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([companyId])
+  @@map("reviews")
+}
+
