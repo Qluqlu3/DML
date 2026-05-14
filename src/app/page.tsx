@@ -1,4 +1,5 @@
 import { Box, Heading, Text, Button, VStack, HStack, Container } from '@chakra-ui/react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -31,9 +32,11 @@ export default function Home() {
               <Text fontSize='lg' color='orange.100'>
                 全国 1,000社以上の解体業者を口コミで比較・検索
               </Text>
-              <Button size='lg' bg='white' color='orange.500' _hover={{ bg: 'orange.50' }}>
-                業者を探す
-              </Button>
+              <Link href='/companies'>
+                <Button size='lg' bg='white' color='orange.500' _hover={{ bg: 'orange.50' }}>
+                  業者を探す
+                </Button>
+              </Link>
             </VStack>
           </Container>
         </Box>
