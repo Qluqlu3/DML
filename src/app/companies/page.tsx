@@ -46,28 +46,20 @@ export default async function CompaniesPage({
     }),
   ]);
 
-  const prefNames = prefList
-    .map((p) => p.prefectureName)
-    .filter(Boolean) as string[];
+  const prefNames = prefList.map((p) => p.prefectureName).filter(Boolean) as string[];
 
   return (
     <Box minH='100vh' bg='gray.50'>
-      <Box
-        as='header'
-        bg='white'
-        borderBottomWidth='1px'
-        borderColor='gray.200'
-        py={4}
-      >
+      <Box as='header' bg='blue.900' py={4}>
         <Container maxW='5xl'>
           <HStack justify='space-between'>
             <Link href='/'>
-              <Heading size='md' color='orange.500'>
+              <Heading size='md' color='orange.400'>
                 DML
               </Heading>
             </Link>
             <HStack gap={4}>
-              <Button variant='ghost' size='sm'>
+              <Button variant='ghost' size='sm' color='white' _hover={{ bg: 'blue.800' }}>
                 ログイン
               </Button>
               <Button colorPalette='orange' size='sm'>
