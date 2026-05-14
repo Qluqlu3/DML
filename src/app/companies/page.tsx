@@ -141,15 +141,18 @@ export default async function CompaniesPage({
           >
             {companies.map((c) => (
               <GridItem key={c.id}>
-                <Box
-                  bg='white'
-                  p={5}
-                  borderRadius='lg'
-                  shadow='sm'
-                  borderWidth='1px'
-                  borderColor='gray.200'
-                  h='100%'
-                >
+                <Link href={`/companies/${c.id}`} style={{ display: 'block', height: '100%' }}>
+                  <Box
+                    bg='white'
+                    p={5}
+                    borderRadius='lg'
+                    shadow='sm'
+                    borderWidth='1px'
+                    borderColor='gray.200'
+                    h='100%'
+                    _hover={{ borderColor: 'blue.300', shadow: 'md' }}
+                    transition='all 0.15s'
+                  >
                   <VStack align='stretch' gap={2}>
                     <Text fontWeight='bold' fontSize='md' lineClamp={2}>
                       {c.name}
@@ -176,6 +179,7 @@ export default async function CompaniesPage({
                     )}
                   </VStack>
                 </Box>
+                </Link>
               </GridItem>
             ))}
           </Grid>
