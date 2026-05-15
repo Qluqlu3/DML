@@ -153,32 +153,32 @@ export default async function CompaniesPage({
                     _hover={{ borderColor: 'blue.300', shadow: 'md' }}
                     transition='all 0.15s'
                   >
-                  <VStack align='stretch' gap={2}>
-                    <Text fontWeight='bold' fontSize='md' lineClamp={2}>
-                      {c.name}
-                    </Text>
-                    {c.furigana && (
-                      <Text fontSize='xs' color='gray.400'>
-                        {c.furigana}
+                    <VStack align='stretch' gap={2}>
+                      <Text fontWeight='bold' fontSize='md' lineClamp={2}>
+                        {c.name}
                       </Text>
-                    )}
-                    {c.prefectureName && (
-                      <Badge colorPalette='orange' w='fit-content' size='sm'>
-                        {c.prefectureName}
-                      </Badge>
-                    )}
-                    {c.addressFull && (
-                      <Text fontSize='sm' color='gray.600' lineClamp={2}>
-                        {c.addressFull}
-                      </Text>
-                    )}
-                    {c.phoneNumber && (
-                      <Text fontSize='sm' color='gray.600'>
-                        ☎ {c.phoneNumber}
-                      </Text>
-                    )}
-                  </VStack>
-                </Box>
+                      {c.furigana && (
+                        <Text fontSize='xs' color='gray.400'>
+                          {c.furigana}
+                        </Text>
+                      )}
+                      {c.prefectureName && (
+                        <Badge colorPalette='orange' w='fit-content' size='sm'>
+                          {c.prefectureName}
+                        </Badge>
+                      )}
+                      {c.addressFull && (
+                        <Text fontSize='sm' color='gray.600' lineClamp={2}>
+                          {c.addressFull}
+                        </Text>
+                      )}
+                      {c.phoneNumber && (
+                        <Text fontSize='sm' color='gray.600'>
+                          ☎ {c.phoneNumber}
+                        </Text>
+                      )}
+                    </VStack>
+                  </Box>
                 </Link>
               </GridItem>
             ))}
