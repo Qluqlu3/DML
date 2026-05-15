@@ -17,9 +17,9 @@ import Link from 'next/link';
 export default async function CompaniesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; pref?: string }>;
+  searchParams: Promise<{ q?: string; pref?: string; phone?: string; hasWebsite?: string }>;
 }) {
-  const { q, pref } = await searchParams;
+  const { q, pref, phone, hasWebsite } = await searchParams;
 
   const [prefList, companies] = await Promise.all([
     prisma.company.findMany({
@@ -40,6 +40,8 @@ export default async function CompaniesPage({
                 ],
               }
             : {},
+          phone ? { phoneNumber: { contains: phone, mode: 'insensitive' } } : {},
+          hasWebsite === '1' ? { websiteUrl: { not: null } } : {},
         ],
       },
       orderBy: { name: 'asc' },
@@ -47,6 +49,7 @@ export default async function CompaniesPage({
   ]);
 
   const prefNames = prefList.map((p) => p.prefectureName).filter(Boolean) as string[];
+  const hasFilter = !!(q || pref || phone || hasWebsite);
 
   return (
     <Box minH='100vh' bg='gray.50'>
@@ -72,16 +75,16 @@ export default async function CompaniesPage({
 
       <Box as='main' py={8}>
         <Container maxW='5xl'>
-          <Box
-            as='form'
+          <form
             method='GET'
-            mb={8}
-            bg='white'
-            p={6}
-            borderRadius='lg'
-            shadow='sm'
-            borderWidth='1px'
-            borderColor='gray.200'
+            style={{
+              marginBottom: '2rem',
+              background: 'white',
+              padding: '1.5rem',
+              borderRadius: '0.5rem',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+              border: '1px solid #e2e8f0',
+            }}
           >
             <VStack gap={4} align='stretch'>
               <Heading size='md'>業者を検索</Heading>
@@ -94,17 +97,16 @@ export default async function CompaniesPage({
                   minW='200px'
                   bg='white'
                 />
-                <Box
-                  as='select'
+                <select
                   name='pref'
                   defaultValue={pref ?? ''}
-                  px={3}
-                  py={2}
-                  borderWidth='1px'
-                  borderColor='gray.200'
-                  borderRadius='md'
-                  bg='white'
-                  minW='160px'
+                  style={{
+                    padding: '0.5rem 0.75rem',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '0.375rem',
+                    background: 'white',
+                    minWidth: '160px',
+                  }}
                 >
                   <option value=''>都道府県（全て）</option>
                   {prefNames.map((p) => (
@@ -112,11 +114,40 @@ export default async function CompaniesPage({
                       {p}
                     </option>
                   ))}
-                </Box>
+                </select>
+              </HStack>
+              <HStack gap={3} flexWrap='wrap'>
+                <Input
+                  name='phone'
+                  defaultValue={phone ?? ''}
+                  placeholder='電話番号で検索'
+                  maxW='220px'
+                  bg='white'
+                />
+                <HStack
+                  as='label'
+                  gap={2}
+                  cursor='pointer'
+                  px={3}
+                  py={2}
+                  borderWidth='1px'
+                  borderColor={hasWebsite === '1' ? 'blue.400' : 'gray.200'}
+                  borderRadius='md'
+                  bg={hasWebsite === '1' ? 'blue.50' : 'white'}
+                  userSelect='none'
+                >
+                  <input
+                    type='checkbox'
+                    name='hasWebsite'
+                    value='1'
+                    defaultChecked={hasWebsite === '1'}
+                  />
+                  <Text fontSize='sm'>Webサイトあり</Text>
+                </HStack>
                 <Button type='submit' colorPalette='orange'>
                   検索
                 </Button>
-                {(q || pref) && (
+                {hasFilter && (
                   <Link href='/companies'>
                     <Button variant='ghost' size='md'>
                       クリア
@@ -125,7 +156,7 @@ export default async function CompaniesPage({
                 )}
               </HStack>
             </VStack>
-          </Box>
+          </form>
 
           <Text mb={4} color='gray.600' fontSize='sm'>
             {companies.length.toLocaleString()} 件
