@@ -26,6 +26,7 @@ model Company {
   addressFull     String?   @map("address_full")
   phoneNumber     String?   @map("phone_number")
   websiteUrl      String?   @map("website_url")
+  permitType      String?   @map("permit_type")   // 特定建設業 / 一般建設業
   sources         String?
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")

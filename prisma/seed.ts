@@ -48,6 +48,7 @@ async function main() {
       streetNumber: c.street_number || null,
       postCode: c.post_code || null,
       addressFull: c.address_full || null,
+      permitType: (c as any).permit_type || null,
       sources: c.sources || null,
     };
 

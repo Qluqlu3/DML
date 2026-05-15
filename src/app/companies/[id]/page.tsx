@@ -15,11 +15,7 @@ import {
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-export default async function CompanyDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const companyId = parseInt(id, 10);
   if (isNaN(companyId)) notFound();
@@ -89,7 +85,15 @@ export default async function CompanyDetailPage({
             {/* ─── メイン ─── */}
             <GridItem>
               {/* 会社名ブロック */}
-              <Box bg='white' p={6} borderRadius='lg' shadow='sm' borderWidth='1px' borderColor='gray.200' mb={6}>
+              <Box
+                bg='white'
+                p={6}
+                borderRadius='lg'
+                shadow='sm'
+                borderWidth='1px'
+                borderColor='gray.200'
+                mb={6}
+              >
                 <VStack align='stretch' gap={3}>
                   {company.prefectureName && (
                     <Badge colorPalette='orange' w='fit-content'>
@@ -118,7 +122,14 @@ export default async function CompanyDetailPage({
               </Box>
 
               {/* 口コミセクション */}
-              <Box bg='white' p={6} borderRadius='lg' shadow='sm' borderWidth='1px' borderColor='gray.200'>
+              <Box
+                bg='white'
+                p={6}
+                borderRadius='lg'
+                shadow='sm'
+                borderWidth='1px'
+                borderColor='gray.200'
+              >
                 <HStack justify='space-between' mb={4}>
                   <Heading size='md'>口コミ ({company.reviews.length}件)</Heading>
                   <Button colorPalette='orange' size='sm'>
@@ -137,10 +148,17 @@ export default async function CompanyDetailPage({
                 ) : (
                   <VStack gap={4} align='stretch'>
                     {company.reviews.map((review) => (
-                      <Box key={review.id} p={4} borderWidth='1px' borderColor='gray.100' borderRadius='md'>
+                      <Box
+                        key={review.id}
+                        p={4}
+                        borderWidth='1px'
+                        borderColor='gray.100'
+                        borderRadius='md'
+                      >
                         <HStack justify='space-between' mb={2}>
                           <Text color='orange.500' fontWeight='bold'>
-                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                            {'★'.repeat(review.rating)}
+                            {'☆'.repeat(5 - review.rating)}
                           </Text>
                           <Text fontSize='xs' color='gray.400'>
                             {review.workYear ? `${review.workYear}年施工` : ''}
@@ -163,11 +181,31 @@ export default async function CompanyDetailPage({
 
             {/* ─── サイドバー ─── */}
             <GridItem>
-              <Box bg='white' p={6} borderRadius='lg' shadow='sm' borderWidth='1px' borderColor='gray.200'>
+              <Box
+                bg='white'
+                p={6}
+                borderRadius='lg'
+                shadow='sm'
+                borderWidth='1px'
+                borderColor='gray.200'
+              >
                 <Heading size='sm' mb={4} color='gray.700'>
                   基本情報
                 </Heading>
                 <VStack align='stretch' gap={3} fontSize='sm'>
+                  {company.permitType && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={0.5}>
+                        建設業許可種別
+                      </Text>
+                      <Badge
+                        colorPalette={company.permitType === '特定建設業' ? 'blue' : 'gray'}
+                        size='sm'
+                      >
+                        {company.permitType}
+                      </Badge>
+                    </Box>
+                  )}
                   {company.addressFull && (
                     <Box>
                       <Text color='gray.400' fontSize='xs' mb={0.5}>
@@ -197,17 +235,14 @@ export default async function CompanyDetailPage({
                       <Text color='gray.400' fontSize='xs' mb={0.5}>
                         WEBサイト
                       </Text>
-                      <Text
-                        as='a'
+                      <a
                         href={company.websiteUrl}
                         target='_blank'
                         rel='noopener noreferrer'
-                        color='blue.600'
-                        _hover={{ textDecoration: 'underline' }}
-                        wordBreak='break-all'
+                        style={{ color: '#2b6cb0', wordBreak: 'break-all', fontSize: '0.875rem' }}
                       >
                         {company.websiteUrl}
-                      </Text>
+                      </a>
                     </Box>
                   )}
                   {company.corporateNumber && (
