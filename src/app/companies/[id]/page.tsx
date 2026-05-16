@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Logo } from '@/components/Logo';
 import {
   Badge,
   Box,
@@ -44,9 +45,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
         <Container maxW='5xl'>
           <HStack justify='space-between'>
             <Link href='/'>
-              <Heading size='md' color='orange.400'>
-                DML
-              </Heading>
+              <Logo />
             </Link>
             <HStack gap={4}>
               <Button variant='ghost' size='sm' color='white' _hover={{ bg: 'blue.800' }}>

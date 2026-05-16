@@ -1,5 +1,6 @@
 import { Box, Heading, Text, Button, VStack, HStack, Container } from '@chakra-ui/react';
 import Link from 'next/link';
+import { Logo } from '@/components/Logo';
 
 export default function Home() {
   return (
@@ -7,9 +8,7 @@ export default function Home() {
       <Box as='header' bg='blue.900' py={4}>
         <Container maxW='5xl'>
           <HStack justify='space-between'>
-            <Heading size='md' color='orange.400'>
-              DML
-            </Heading>
+            <Logo />
             <HStack gap={4}>
               <Button variant='ghost' size='sm' color='white' _hover={{ bg: 'blue.800' }}>
                 ログイン
