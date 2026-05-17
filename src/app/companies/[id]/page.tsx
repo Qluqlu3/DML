@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
 import {
   Badge,
   Box,
@@ -7,7 +7,6 @@ import {
   Container,
   Grid,
   GridItem,
-  HStack,
   Heading,
   Separator,
   Text,
@@ -40,24 +39,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
 
   return (
     <Box minH='100vh' bg='gray.50'>
-      {/* ヘッダー */}
-      <Box as='header' bg='blue.900' py={4}>
-        <Container maxW='5xl'>
-          <HStack justify='space-between'>
-            <Link href='/'>
-              <Logo />
-            </Link>
-            <HStack gap={4}>
-              <Button variant='ghost' size='sm' color='white' _hover={{ bg: 'blue.800' }}>
-                ログイン
-              </Button>
-              <Button colorPalette='orange' size='sm'>
-                会員登録
-              </Button>
-            </HStack>
-          </HStack>
-        </Container>
-      </Box>
+      <Header />
 
       {/* パンくず */}
       <Box bg='white' borderBottomWidth='1px' borderColor='gray.200' py={3}>

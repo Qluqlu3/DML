@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
 import {
   Badge,
   Box,
@@ -54,23 +54,7 @@ export default async function CompaniesPage({
 
   return (
     <Box minH='100vh' bg='gray.50'>
-      <Box as='header' bg='blue.900' py={4}>
-        <Container maxW='5xl'>
-          <HStack justify='space-between'>
-            <Link href='/'>
-              <Logo />
-            </Link>
-            <HStack gap={4}>
-              <Button variant='ghost' size='sm' color='white' _hover={{ bg: 'blue.800' }}>
-                ログイン
-              </Button>
-              <Button colorPalette='orange' size='sm'>
-                会員登録
-              </Button>
-            </HStack>
-          </HStack>
-        </Container>
-      </Box>
+      <Header />
 
       <Box as='main' py={8}>
         <Container maxW='5xl'>
