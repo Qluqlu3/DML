@@ -1,25 +1,11 @@
-import { Box, Heading, Text, Button, VStack, HStack, Container } from '@chakra-ui/react';
+import { Box, Heading, Text, Button, VStack, Container } from '@chakra-ui/react';
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
 
 export default function Home() {
   return (
     <Box minH='100vh' bg='gray.50'>
-      <Box as='header' bg='blue.900' py={4}>
-        <Container maxW='5xl'>
-          <HStack justify='space-between'>
-            <Logo />
-            <HStack gap={4}>
-              <Button variant='ghost' size='sm' color='white' _hover={{ bg: 'blue.800' }}>
-                ログイン
-              </Button>
-              <Button colorPalette='orange' size='sm'>
-                会員登録
-              </Button>
-            </HStack>
-          </HStack>
-        </Container>
-      </Box>
+      <Header />
 
       <Box as='main'>
         <Box bg='blue.900' py={20} textAlign='center'>
