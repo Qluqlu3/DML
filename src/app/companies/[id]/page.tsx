@@ -1,5 +1,3 @@
-import { prisma } from '@/lib/prisma';
-import { Header } from '@/components/Header';
 import {
   Badge,
   Box,
@@ -14,6 +12,8 @@ import {
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Header } from '@/components/Header';
+import { prisma } from '@/lib/prisma';
 
 export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

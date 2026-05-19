@@ -1,5 +1,3 @@
-import { prisma } from '@/lib/prisma';
-import { Header } from '@/components/Header';
 import {
   Badge,
   Box,
@@ -7,13 +5,15 @@ import {
   Container,
   Grid,
   GridItem,
-  HStack,
   Heading,
+  HStack,
   Input,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { Header } from '@/components/Header';
+import { prisma } from '@/lib/prisma';
 
 export default async function CompaniesPage({
   searchParams,
