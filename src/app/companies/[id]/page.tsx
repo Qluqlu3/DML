@@ -1,10 +1,10 @@
 import {
   Badge,
   Box,
-  Button,
   Container,
   Grid,
   GridItem,
+  HStack,
   Heading,
   Separator,
   Text,
@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { ReviewForm } from '@/components/ReviewForm';
 import { prisma } from '@/lib/prisma';
 
 export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -113,9 +114,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
               >
                 <HStack justify='space-between' mb={4}>
                   <Heading size='md'>口コミ ({company.reviews.length}件)</Heading>
-                  <Button colorPalette='orange' size='sm'>
-                    口コミを書く
-                  </Button>
+                  <ReviewForm companyId={company.id} />
                 </HStack>
                 <Separator mb={4} />
 
@@ -137,10 +136,15 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                         borderRadius='md'
                       >
                         <HStack justify='space-between' mb={2}>
-                          <Text color='orange.500' fontWeight='bold'>
-                            {'★'.repeat(review.rating)}
-                            {'☆'.repeat(5 - review.rating)}
-                          </Text>
+                          <HStack gap={2}>
+                            <Text color='orange.500' fontWeight='bold'>
+                              {'★'.repeat(review.rating)}
+                              {'☆'.repeat(5 - review.rating)}
+                            </Text>
+                            <Text fontSize='xs' color='gray.500'>
+                              {review.authorName ?? '匿名'}
+                            </Text>
+                          </HStack>
                           <Text fontSize='xs' color='gray.400'>
                             {review.workYear ? `${review.workYear}年施工` : ''}
                           </Text>
