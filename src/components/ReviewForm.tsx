@@ -67,7 +67,15 @@ export function ReviewForm({ companyId }: Props) {
       <VStack gap={4} align='stretch'>
         {/* 評価 */}
         <Box>
-          <label htmlFor='rating' style={{ fontSize: '0.875rem', color: '#4a5568', display: 'block', marginBottom: '4px' }}>
+          <label
+            htmlFor='rating'
+            style={{
+              fontSize: '0.875rem',
+              color: '#4a5568',
+              display: 'block',
+              marginBottom: '4px',
+            }}
+          >
             評価 <span style={{ color: '#e53e3e' }}>*</span>
           </label>
           <select
@@ -94,7 +102,15 @@ export function ReviewForm({ companyId }: Props) {
 
         {/* タイトル */}
         <Box>
-          <label htmlFor='title' style={{ fontSize: '0.875rem', color: '#4a5568', display: 'block', marginBottom: '4px' }}>
+          <label
+            htmlFor='title'
+            style={{
+              fontSize: '0.875rem',
+              color: '#4a5568',
+              display: 'block',
+              marginBottom: '4px',
+            }}
+          >
             タイトル
           </label>
           <input
@@ -117,9 +133,19 @@ export function ReviewForm({ companyId }: Props) {
 
         {/* 本文 */}
         <Box>
-          <label htmlFor='body' style={{ fontSize: '0.875rem', color: '#4a5568', display: 'block', marginBottom: '4px' }}>
+          <label
+            htmlFor='body'
+            style={{
+              fontSize: '0.875rem',
+              color: '#4a5568',
+              display: 'block',
+              marginBottom: '4px',
+            }}
+          >
             口コミ本文 <span style={{ color: '#e53e3e' }}>*</span>
-            <span style={{ color: '#a0aec0', fontWeight: 'normal', marginLeft: '4px' }}>（10文字以上）</span>
+            <span style={{ color: '#a0aec0', fontWeight: 'normal', marginLeft: '4px' }}>
+              （10文字以上）
+            </span>
           </label>
           <textarea
             id='body'
@@ -143,7 +169,15 @@ export function ReviewForm({ companyId }: Props) {
         {/* 工事種別・施工年（横並び） */}
         <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <Box>
-            <label htmlFor='workType' style={{ fontSize: '0.875rem', color: '#4a5568', display: 'block', marginBottom: '4px' }}>
+            <label
+              htmlFor='workType'
+              style={{
+                fontSize: '0.875rem',
+                color: '#4a5568',
+                display: 'block',
+                marginBottom: '4px',
+              }}
+            >
               工事種別
             </label>
             <select
@@ -160,13 +194,23 @@ export function ReviewForm({ companyId }: Props) {
             >
               <option value=''>未選択</option>
               {WORK_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
           </Box>
 
           <Box>
-            <label htmlFor='workYear' style={{ fontSize: '0.875rem', color: '#4a5568', display: 'block', marginBottom: '4px' }}>
+            <label
+              htmlFor='workYear'
+              style={{
+                fontSize: '0.875rem',
+                color: '#4a5568',
+                display: 'block',
+                marginBottom: '4px',
+              }}
+            >
               施工年
             </label>
             <select
@@ -183,7 +227,9 @@ export function ReviewForm({ companyId }: Props) {
             >
               <option value=''>未選択</option>
               {WORK_YEARS.map((y) => (
-                <option key={y} value={y}>{y}年</option>
+                <option key={y} value={y}>
+                  {y}年
+                </option>
               ))}
             </select>
           </Box>
@@ -191,9 +237,19 @@ export function ReviewForm({ companyId }: Props) {
 
         {/* 投稿者名 */}
         <Box>
-          <label htmlFor='authorName' style={{ fontSize: '0.875rem', color: '#4a5568', display: 'block', marginBottom: '4px' }}>
+          <label
+            htmlFor='authorName'
+            style={{
+              fontSize: '0.875rem',
+              color: '#4a5568',
+              display: 'block',
+              marginBottom: '4px',
+            }}
+          >
             お名前
-            <span style={{ color: '#a0aec0', fontWeight: 'normal', marginLeft: '4px' }}>（未入力の場合「匿名」で表示）</span>
+            <span style={{ color: '#a0aec0', fontWeight: 'normal', marginLeft: '4px' }}>
+              （未入力の場合「匿名」で表示）
+            </span>
           </label>
           <input
             id='authorName'
@@ -216,7 +272,9 @@ export function ReviewForm({ companyId }: Props) {
         {/* エラー表示 */}
         {state.error && (
           <Box p={3} borderRadius='md' bg='red.50' borderWidth='1px' borderColor='red.200'>
-            <Text fontSize='sm' color='red.600'>{state.error}</Text>
+            <Text fontSize='sm' color='red.600'>
+              {state.error}
+            </Text>
           </Box>
         )}
 
@@ -231,12 +289,7 @@ export function ReviewForm({ companyId }: Props) {
           >
             キャンセル
           </Button>
-          <Button
-            type='submit'
-            colorPalette='orange'
-            size='sm'
-            loading={isPending}
-          >
+          <Button type='submit' colorPalette='orange' size='sm' loading={isPending}>
             投稿する
           </Button>
         </Box>

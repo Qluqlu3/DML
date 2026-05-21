@@ -15,23 +15,23 @@ datasource db {
 // 解体業者マスタ
 // ─────────────────────────────────────────
 model Company {
-  id              Int       @id @default(autoincrement())
-  corporateNumber String?   @unique @map("corporate_number") // 法人番号
+  id              Int      @id @default(autoincrement())
+  corporateNumber String?  @unique @map("corporate_number") // 法人番号
   name            String
   furigana        String?
-  prefectureName  String?   @map("prefecture_name")
-  cityName        String?   @map("city_name")
-  streetNumber    String?   @map("street_number")
-  postCode        String?   @map("post_code")
-  addressFull     String?   @map("address_full")
-  phoneNumber     String?   @map("phone_number")
-  websiteUrl      String?   @map("website_url")
-  permitType      String?   @map("permit_type")   // 特定建設業 / 一般建設業
+  prefectureName  String?  @map("prefecture_name")
+  cityName        String?  @map("city_name")
+  streetNumber    String?  @map("street_number")
+  postCode        String?  @map("post_code")
+  addressFull     String?  @map("address_full")
+  phoneNumber     String?  @map("phone_number")
+  websiteUrl      String?  @map("website_url")
+  permitType      String?  @map("permit_type") // 特定建設業 / 一般建設業
   sources         String?
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
-  reviews         Review[]
+  reviews Review[]
 
   @@index([prefectureName])
   @@index([name])
@@ -48,7 +48,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  reviews   Review[]
+  reviews Review[]
 
   @@map("users")
 }
@@ -57,23 +57,22 @@ model User {
 // 口コミ
 // ─────────────────────────────────────────
 model Review {
-  id          Int       @id @default(autoincrement())
-  companyId   Int       @map("company_id")
-  userId      Int?      @map("user_id")        // nullable（匿名投稿対応）
-  authorName  String?   @map("author_name")    // 投稿者表示名（未入力=「匿名」）
-  rating      Int       // 1-5
+  id          Int      @id @default(autoincrement())
+  companyId   Int      @map("company_id")
+  userId      Int?     @map("user_id") // nullable（匿名投稿対応）
+  authorName  String?  @map("author_name") // 投稿者表示名（未入力=「匿名」）
+  rating      Int // 1-5
   title       String?
   body        String
-  workType    String?   @map("work_type")   // 例: 木造, RC, 解体+廃材処理
-  workYear    Int?      @map("work_year")   // 施工年
-  isPublished Boolean   @default(true) @map("is_published")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  workType    String?  @map("work_type") // 例: 木造, RC, 解体+廃材処理
+  workYear    Int?     @map("work_year") // 施工年
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  company     Company   @relation(fields: [companyId], references: [id])
-  user        User?     @relation(fields: [userId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
 
   @@index([companyId])
   @@map("reviews")
 }
-
