@@ -45,7 +45,13 @@ export default async function CompaniesPage({
       <Header />
       <Box as='main' py={8}>
         <Container maxW='5xl'>
-          <SearchForm prefNames={prefNames} q={q} pref={pref} phone={phone} hasWebsite={hasWebsite} />
+          <SearchForm
+            prefNames={prefNames}
+            q={q}
+            pref={pref}
+            phone={phone}
+            hasWebsite={hasWebsite}
+          />
           <CompanyGrid companies={companies} />
         </Container>
       </Box>
