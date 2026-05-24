@@ -146,7 +146,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                             </Text>
                           </HStack>
                           <Text fontSize='xs' color='gray.400'>
-                            {review.workYear ? `${review.workYear}年施工` : ''}
+                            {review.createdAt.toLocaleDateString('ja-JP')}
                           </Text>
                         </HStack>
                         {review.title && (
@@ -154,9 +154,23 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                             {review.title}
                           </Text>
                         )}
-                        <Text fontSize='sm' color='gray.700'>
+                        <Text fontSize='sm' color='gray.700' mb={review.workType || review.workYear ? 2 : 0}>
                           {review.body}
                         </Text>
+                        {(review.workType || review.workYear) && (
+                          <HStack gap={2} flexWrap='wrap'>
+                            {review.workType && (
+                              <Badge colorPalette='blue' size='sm' variant='subtle'>
+                                {review.workType}
+                              </Badge>
+                            )}
+                            {review.workYear && (
+                              <Badge colorPalette='gray' size='sm' variant='subtle'>
+                                {review.workYear}年施工
+                              </Badge>
+                            )}
+                          </HStack>
+                        )}
                       </Box>
                     ))}
                   </VStack>
@@ -204,7 +218,12 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                       <Text color='gray.400' fontSize='xs' mb={0.5}>
                         電話番号
                       </Text>
-                      <Text>{company.phoneNumber}</Text>
+                      <a
+                        href={`tel:${company.phoneNumber}`}
+                        style={{ color: '#2b6cb0', fontSize: '0.875rem' }}
+                      >
+                        {company.phoneNumber}
+                      </a>
                     </Box>
                   )}
                   {company.postCode && (
