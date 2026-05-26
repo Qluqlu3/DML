@@ -38,6 +38,11 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
       ? company.reviews.reduce((sum, r) => sum + r.rating, 0) / company.reviews.length
       : null;
 
+  const ratingCounts = [5, 4, 3, 2, 1].map((r) => ({
+    rating: r,
+    count: company.reviews.filter((rev) => rev.rating === r).length,
+  }));
+
   return (
     <Box minH='100vh' bg='gray.50'>
       <Header />
@@ -88,18 +93,55 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                       {company.furigana}
                     </Text>
                   )}
-                  <HStack gap={4} pt={1}>
-                    <Text fontSize='sm' color='gray.500'>
-                      口コミ {company.reviews.length} 件
-                    </Text>
-                    {avgRating !== null && (
-                      <HStack gap={1}>
-                        <Text fontSize='sm' color='orange.500' fontWeight='bold'>
-                          ★ {avgRating.toFixed(1)}
+                  {avgRating !== null ? (
+                    <Box pt={1}>
+                      {/* 総合評価 */}
+                      <HStack gap={3} mb={3} align='baseline'>
+                        <Text fontSize='3xl' fontWeight='bold' color='orange.500' lineHeight='1'>
+                          {avgRating.toFixed(1)}
                         </Text>
+                        <VStack gap={0} align='start'>
+                          <Text color='orange.400' fontSize='lg' lineHeight='1'>
+                            {'★'.repeat(Math.round(avgRating))}
+                            {'☆'.repeat(5 - Math.round(avgRating))}
+                          </Text>
+                          <Text fontSize='xs' color='gray.400'>
+                            {company.reviews.length} 件の口コミ
+                          </Text>
+                        </VStack>
                       </HStack>
-                    )}
-                  </HStack>
+                      {/* 評価分布バー */}
+                      <VStack gap={1} align='stretch'>
+                        {ratingCounts.map(({ rating, count }) => (
+                          <HStack key={rating} gap={2} fontSize='xs'>
+                            <Text color='gray.500' w='20px' textAlign='right'>
+                              {rating}★
+                            </Text>
+                            <Box flex='1' bg='gray.100' borderRadius='full' h='8px' overflow='hidden'>
+                              <Box
+                                bg='orange.400'
+                                h='100%'
+                                borderRadius='full'
+                                style={{
+                                  width:
+                                    company.reviews.length > 0
+                                      ? `${(count / company.reviews.length) * 100}%`
+                                      : '0%',
+                                }}
+                              />
+                            </Box>
+                            <Text color='gray.400' w='24px'>
+                              {count}
+                            </Text>
+                          </HStack>
+                        ))}
+                      </VStack>
+                    </Box>
+                  ) : (
+                    <Text fontSize='sm' color='gray.400' pt={1}>
+                      まだ評価がありません
+                    </Text>
+                  )}
                 </VStack>
               </Box>
 
