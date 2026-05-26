@@ -43,8 +43,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function CompanyDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ workType?: string }>;
+}) {
+  const [{ id }, { workType: activeWorkType }] = await Promise.all([params, searchParams]);
   const companyId = parseInt(id, 10);
   if (isNaN(companyId)) notFound();
 
@@ -69,6 +75,18 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
     rating: r,
     count: company.reviews.filter((rev) => rev.rating === r).length,
   }));
+
+  // workType フィルター
+  const filteredReviews = activeWorkType
+    ? company.reviews.filter((r) => r.workType === activeWorkType)
+    : company.reviews;
+
+  const workTypeCounts = ['木造住宅', 'RC造', '鉄骨造', '解体＋廃材処理', 'その他'].flatMap(
+    (wt) => {
+      const count = company.reviews.filter((r) => r.workType === wt).length;
+      return count > 0 ? [{ type: wt, count }] : [];
+    },
+  );
 
   return (
     <Box minH='100vh' bg='gray.50'>
@@ -188,21 +206,73 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                 borderColor='gray.200'
               >
                 <HStack justify='space-between' mb={4}>
-                  <Heading size='md'>口コミ ({company.reviews.length}件)</Heading>
+                  <Heading size='md'>
+                    口コミ ({activeWorkType ? `${filteredReviews.length}/` : ''}{company.reviews.length}件)
+                  </Heading>
                   <ReviewForm companyId={company.id} />
                 </HStack>
+
+                {/* workType フィルター */}
+                {workTypeCounts.length > 0 && (
+                  <HStack gap={2} flexWrap='wrap' mb={4}>
+                    <Link href={`/companies/${company.id}`}>
+                      <Box
+                        as='span'
+                        px={3}
+                        py={1}
+                        borderRadius='full'
+                        fontSize='sm'
+                        cursor='pointer'
+                        bg={!activeWorkType ? 'orange.500' : 'gray.100'}
+                        color={!activeWorkType ? 'white' : 'gray.600'}
+                        _hover={{ opacity: 0.8 }}
+                        transition='opacity 0.15s'
+                      >
+                        全て ({company.reviews.length})
+                      </Box>
+                    </Link>
+                    {workTypeCounts.map(({ type, count }) => (
+                      <Link
+                        key={type}
+                        href={`/companies/${company.id}?workType=${encodeURIComponent(type)}`}
+                      >
+                        <Box
+                          as='span'
+                          px={3}
+                          py={1}
+                          borderRadius='full'
+                          fontSize='sm'
+                          cursor='pointer'
+                          bg={activeWorkType === type ? 'blue.500' : 'gray.100'}
+                          color={activeWorkType === type ? 'white' : 'gray.600'}
+                          _hover={{ opacity: 0.8 }}
+                          transition='opacity 0.15s'
+                        >
+                          {type} ({count})
+                        </Box>
+                      </Link>
+                    ))}
+                  </HStack>
+                )}
+
                 <Separator mb={4} />
 
-                {company.reviews.length === 0 ? (
+                {filteredReviews.length === 0 ? (
                   <Box py={10} textAlign='center' color='gray.400'>
-                    <Text>まだ口コミがありません</Text>
-                    <Text fontSize='sm' mt={1}>
-                      最初の口コミを投稿してみましょう
-                    </Text>
+                    {activeWorkType ? (
+                      <Text>「{activeWorkType}」の口コミはまだありません</Text>
+                    ) : (
+                      <>
+                        <Text>まだ口コミがありません</Text>
+                        <Text fontSize='sm' mt={1}>
+                          最初の口コミを投稿してみましょう
+                        </Text>
+                      </>
+                    )}
                   </Box>
                 ) : (
                   <VStack gap={4} align='stretch'>
-                    {company.reviews.map((review) => (
+                    {filteredReviews.map((review) => (
                       <Box
                         key={review.id}
                         p={4}
