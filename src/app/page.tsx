@@ -1,7 +1,19 @@
+import type { Metadata } from 'next';
 import { Box, Button, Container, Grid, GridItem, Heading, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { prisma } from '@/lib/prisma';
+
+export const metadata: Metadata = {
+  title: '信頼できる解体業者を探す | DML',
+  description:
+    '全国1,000社以上の解体業者を口コミで比較・検索。解体工事の業者選びなら DML にお任せください。',
+  openGraph: {
+    title: '信頼できる解体業者を探す | DML',
+    description:
+      '全国1,000社以上の解体業者を口コミで比較・検索。解体工事の業者選びなら DML にお任せください。',
+  },
+};
 
 export default async function Home() {
   const prefList = await prisma.company.findMany({

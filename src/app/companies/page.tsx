@@ -1,8 +1,20 @@
+import type { Metadata } from 'next';
 import { Box, Container } from '@chakra-ui/react';
 import { Header } from '@/components/Header';
 import { prisma } from '@/lib/prisma';
 import { CompanyGrid } from './_components/CompanyGrid';
 import { SearchForm } from './_components/SearchForm';
+
+export const metadata: Metadata = {
+  title: '解体業者を探す | DML',
+  description:
+    '全国の解体業者を都道府県・業者名・電話番号で検索。口コミや評判も確認しながら比較検討できます。',
+  openGraph: {
+    title: '解体業者を探す | DML',
+    description:
+      '全国の解体業者を都道府県・業者名・電話番号で検索。口コミや評判も確認しながら比較検討できます。',
+  },
+};
 
 export default async function CompaniesPage({
   searchParams,

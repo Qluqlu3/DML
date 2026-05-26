@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import {
   Badge,
   Box,
@@ -15,6 +16,32 @@ import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { ReviewForm } from '@/components/ReviewForm';
 import { prisma } from '@/lib/prisma';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const companyId = parseInt(id, 10);
+  if (isNaN(companyId)) return {};
+
+  const company = await prisma.company.findUnique({
+    where: { id: companyId },
+    select: { name: true, prefectureName: true },
+  });
+  if (!company) return {};
+
+  const pref = company.prefectureName ? `${company.prefectureName}の` : '';
+  const title = `${company.name}の口コミ・評判 | DML`;
+  const description = `${pref}解体業者「${company.name}」の口コミ・評判を確認。実際に依頼した方の評価や施工内容をチェックして業者選びにお役立てください。`;
+
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+  };
+}
 
 export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -117,7 +144,13 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                             <Text color='gray.500' w='20px' textAlign='right'>
                               {rating}★
                             </Text>
-                            <Box flex='1' bg='gray.100' borderRadius='full' h='8px' overflow='hidden'>
+                            <Box
+                              flex='1'
+                              bg='gray.100'
+                              borderRadius='full'
+                              h='8px'
+                              overflow='hidden'
+                            >
                               <Box
                                 bg='orange.400'
                                 h='100%'
@@ -196,7 +229,11 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                             {review.title}
                           </Text>
                         )}
-                        <Text fontSize='sm' color='gray.700' mb={review.workType || review.workYear ? 2 : 0}>
+                        <Text
+                          fontSize='sm'
+                          color='gray.700'
+                          mb={review.workType || review.workYear ? 2 : 0}
+                        >
                           {review.body}
                         </Text>
                         {(review.workType || review.workYear) && (
