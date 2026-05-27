@@ -207,7 +207,8 @@ export default async function CompanyDetailPage({
               >
                 <HStack justify='space-between' mb={4}>
                   <Heading size='md'>
-                    口コミ ({activeWorkType ? `${filteredReviews.length}/` : ''}{company.reviews.length}件)
+                    口コミ ({activeWorkType ? `${filteredReviews.length}/` : ''}
+                    {company.reviews.length}件)
                   </Heading>
                   <ReviewForm companyId={company.id} />
                 </HStack>
