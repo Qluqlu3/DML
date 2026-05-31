@@ -66,7 +66,7 @@ model Review {
   body        String
   workType    String?  @map("work_type") // 例: 木造, RC, 解体+廃材処理
   workYear    Int?     @map("work_year") // 施工年
-  isPublished Boolean  @default(true) @map("is_published")
+  isPublished Boolean  @default(false) @map("is_published")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
