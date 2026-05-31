@@ -38,7 +38,6 @@ export async function submitReview(
       authorName,
       workType,
       workYear: workYear && !isNaN(workYear) ? workYear : null,
-      isPublished: true,
     },
   });
 
