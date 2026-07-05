@@ -1,0 +1,29 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: biome (ts/js/json)
+      glob: '*.{ts,tsx,js,jsx,json}'
+      stage_fixed: true
+      run: pnpm exec biome check --write --error-on-warnings --no-errors-on-unmatched {staged_files}
+
+    - name: biome format (css)
+      glob: '*.css'
+      stage_fixed: true
+      run: pnpm exec biome format --write {staged_files}
+
+    - name: stylelint (css)
+      glob: '*.css'
+      stage_fixed: true
+      run: pnpm exec stylelint --fix {staged_files}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: lint
+      run: pnpm run lint
+
+    - name: lint:css
+      run: pnpm run lint:css
+
+    - name: typecheck
+      run: pnpm run typecheck
