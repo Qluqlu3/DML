@@ -35,6 +35,15 @@ pnpm dev
 
 `http://localhost:5050`
 
+## 管理画面
+
+`/admin` 以下は二重にアクセス制限をかけている。
+
+1. **Basic認証**（常時有効）— `.env` の `ADMIN_BASIC_AUTH_USER` / `ADMIN_BASIC_AUTH_PASSWORD` で設定。未設定の場合は `/admin` 全体が401になる。
+2. **パスワードログイン** — `ADMIN_PASSWORD` で設定。Basic認証を通過した後に表示されるログイン画面。
+
+追加で、IPアドレスによるアクセス制限を任意でかけられる（`ADMIN_ALLOWED_IPS` にカンマ区切りで許可IPを指定）。ただし `X-Forwarded-For` はクライアントが偽装できるヘッダーのため、信頼できるリバースプロキシ（実IPで上書きするもの）を手前に置いている場合のみ有効。現状のdocker-compose構成のようにアプリを直接公開している場合は設定しても効果が無いので注意。
+
 ## コマンド
 
 ```bash
