@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/prisma';
+import { RATING_ITEMS, overallRating } from '@/lib/reviewRating';
+import { STRUCTURE_TYPE_LABELS } from '@/lib/structureType';
 import { logoutAction } from '../login/actions';
 import { ReviewActions } from './ReviewActions';
 
@@ -104,12 +106,12 @@ export default async function AdminReviewsPage() {
                         fontWeight: 600,
                       }}
                     >
-                      {'★'.repeat(review.rating)}
-                      {'☆'.repeat(5 - review.rating)} {review.rating}
+                      総合 {'★'.repeat(Math.round(overallRating(review)))}
+                      {'☆'.repeat(5 - Math.round(overallRating(review)))}
                     </span>
-                    {review.workType && (
-                      <span style={{ fontSize: '12px', color: '#718096' }}>{review.workType}</span>
-                    )}
+                    <span style={{ fontSize: '12px', color: '#718096' }}>
+                      {STRUCTURE_TYPE_LABELS[review.structureType]}
+                    </span>
                     {review.workYear && (
                       <span style={{ fontSize: '12px', color: '#718096' }}>
                         {review.workYear}年施工
@@ -117,28 +119,14 @@ export default async function AdminReviewsPage() {
                     )}
                   </div>
 
-                  {review.title && (
-                    <p
-                      style={{
-                        fontWeight: 600,
-                        margin: '0 0 6px',
-                        fontSize: '14px',
-                        color: '#2d3748',
-                      }}
-                    >
-                      {review.title}
-                    </p>
-                  )}
-                  <p
-                    style={{
-                      margin: '0 0 8px',
-                      fontSize: '14px',
-                      color: '#4a5568',
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    {review.body}
-                  </p>
+                  <div style={{ display: 'flex', gap: '12px', margin: '0 0 8px', flexWrap: 'wrap' }}>
+                    {RATING_ITEMS.map((item) => (
+                      <span key={item.name} style={{ fontSize: '13px', color: '#4a5568' }}>
+                        {item.label}: {'★'.repeat(review[item.name])}
+                        {'☆'.repeat(5 - review[item.name])}
+                      </span>
+                    ))}
+                  </div>
 
                   <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: '#a0aec0' }}>
                     <span>投稿者: {review.authorName ?? '匿名'}</span>

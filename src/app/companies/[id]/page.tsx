@@ -16,6 +16,9 @@ import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { ReviewForm } from '@/components/ReviewForm';
 import { prisma } from '@/lib/prisma';
+import { RATING_ITEMS, overallRating } from '@/lib/reviewRating';
+import { STRUCTURE_TYPE_LABELS, STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
+import type { StructureType } from '@/generated/prisma/client';
 
 export async function generateMetadata({
   params,
@@ -48,9 +51,12 @@ export default async function CompanyDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ workType?: string }>;
+  searchParams: Promise<{ structureType?: string }>;
 }) {
-  const [{ id }, { workType: activeWorkType }] = await Promise.all([params, searchParams]);
+  const [{ id }, { structureType: activeStructureType }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const companyId = parseInt(id, 10);
   if (isNaN(companyId)) notFound();
 
@@ -66,27 +72,30 @@ export default async function CompanyDetailPage({
 
   if (!company) notFound();
 
+  const reviewsWithOverall = company.reviews.map((review) => ({
+    ...review,
+    overall: overallRating(review),
+  }));
+
   const avgRating =
-    company.reviews.length > 0
-      ? company.reviews.reduce((sum, r) => sum + r.rating, 0) / company.reviews.length
+    reviewsWithOverall.length > 0
+      ? reviewsWithOverall.reduce((sum, r) => sum + r.overall, 0) / reviewsWithOverall.length
       : null;
 
   const ratingCounts = [5, 4, 3, 2, 1].map((r) => ({
     rating: r,
-    count: company.reviews.filter((rev) => rev.rating === r).length,
+    count: reviewsWithOverall.filter((rev) => Math.round(rev.overall) === r).length,
   }));
 
-  // workType フィルター
-  const filteredReviews = activeWorkType
-    ? company.reviews.filter((r) => r.workType === activeWorkType)
-    : company.reviews;
+  // 解体した建物の構造でフィルター
+  const filteredReviews = activeStructureType
+    ? reviewsWithOverall.filter((r) => r.structureType === activeStructureType)
+    : reviewsWithOverall;
 
-  const workTypeCounts = ['木造住宅', 'RC造', '鉄骨造', '解体＋廃材処理', 'その他'].flatMap(
-    (wt) => {
-      const count = company.reviews.filter((r) => r.workType === wt).length;
-      return count > 0 ? [{ type: wt, count }] : [];
-    },
-  );
+  const structureTypeCounts = STRUCTURE_TYPE_OPTIONS.flatMap(({ value, label }) => {
+    const count = company.reviews.filter((r) => r.structureType === value).length;
+    return count > 0 ? [{ type: value, label, count }] : [];
+  });
 
   return (
     <Box minH='100vh' bg='gray.50'>
@@ -207,14 +216,14 @@ export default async function CompanyDetailPage({
               >
                 <HStack justify='space-between' mb={4}>
                   <Heading size='md'>
-                    口コミ ({activeWorkType ? `${filteredReviews.length}/` : ''}
+                    口コミ ({activeStructureType ? `${filteredReviews.length}/` : ''}
                     {company.reviews.length}件)
                   </Heading>
                   <ReviewForm companyId={company.id} />
                 </HStack>
 
-                {/* workType フィルター */}
-                {workTypeCounts.length > 0 && (
+                {/* 解体した建物の構造フィルター */}
+                {structureTypeCounts.length > 0 && (
                   <HStack gap={2} flexWrap='wrap' mb={4}>
                     <Link href={`/companies/${company.id}`}>
                       <Box
@@ -224,18 +233,18 @@ export default async function CompanyDetailPage({
                         borderRadius='full'
                         fontSize='sm'
                         cursor='pointer'
-                        bg={!activeWorkType ? 'orange.500' : 'gray.100'}
-                        color={!activeWorkType ? 'white' : 'gray.600'}
+                        bg={!activeStructureType ? 'orange.500' : 'gray.100'}
+                        color={!activeStructureType ? 'white' : 'gray.600'}
                         _hover={{ opacity: 0.8 }}
                         transition='opacity 0.15s'
                       >
                         全て ({company.reviews.length})
                       </Box>
                     </Link>
-                    {workTypeCounts.map(({ type, count }) => (
+                    {structureTypeCounts.map(({ type, label, count }) => (
                       <Link
                         key={type}
-                        href={`/companies/${company.id}?workType=${encodeURIComponent(type)}`}
+                        href={`/companies/${company.id}?structureType=${encodeURIComponent(type)}`}
                       >
                         <Box
                           as='span'
@@ -244,12 +253,12 @@ export default async function CompanyDetailPage({
                           borderRadius='full'
                           fontSize='sm'
                           cursor='pointer'
-                          bg={activeWorkType === type ? 'blue.500' : 'gray.100'}
-                          color={activeWorkType === type ? 'white' : 'gray.600'}
+                          bg={activeStructureType === type ? 'blue.500' : 'gray.100'}
+                          color={activeStructureType === type ? 'white' : 'gray.600'}
                           _hover={{ opacity: 0.8 }}
                           transition='opacity 0.15s'
                         >
-                          {type} ({count})
+                          {label} ({count})
                         </Box>
                       </Link>
                     ))}
@@ -260,8 +269,10 @@ export default async function CompanyDetailPage({
 
                 {filteredReviews.length === 0 ? (
                   <Box py={10} textAlign='center' color='gray.400'>
-                    {activeWorkType ? (
-                      <Text>「{activeWorkType}」の口コミはまだありません</Text>
+                    {activeStructureType ? (
+                      <Text>
+                        「{STRUCTURE_TYPE_LABELS[activeStructureType as StructureType]}」の口コミはまだありません
+                      </Text>
                     ) : (
                       <>
                         <Text>まだ口コミがありません</Text>
@@ -284,8 +295,8 @@ export default async function CompanyDetailPage({
                         <HStack justify='space-between' mb={2}>
                           <HStack gap={2}>
                             <Text color='orange.500' fontWeight='bold'>
-                              {'★'.repeat(review.rating)}
-                              {'☆'.repeat(5 - review.rating)}
+                              {'★'.repeat(Math.round(review.overall))}
+                              {'☆'.repeat(5 - Math.round(review.overall))}
                             </Text>
                             <Text fontSize='xs' color='gray.500'>
                               {review.authorName ?? '匿名'}
@@ -295,32 +306,29 @@ export default async function CompanyDetailPage({
                             {review.createdAt.toLocaleDateString('ja-JP')}
                           </Text>
                         </HStack>
-                        {review.title && (
-                          <Text fontWeight='bold' mb={1}>
-                            {review.title}
-                          </Text>
-                        )}
-                        <Text
-                          fontSize='sm'
-                          color='gray.700'
-                          mb={review.workType || review.workYear ? 2 : 0}
-                        >
-                          {review.body}
-                        </Text>
-                        {(review.workType || review.workYear) && (
-                          <HStack gap={2} flexWrap='wrap'>
-                            {review.workType && (
-                              <Badge colorPalette='blue' size='sm' variant='subtle'>
-                                {review.workType}
-                              </Badge>
-                            )}
-                            {review.workYear && (
-                              <Badge colorPalette='gray' size='sm' variant='subtle'>
-                                {review.workYear}年施工
-                              </Badge>
-                            )}
-                          </HStack>
-                        )}
+                        <HStack gap={4} flexWrap='wrap' mb={2}>
+                          {RATING_ITEMS.map((item) => (
+                            <HStack key={item.name} gap={1}>
+                              <Text fontSize='xs' color='gray.400'>
+                                {item.label}
+                              </Text>
+                              <Text fontSize='xs' color='orange.500'>
+                                {'★'.repeat(review[item.name])}
+                                {'☆'.repeat(5 - review[item.name])}
+                              </Text>
+                            </HStack>
+                          ))}
+                        </HStack>
+                        <HStack gap={2} flexWrap='wrap'>
+                          <Badge colorPalette='blue' size='sm' variant='subtle'>
+                            {STRUCTURE_TYPE_LABELS[review.structureType]}
+                          </Badge>
+                          {review.workYear && (
+                            <Badge colorPalette='gray' size='sm' variant='subtle'>
+                              {review.workYear}年施工
+                            </Badge>
+                          )}
+                        </HStack>
                       </Box>
                     ))}
                   </VStack>
