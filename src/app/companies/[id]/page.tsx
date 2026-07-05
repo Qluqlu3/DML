@@ -1,25 +1,25 @@
-import type { Metadata } from 'next';
 import {
   Badge,
   Box,
   Container,
   Grid,
   GridItem,
-  HStack,
   Heading,
+  HStack,
   Separator,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { ReviewForm } from '@/components/ReviewForm';
+import type { StructureType } from '@/generated/prisma/client';
 import { tradeLabel } from '@/lib/constructionTrades';
 import { prisma } from '@/lib/prisma';
-import { RATING_ITEMS, overallRating } from '@/lib/reviewRating';
+import { overallRating, RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_LABELS, STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
-import type { StructureType } from '@/generated/prisma/client';
 
 export async function generateMetadata({
   params,
@@ -28,7 +28,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const companyId = parseInt(id, 10);
-  if (isNaN(companyId)) return {};
+  if (Number.isNaN(companyId)) return {};
 
   const company = await prisma.company.findUnique({
     where: { id: companyId },
@@ -59,7 +59,7 @@ export default async function CompanyDetailPage({
     searchParams,
   ]);
   const companyId = parseInt(id, 10);
-  if (isNaN(companyId)) notFound();
+  if (Number.isNaN(companyId)) notFound();
 
   const company = await prisma.company.findUnique({
     where: { id: companyId },
@@ -99,12 +99,12 @@ export default async function CompanyDetailPage({
   });
 
   return (
-    <Box minH='100vh' bg='gray.50'>
+    <Box minH='100vh' bg='gray.100'>
       <Header />
 
       {/* パンくず */}
       <Box bg='white' borderBottomWidth='1px' borderColor='gray.200' py={3}>
-        <Container maxW='5xl'>
+        <Container maxW='7xl'>
           <HStack gap={2} fontSize='sm' color='gray.500'>
             <Link href='/'>
               <Text _hover={{ color: 'blue.700' }}>ホーム</Text>
@@ -122,7 +122,7 @@ export default async function CompanyDetailPage({
       </Box>
 
       <Box as='main' py={8}>
-        <Container maxW='5xl'>
+        <Container maxW='7xl'>
           <Grid templateColumns={{ base: '1fr', lg: '1fr 320px' }} gap={8} alignItems='start'>
             {/* ─── メイン ─── */}
             <GridItem>
@@ -272,7 +272,8 @@ export default async function CompanyDetailPage({
                   <Box py={10} textAlign='center' color='gray.400'>
                     {activeStructureType ? (
                       <Text>
-                        「{STRUCTURE_TYPE_LABELS[activeStructureType as StructureType]}」の口コミはまだありません
+                        「{STRUCTURE_TYPE_LABELS[activeStructureType as StructureType]}
+                        」の口コミはまだありません
                       </Text>
                     ) : (
                       <>

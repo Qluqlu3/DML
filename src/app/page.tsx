@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import { Box, Button, Container, Grid, GridItem, Heading, Text, VStack } from '@chakra-ui/react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { groupByRegion } from '@/lib/prefecture';
@@ -26,7 +26,7 @@ export default async function Home() {
   const prefRegions = groupByRegion(prefNames);
 
   return (
-    <Box minH='100vh' bg='gray.50'>
+    <Box minH='100vh' bg='gray.100'>
       <Header />
 
       <Box as='main'>

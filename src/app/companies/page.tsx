@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import { Box, Container } from '@chakra-ui/react';
+import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import { prisma } from '@/lib/prisma';
 import { CompanyGrid } from './_components/CompanyGrid';
@@ -53,10 +53,10 @@ export default async function CompaniesPage({
   const prefNames = prefList.map((p) => p.prefectureName).filter(Boolean) as string[];
 
   return (
-    <Box minH='100vh' bg='gray.50'>
+    <Box minH='100vh' bg='gray.100'>
       <Header />
       <Box as='main' py={8}>
-        <Container maxW='5xl'>
+        <Container maxW='7xl'>
           <SearchForm
             prefNames={prefNames}
             q={q}
