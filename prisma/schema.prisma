@@ -49,15 +49,32 @@ model Company {
 // 口コミ投稿者
 // ─────────────────────────────────────────
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  name         String?
+  passwordHash String   @map("password_hash") // scrypt(salt:hash)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  reviews Review[]
+  reviews  Review[]
+  sessions UserSession[]
 
   @@map("users")
+}
+
+// ─────────────────────────────────────────
+// 会員ログインセッション
+// ─────────────────────────────────────────
+model UserSession {
+  token     String   @id // ランダムな256bitトークン。cookieの値そのもの
+  userId    Int      @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_sessions")
 }
 
 // ─────────────────────────────────────────

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { RATING_ITEMS } from '@/lib/reviewRating';
 import { isStructureType } from '@/lib/structureType';
+import { getCurrentUser } from '@/lib/userSession';
 
 export type SubmitReviewState = {
   success: boolean;
@@ -20,10 +21,16 @@ export async function submitReview(
   _prevState: SubmitReviewState,
   formData: FormData,
 ): Promise<SubmitReviewState> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return { success: false, error: '口コミの投稿にはログインが必要です' };
+  }
+
   const ratings = Object.fromEntries(
     RATING_ITEMS.map((item) => [item.name, parseRating(formData, item.name)]),
   ) as Record<(typeof RATING_ITEMS)[number]['name'], number | null>;
-  const authorName = ((formData.get('authorName') as string) || '').trim() || null;
+  const rawAuthorName = ((formData.get('authorName') as string) || '').trim();
+  const authorName = rawAuthorName || currentUser.name || null;
   const structureType = (formData.get('structureType') as string) || '';
   const workYearRaw = (formData.get('workYear') as string) || '';
   const workYear = workYearRaw ? parseInt(workYearRaw, 10) : null;
@@ -41,12 +48,13 @@ export async function submitReview(
   await prisma.review.create({
     data: {
       companyId,
+      userId: currentUser.id,
       priceRating: ratings.priceRating as number,
       serviceRating: ratings.serviceRating as number,
       qualityRating: ratings.qualityRating as number,
       structureType,
       authorName,
-      workYear: workYear && !isNaN(workYear) ? workYear : null,
+      workYear: workYear && !Number.isNaN(workYear) ? workYear : null,
     },
   });
 

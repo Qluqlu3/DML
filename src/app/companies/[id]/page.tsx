@@ -20,6 +20,7 @@ import { tradeLabel } from '@/lib/constructionTrades';
 import { prisma } from '@/lib/prisma';
 import { overallRating, RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_LABELS, STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
+import { getCurrentUser } from '@/lib/userSession';
 
 export async function generateMetadata({
   params,
@@ -61,15 +62,18 @@ export default async function CompanyDetailPage({
   const companyId = parseInt(id, 10);
   if (Number.isNaN(companyId)) notFound();
 
-  const company = await prisma.company.findUnique({
-    where: { id: companyId },
-    include: {
-      reviews: {
-        where: { isPublished: true },
-        orderBy: { createdAt: 'desc' },
+  const [company, currentUser] = await Promise.all([
+    prisma.company.findUnique({
+      where: { id: companyId },
+      include: {
+        reviews: {
+          where: { isPublished: true },
+          orderBy: { createdAt: 'desc' },
+        },
       },
-    },
-  });
+    }),
+    getCurrentUser(),
+  ]);
 
   if (!company) notFound();
 
@@ -220,7 +224,12 @@ export default async function CompanyDetailPage({
                     口コミ ({activeStructureType ? `${filteredReviews.length}/` : ''}
                     {company.reviews.length}件)
                   </Heading>
-                  <ReviewForm companyId={company.id} />
+                  <ReviewForm
+                    companyId={company.id}
+                    currentUser={
+                      currentUser ? { name: currentUser.name, email: currentUser.email } : null
+                    }
+                  />
                 </HStack>
 
                 {/* 解体した建物の構造フィルター */}

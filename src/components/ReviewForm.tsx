@@ -1,8 +1,10 @@
 'use client';
 
 import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
 import { useActionState, useState } from 'react';
 import { type SubmitReviewState, submitReview } from '@/app/companies/[id]/actions';
+import { AuthModal } from '@/components/AuthModal';
 import { StarRatingInput } from '@/components/StarRatingInput';
 import { RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
@@ -12,12 +14,15 @@ const WORK_YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
 type Props = {
   companyId: number;
+  currentUser: { name: string | null; email: string } | null;
 };
 
 const initialState: SubmitReviewState = { success: false };
 
-export function ReviewForm({ companyId }: Props) {
+export function ReviewForm({ companyId, currentUser }: Props) {
   const [open, setOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register' | null>(null);
+  const router = useRouter();
 
   const action = submitReview.bind(null, companyId);
   const [state, formAction, isPending] = useActionState(action, initialState);
@@ -39,6 +44,24 @@ export function ReviewForm({ companyId }: Props) {
           ご協力ありがとうございます
         </Text>
       </Box>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <>
+        <Button colorPalette='orange' size='sm' onClick={() => setAuthMode('login')}>
+          ログインして口コミを書く
+        </Button>
+        <AuthModal
+          mode={authMode}
+          onClose={() => setAuthMode(null)}
+          onSuccess={() => {
+            setAuthMode(null);
+            router.refresh();
+          }}
+        />
+      </>
     );
   }
 
@@ -168,16 +191,17 @@ export function ReviewForm({ companyId }: Props) {
               marginBottom: '4px',
             }}
           >
-            お名前
+            表示名
             <span style={{ color: '#a0aec0', fontWeight: 'normal', marginLeft: '4px' }}>
-              （未入力の場合「匿名」で表示）
+              （未入力の場合「{currentUser.name || '匿名'}」で表示）
             </span>
           </label>
           <input
             id='authorName'
             name='authorName'
             type='text'
-            placeholder='匿名'
+            autoComplete='nickname'
+            placeholder={currentUser.name || '匿名'}
             maxLength={50}
             style={{
               width: '100%',
