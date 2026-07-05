@@ -2,14 +2,13 @@
 
 import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
 import { useActionState, useState } from 'react';
-import { submitReview, type SubmitReviewState } from '@/app/companies/[id]/actions';
+import { type SubmitReviewState, submitReview } from '@/app/companies/[id]/actions';
+import { StarRatingInput } from '@/components/StarRatingInput';
 import { RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
 
 const currentYear = new Date().getFullYear();
 const WORK_YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
-
-const STAR_VALUES = [5, 4, 3, 2, 1] as const;
 
 type Props = {
   companyId: number;
@@ -81,27 +80,7 @@ export function ReviewForm({ companyId }: Props) {
             >
               {item.label} <span style={{ color: '#e53e3e' }}>*</span>
             </Text>
-            <div style={{ display: 'flex', gap: '12px' }} role='radiogroup' aria-label={item.label}>
-              {STAR_VALUES.map((value) => (
-                <label
-                  key={value}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '0.875rem',
-                    color: '#4a5568',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <input type='radio' name={item.name} value={value} required />
-                  <span style={{ color: '#f6ad55' }}>
-                    {'★'.repeat(value)}
-                    {'☆'.repeat(5 - value)}
-                  </span>
-                </label>
-              ))}
-            </div>
+            <StarRatingInput name={item.name} label={item.label} />
           </Box>
         ))}
 
