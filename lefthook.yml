@@ -25,5 +25,8 @@ pre-push:
     - name: lint:css
       run: pnpm run lint:css
 
+    - name: format:check
+      run: pnpm run format:check
+
     - name: typecheck
       run: pnpm run typecheck

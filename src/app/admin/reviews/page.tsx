@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { RATING_ITEMS, overallRating } from '@/lib/reviewRating';
+import { overallRating, RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_LABELS } from '@/lib/structureType';
 import { logoutAction } from '../login/actions';
 import { ReviewActions } from './ReviewActions';
@@ -119,7 +119,9 @@ export default async function AdminReviewsPage() {
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', gap: '12px', margin: '0 0 8px', flexWrap: 'wrap' }}>
+                  <div
+                    style={{ display: 'flex', gap: '12px', margin: '0 0 8px', flexWrap: 'wrap' }}
+                  >
                     {RATING_ITEMS.map((item) => (
                       <span key={item.name} style={{ fontSize: '13px', color: '#4a5568' }}>
                         {item.label}: {'★'.repeat(review[item.name])}

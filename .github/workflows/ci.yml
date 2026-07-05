@@ -31,6 +31,8 @@ jobs:
 
       - run: pnpm run lint:css
 
+      - run: pnpm run format:check
+
       - run: pnpm run typecheck
 
   build:

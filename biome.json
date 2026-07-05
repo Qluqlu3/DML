@@ -1,5 +1,11 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -17,7 +23,9 @@
   "linter": {
     "enabled": true,
     "domains": {
-      "next": "recommended"
+      "next": "recommended",
+      "react": "recommended",
+      "types": "recommended"
     },
     "rules": {
       "recommended": true,
@@ -34,6 +42,13 @@
     }
   },
   "files": {
-    "includes": ["**", "!.next", "!node_modules", "!src/generated", "!prisma/migrations"]
+    "includes": [
+      "**",
+      "!.next",
+      "!node_modules",
+      "!src/generated",
+      "!prisma/migrations",
+      "!data/processed"
+    ]
   }
 }
