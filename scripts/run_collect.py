@@ -41,7 +41,7 @@ KAITAI_KEYWORDS = ["解体", "かいたい", "カイタイ"]
 # 法人番号 CSV の列インデックス（Unicode版）
 COL_CORP_NUM = 1    # 法人番号
 COL_NAME = 6        # 法人名（実際の列: 0=連番,1=法人番号,2=種別,3=最新フラグ,4=更新日,5=変更日,6=名称）
-COL_FURIGANA = 7    # 名称イメージID（ふりがなは別途）
+COL_FURIGANA = 28   # フリガナ（7は名称イメージIDで別物なので注意）
 COL_PREF_NAME = 9   # 都道府県名
 COL_CITY_NAME = 10  # 市区町村
 COL_STREET = 11     # 番地
