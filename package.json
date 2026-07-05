@@ -12,7 +12,8 @@
     "check": "biome check --write .",
     "db:migrate": "prisma migrate dev",
     "db:seed": "NODE_ENV=development prisma db seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "admin:create-user": "tsx prisma/create-admin.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.35.0",

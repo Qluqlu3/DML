@@ -54,6 +54,19 @@ model User {
 }
 
 // ─────────────────────────────────────────
+// 管理者アカウント
+// ─────────────────────────────────────────
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String   @map("password_hash") // scrypt(salt:hash)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
+
+// ─────────────────────────────────────────
 // 解体した建物の構造種別
 // ─────────────────────────────────────────
 enum StructureType {

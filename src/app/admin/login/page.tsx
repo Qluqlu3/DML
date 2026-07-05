@@ -39,6 +39,29 @@ export default function AdminLoginPage() {
         <form action={formAction}>
           <div style={{ marginBottom: '16px' }}>
             <label
+              htmlFor='username'
+              style={{ display: 'block', fontSize: '14px', color: '#4a5568', marginBottom: '6px' }}
+            >
+              ID
+            </label>
+            <input
+              id='username'
+              name='username'
+              type='text'
+              required
+              autoComplete='username'
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #cbd5e0',
+                borderRadius: '6px',
+                fontSize: '14px',
+                boxSizing: 'border-box',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <label
               htmlFor='password'
               style={{ display: 'block', fontSize: '14px', color: '#4a5568', marginBottom: '6px' }}
             >

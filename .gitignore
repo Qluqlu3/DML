@@ -36,6 +36,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# 管理者ログイン情報（scripts/prisma/create-admin.ts が生成する平文メモ）
+admin-credentials.local.md
+
 # vercel
 .vercel
 
