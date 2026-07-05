@@ -34,6 +34,14 @@ interface RawCompany {
   post_code: string;
   address_full: string;
   sources: string;
+  permit_type?: string;
+  permit_number?: string;
+  representative_name?: string;
+  office_address?: string;
+  capital_thousand_yen?: number;
+  licensed_trades?: { trade: string; level: string }[];
+  license_valid_from?: string;
+  license_valid_until?: string;
 }
 
 // ── Company 投入（全環境共通） ────────────────────────────────
@@ -55,7 +63,14 @@ async function seedCompanies() {
       streetNumber: c.street_number || null,
       postCode: c.post_code || null,
       addressFull: c.address_full || null,
-      permitType: (c as any).permit_type || null,
+      permitType: c.permit_type || null,
+      permitNumber: c.permit_number || null,
+      representativeName: c.representative_name || null,
+      officeAddress: c.office_address || null,
+      capitalThousandYen: c.capital_thousand_yen ?? null,
+      licensedTrades: c.licensed_trades ?? undefined,
+      licenseValidFrom: c.license_valid_from ? new Date(c.license_valid_from) : null,
+      licenseValidUntil: c.license_valid_until ? new Date(c.license_valid_until) : null,
       sources: c.sources || null,
     };
 

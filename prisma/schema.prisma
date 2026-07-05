@@ -15,21 +15,28 @@ datasource db {
 // 解体業者マスタ
 // ─────────────────────────────────────────
 model Company {
-  id              Int      @id @default(autoincrement())
-  corporateNumber String?  @unique @map("corporate_number") // 法人番号
-  name            String
-  furigana        String?
-  prefectureName  String?  @map("prefecture_name")
-  cityName        String?  @map("city_name")
-  streetNumber    String?  @map("street_number")
-  postCode        String?  @map("post_code")
-  addressFull     String?  @map("address_full")
-  phoneNumber     String?  @map("phone_number")
-  websiteUrl      String?  @map("website_url")
-  permitType      String?  @map("permit_type") // 特定建設業 / 一般建設業
-  sources         String?
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id                 Int       @id @default(autoincrement())
+  corporateNumber    String?   @unique @map("corporate_number") // 法人番号
+  name               String
+  furigana           String?
+  prefectureName     String?   @map("prefecture_name")
+  cityName           String?   @map("city_name")
+  streetNumber       String?   @map("street_number")
+  postCode           String?   @map("post_code")
+  addressFull        String?   @map("address_full")
+  phoneNumber        String?   @map("phone_number")
+  websiteUrl         String?   @map("website_url")
+  permitType         String?   @map("permit_type") // 特定建設業 / 一般建設業
+  permitNumber       String?   @map("permit_number") // 許可番号（許可行政庁を含む。例: 東京都知事許可 第000005号）
+  representativeName String?   @map("representative_name") // 代表者名
+  officeAddress      String?   @map("office_address") // 主たる営業所の所在地（BizNav許可情報側。号室等の詳細を含む場合あり）
+  capitalThousandYen Int?      @map("capital_thousand_yen") // 資本金額（単位: 千円）
+  licensedTrades     Json?     @map("licensed_trades") // 保有する建設業許可一覧 [{ trade: string, level: string }]
+  licenseValidFrom   DateTime? @map("license_valid_from") // 許可の有効期間（開始）
+  licenseValidUntil  DateTime? @map("license_valid_until") // 許可の有効期間（終了）
+  sources            String?
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
 
   reviews Review[]
 
@@ -70,11 +77,11 @@ model AdminUser {
 // 解体した建物の構造種別
 // ─────────────────────────────────────────
 enum StructureType {
-  WOODEN      // 木造住宅
+  WOODEN // 木造住宅
   LIGHT_STEEL // 軽量鉄骨造
-  STEEL       // 鉄骨造
-  RC          // RC造（鉄筋コンクリート）
-  OTHER       // その他
+  STEEL // 鉄骨造
+  RC // RC造（鉄筋コンクリート）
+  OTHER // その他
 }
 
 // ─────────────────────────────────────────

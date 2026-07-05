@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { ReviewForm } from '@/components/ReviewForm';
+import { tradeLabel } from '@/lib/constructionTrades';
 import { prisma } from '@/lib/prisma';
 import { RATING_ITEMS, overallRating } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_LABELS, STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
@@ -363,12 +364,76 @@ export default async function CompanyDetailPage({
                       </Badge>
                     </Box>
                   )}
+                  {company.permitNumber && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={0.5}>
+                        許可番号
+                      </Text>
+                      <Text>{company.permitNumber}</Text>
+                    </Box>
+                  )}
+                  {company.representativeName && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={0.5}>
+                        代表者
+                      </Text>
+                      <Text>{company.representativeName}</Text>
+                    </Box>
+                  )}
                   {company.addressFull && (
                     <Box>
                       <Text color='gray.400' fontSize='xs' mb={0.5}>
                         住所
                       </Text>
                       <Text>{company.addressFull}</Text>
+                    </Box>
+                  )}
+                  {company.officeAddress && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={0.5}>
+                        主たる営業所の所在地（許可情報）
+                      </Text>
+                      <Text>{company.officeAddress}</Text>
+                    </Box>
+                  )}
+                  {company.capitalThousandYen != null && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={0.5}>
+                        資本金
+                      </Text>
+                      <Text>{(company.capitalThousandYen / 10).toLocaleString('ja-JP')}万円</Text>
+                    </Box>
+                  )}
+                  {(company.licenseValidFrom || company.licenseValidUntil) && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={0.5}>
+                        許可の有効期間
+                      </Text>
+                      <Text fontSize='sm'>
+                        {company.licenseValidFrom?.toLocaleDateString('ja-JP')} 〜{' '}
+                        {company.licenseValidUntil?.toLocaleDateString('ja-JP')}
+                      </Text>
+                    </Box>
+                  )}
+                  {Array.isArray(company.licensedTrades) && company.licensedTrades.length > 0 && (
+                    <Box>
+                      <Text color='gray.400' fontSize='xs' mb={1}>
+                        保有する建設業許可
+                      </Text>
+                      <HStack gap={1} flexWrap='wrap'>
+                        {(company.licensedTrades as { trade: string; level: string }[]).map(
+                          ({ trade, level }) => (
+                            <Badge
+                              key={trade}
+                              colorPalette={level === '特定建設業' ? 'blue' : 'gray'}
+                              variant='subtle'
+                              size='sm'
+                            >
+                              {tradeLabel(trade)}（{level === '特定建設業' ? '特定' : '一般'}）
+                            </Badge>
+                          ),
+                        )}
+                      </HStack>
                     </Box>
                   )}
                   {company.phoneNumber && (
