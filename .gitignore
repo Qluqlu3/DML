@@ -39,6 +39,9 @@ yarn-error.log*
 # 管理者ログイン情報（scripts/prisma/create-admin.ts が生成する平文メモ）
 admin-credentials.local.md
 
+# 管理画面認証の仕組み・セットアップ手順（README外で管理）
+ADMIN.local.md
+
 # vercel
 .vercel
 
