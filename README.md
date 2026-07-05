@@ -15,23 +15,25 @@
 ## 起動
 
 ```bash
-pnpm install
 docker compose up -d
-
-# 初回のみ
-pnpm db:migrate
-pnpm db:seed
 ```
 
-http://localhost:3000
+これだけで DB の起動・マイグレーション適用・シード投入・開発サーバーの起動まで自動で行われる。
+
+`http://localhost:5050`
 
 ### ローカル開発（Docker なし）
 
 `.env` に `DATABASE_URL` を設定して:
 
 ```bash
+pnpm install
+pnpm db:migrate
+pnpm db:seed
 pnpm dev
 ```
+
+`http://localhost:5050`
 
 ## コマンド
 

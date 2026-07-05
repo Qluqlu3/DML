@@ -20,6 +20,8 @@ COPY prisma.config.ts tsconfig.json ./
 
 RUN pnpm exec prisma generate
 
-EXPOSE 3000
+EXPOSE 5050
 
-CMD ["pnpm", "dev"]
+# コンテナ起動時にマイグレーション適用・シード投入まで自動で行う
+# （docker compose up だけでセットアップが完了するように）
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy && (pnpm db:seed || echo 'seed failed, continuing without seed data') && pnpm dev"]

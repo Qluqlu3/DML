@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "5050:5050"
     stdin_open: true
     tty: true
     environment:
@@ -35,6 +35,7 @@ services:
       - ./prisma:/app/prisma
       - ./prisma.config.ts:/app/prisma.config.ts
       - ./public:/app/public
+      - ./data:/app/data
       - ./.env:/app/.env
     depends_on:
       db:
