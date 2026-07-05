@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Box, Button, Container, Grid, GridItem, Heading, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
+import { groupByRegion } from '@/lib/prefecture';
 import { prisma } from '@/lib/prisma';
 
 export const metadata: Metadata = {
@@ -20,9 +21,9 @@ export default async function Home() {
     select: { prefectureName: true },
     distinct: ['prefectureName'],
     where: { prefectureName: { not: null } },
-    orderBy: { prefectureName: 'asc' },
   });
   const prefNames = prefList.map((p) => p.prefectureName).filter(Boolean) as string[];
+  const prefRegions = groupByRegion(prefNames);
 
   return (
     <Box minH='100vh' bg='gray.50'>
@@ -82,10 +83,14 @@ export default async function Home() {
                       }}
                     >
                       <option value=''>都道府県（全て）</option>
-                      {prefNames.map((p) => (
-                        <option key={p} value={p}>
-                          {p}
-                        </option>
+                      {prefRegions.map((region) => (
+                        <optgroup key={region.name} label={region.name}>
+                          {region.prefectures.map((p) => (
+                            <option key={p} value={p}>
+                              {p}
+                            </option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
                     <Button type='submit' colorPalette='orange' size='lg' px={10}>
@@ -99,42 +104,51 @@ export default async function Home() {
         </Box>
 
         {/* 都道府県から探す */}
-        {prefNames.length > 0 && (
+        {prefRegions.length > 0 && (
           <Box py={12}>
             <Container maxW='5xl'>
               <Heading size='lg' mb={6} textAlign='center'>
                 都道府県から探す
               </Heading>
-              <Grid
-                templateColumns={{
-                  base: 'repeat(3, 1fr)',
-                  sm: 'repeat(4, 1fr)',
-                  md: 'repeat(6, 1fr)',
-                  lg: 'repeat(8, 1fr)',
-                }}
-                gap={2}
-              >
-                {prefNames.map((pref) => (
-                  <GridItem key={pref}>
-                    <Link href={`/companies?pref=${encodeURIComponent(pref)}`}>
-                      <Box
-                        textAlign='center'
-                        py={2}
-                        px={1}
-                        borderRadius='md'
-                        borderWidth='1px'
-                        borderColor='gray.200'
-                        bg='white'
-                        fontSize='sm'
-                        _hover={{ borderColor: 'blue.400', bg: 'blue.50', color: 'blue.700' }}
-                        transition='all 0.15s'
-                      >
-                        {pref}
-                      </Box>
-                    </Link>
-                  </GridItem>
+              <VStack gap={6} align='stretch'>
+                {prefRegions.map((region) => (
+                  <Box key={region.name}>
+                    <Text fontSize='sm' fontWeight='bold' color='gray.500' mb={2}>
+                      {region.name}
+                    </Text>
+                    <Grid
+                      templateColumns={{
+                        base: 'repeat(3, 1fr)',
+                        sm: 'repeat(4, 1fr)',
+                        md: 'repeat(6, 1fr)',
+                        lg: 'repeat(8, 1fr)',
+                      }}
+                      gap={2}
+                    >
+                      {region.prefectures.map((pref) => (
+                        <GridItem key={pref}>
+                          <Link href={`/companies?pref=${encodeURIComponent(pref)}`}>
+                            <Box
+                              textAlign='center'
+                              py={2}
+                              px={1}
+                              borderRadius='md'
+                              borderWidth='1px'
+                              borderColor='gray.200'
+                              bg='white'
+                              fontSize='sm'
+                              _hover={{ borderColor: 'blue.400', bg: 'blue.50', color: 'blue.700' }}
+                              transition='all 0.15s'
+                            >
+                              {pref}
+                            </Box>
+                          </Link>
+                        </GridItem>
+                      ))}
+                    </Grid>
+                  </Box>
                 ))}
-              </Grid>
+              </VStack>
             </Container>
           </Box>
         )}
