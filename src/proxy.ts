@@ -45,7 +45,7 @@ function checkIpAllowed(request: NextRequest): boolean {
   return !!clientIp && allowed.includes(clientIp);
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!pathname.startsWith('/admin')) {
