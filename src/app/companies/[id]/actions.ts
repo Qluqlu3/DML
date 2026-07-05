@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { RATING_ITEMS } from '@/lib/reviewRating';
 import { isStructureType } from '@/lib/structureType';
@@ -10,6 +11,9 @@ export type SubmitReviewState = {
   success: boolean;
   error?: string;
 };
+
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1時間
+const RATE_LIMIT_MAX_REVIEWS = 3; // 1時間あたりの投稿上限
 
 function parseRating(formData: FormData, name: string): number | null {
   const value = parseInt(formData.get(name) as string, 10);
@@ -24,6 +28,19 @@ export async function submitReview(
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     return { success: false, error: '口コミの投稿にはログインが必要です' };
+  }
+
+  const recentReviewCount = await prisma.review.count({
+    where: {
+      userId: currentUser.id,
+      createdAt: { gte: new Date(Date.now() - RATE_LIMIT_WINDOW_MS) },
+    },
+  });
+  if (recentReviewCount >= RATE_LIMIT_MAX_REVIEWS) {
+    return {
+      success: false,
+      error: '投稿が多すぎます。しばらく時間をおいてから再度お試しください',
+    };
   }
 
   const ratings = Object.fromEntries(
@@ -45,18 +62,25 @@ export async function submitReview(
     return { success: false, error: '解体した建物の構造を選択してください' };
   }
 
-  await prisma.review.create({
-    data: {
-      companyId,
-      userId: currentUser.id,
-      priceRating: ratings.priceRating as number,
-      serviceRating: ratings.serviceRating as number,
-      qualityRating: ratings.qualityRating as number,
-      structureType,
-      authorName,
-      workYear: workYear && !Number.isNaN(workYear) ? workYear : null,
-    },
-  });
+  try {
+    await prisma.review.create({
+      data: {
+        companyId,
+        userId: currentUser.id,
+        priceRating: ratings.priceRating as number,
+        serviceRating: ratings.serviceRating as number,
+        qualityRating: ratings.qualityRating as number,
+        structureType,
+        authorName,
+        workYear: workYear && !Number.isNaN(workYear) ? workYear : null,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+      return { success: false, error: 'この業者への口コミは既に投稿済みです' };
+    }
+    throw e;
+  }
 
   revalidatePath(`/companies/${companyId}`);
   return { success: true };

@@ -107,7 +107,7 @@ enum StructureType {
 model Review {
   id            Int           @id @default(autoincrement())
   companyId     Int           @map("company_id")
-  userId        Int?          @map("user_id") // nullable（匿名投稿対応）
+  userId        Int?          @map("user_id") // nullable（既存の匿名シードデータ向け。新規投稿は必ずログイン必須）
   authorName    String?       @map("author_name") // 投稿者表示名（未入力=「匿名」）
   priceRating   Int           @map("price_rating") // 価格 1-5
   serviceRating Int           @map("service_rating") // 対応 1-5
@@ -121,6 +121,7 @@ model Review {
   company Company @relation(fields: [companyId], references: [id])
   user    User?   @relation(fields: [userId], references: [id])
 
+  @@unique([companyId, userId]) // 1ユーザー1業者につき口コミは1件まで（userIdがnullの行同士は対象外）
   @@index([companyId])
   @@map("reviews")
 }
