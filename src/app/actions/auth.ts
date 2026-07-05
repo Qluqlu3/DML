@@ -1,5 +1,6 @@
 'use server';
 
+import { loginSchema, registerSchema } from '@/lib/authSchema';
 import { hashPassword, verifyPassword } from '@/lib/password';
 import { prisma } from '@/lib/prisma';
 import { createUserSession, destroyUserSession } from '@/lib/userSession';
@@ -9,9 +10,6 @@ export type AuthState = {
   success?: boolean;
 };
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_PASSWORD_LENGTH = 8;
-
 // ユーザーが存在しない場合もこのダミーハッシュで検証し、
 // 応答時間の差からメールアドレスの存在有無が推測されないようにする
 const DUMMY_HASH = hashPassword('dummy-password-for-constant-time-check');
@@ -20,16 +18,15 @@ export async function registerAction(
   _prevState: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const email = ((formData.get('email') as string) || '').trim().toLowerCase();
-  const name = ((formData.get('name') as string) || '').trim();
-  const password = (formData.get('password') as string) || '';
-
-  if (!EMAIL_RE.test(email)) {
-    return { error: 'メールアドレスの形式が正しくありません' };
+  const parsed = registerSchema.safeParse({
+    email: formData.get('email'),
+    name: formData.get('name'),
+    password: formData.get('password'),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message };
   }
-  if (password.length < MIN_PASSWORD_LENGTH) {
-    return { error: `パスワードは${MIN_PASSWORD_LENGTH}文字以上で入力してください` };
-  }
+  const { email, name, password } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -45,8 +42,11 @@ export async function registerAction(
 }
 
 export async function loginAction(_prevState: AuthState, formData: FormData): Promise<AuthState> {
-  const email = ((formData.get('email') as string) || '').trim().toLowerCase();
-  const password = (formData.get('password') as string) || '';
+  const parsed = loginSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
+  const { email, password } = parsed.success ? parsed.data : { email: '', password: '' };
 
   const user = email ? await prisma.user.findUnique({ where: { email } }) : null;
   const passwordHash = user?.passwordHash ?? DUMMY_HASH;

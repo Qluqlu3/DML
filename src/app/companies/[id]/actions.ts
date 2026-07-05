@@ -3,8 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
-import { RATING_ITEMS } from '@/lib/reviewRating';
-import { isStructureType } from '@/lib/structureType';
+import { reviewSchema } from '@/lib/reviewSchema';
 import { getCurrentUser } from '@/lib/userSession';
 
 export type SubmitReviewState = {
@@ -14,11 +13,6 @@ export type SubmitReviewState = {
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1時間
 const RATE_LIMIT_MAX_REVIEWS = 3; // 1時間あたりの投稿上限
-
-function parseRating(formData: FormData, name: string): number | null {
-  const value = parseInt(formData.get(name) as string, 10);
-  return Number.isInteger(value) && value >= 1 && value <= 5 ? value : null;
-}
 
 export async function submitReview(
   companyId: number,
@@ -43,36 +37,31 @@ export async function submitReview(
     };
   }
 
-  const ratings = Object.fromEntries(
-    RATING_ITEMS.map((item) => [item.name, parseRating(formData, item.name)]),
-  ) as Record<(typeof RATING_ITEMS)[number]['name'], number | null>;
-  const rawAuthorName = ((formData.get('authorName') as string) || '').trim();
-  const authorName = rawAuthorName || currentUser.name || null;
-  const structureType = (formData.get('structureType') as string) || '';
-  const workYearRaw = (formData.get('workYear') as string) || '';
-  const workYear = workYearRaw ? parseInt(workYearRaw, 10) : null;
-
-  // バリデーション
-  for (const item of RATING_ITEMS) {
-    if (!ratings[item.name]) {
-      return { success: false, error: `「${item.label}」の評価（★）を選択してください` };
-    }
+  const parsed = reviewSchema.safeParse({
+    priceRating: formData.get('priceRating'),
+    serviceRating: formData.get('serviceRating'),
+    qualityRating: formData.get('qualityRating'),
+    structureType: formData.get('structureType'),
+    authorName: formData.get('authorName'),
+    workYear: formData.get('workYear'),
+  });
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
   }
-  if (!isStructureType(structureType)) {
-    return { success: false, error: '解体した建物の構造を選択してください' };
-  }
+  const { priceRating, serviceRating, qualityRating, structureType, workYear } = parsed.data;
+  const authorName = parsed.data.authorName || currentUser.name || null;
 
   try {
     await prisma.review.create({
       data: {
         companyId,
         userId: currentUser.id,
-        priceRating: ratings.priceRating as number,
-        serviceRating: ratings.serviceRating as number,
-        qualityRating: ratings.qualityRating as number,
+        priceRating,
+        serviceRating,
+        qualityRating,
         structureType,
         authorName,
-        workYear: workYear && !Number.isNaN(workYear) ? workYear : null,
+        workYear,
       },
     });
   } catch (e) {

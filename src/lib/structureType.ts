@@ -12,7 +12,3 @@ export const STRUCTURE_TYPE_OPTIONS = Object.values(StructureType).map((value) =
   value,
   label: STRUCTURE_TYPE_LABELS[value],
 }));
-
-export function isStructureType(value: string): value is StructureType {
-  return (Object.values(StructureType) as string[]).includes(value);
-}
