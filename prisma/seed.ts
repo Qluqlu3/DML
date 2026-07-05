@@ -12,7 +12,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { Pool } from 'pg';
-import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaClient, StructureType } from '../src/generated/prisma/client';
 
 // ── 開発環境ガード ────────────────────────────────────────────
 if (process.env.NODE_ENV === 'production') {
@@ -91,41 +91,42 @@ async function seedCompanies() {
 // 実行のたびに既存の [dev] 口コミを削除してから再投入する。
 const DEV_REVIEWS = [
   {
-    rating: 5,
-    title: '丁寧な作業でした',
-    body: '担当者の説明が丁寧で、作業も迅速でした。近隣への配慮もあり安心して任せられました。',
-    workType: '木造住宅',
+    priceRating: 5,
+    serviceRating: 5,
+    qualityRating: 5,
+    structureType: StructureType.WOODEN,
     workYear: 2024,
     authorName: '[dev] 山田太郎',
   },
   {
-    rating: 4,
-    title: '料金が適正で安心',
-    body: '見積もりから工事完了まで追加費用なし。最初の見積もり通りで信頼できました。',
-    workType: 'RC造',
+    priceRating: 4,
+    serviceRating: 4,
+    qualityRating: 5,
+    structureType: StructureType.RC,
     workYear: 2023,
     authorName: '[dev] 佐藤花子',
   },
   {
-    rating: 3,
-    title: 'まあまあ',
-    body: '特段問題はなかったが、着工前の連絡がもう少し丁寧だったら良かった。',
-    workType: '鉄骨造',
+    priceRating: 3,
+    serviceRating: 3,
+    qualityRating: 3,
+    structureType: StructureType.STEEL,
     workYear: 2022,
     authorName: '[dev] 匿名',
   },
   {
-    rating: 2,
-    title: '近隣説明が不足',
-    body: '工事は完了したが、着工前の近隣への挨拶が省略されていて苦情があった。改善を望む。',
+    priceRating: 3,
+    serviceRating: 1,
+    qualityRating: 2,
+    structureType: StructureType.LIGHT_STEEL,
     workYear: 2021,
     authorName: '[dev] 鈴木一郎',
   },
   {
-    rating: 1,
-    title: '対応が悪かった',
-    body: '工期が大幅に遅れ、連絡も取りにくかった。費用面でも後から追加請求があり困った。',
-    workType: '解体＋廃材処理',
+    priceRating: 1,
+    serviceRating: 1,
+    qualityRating: 1,
+    structureType: StructureType.OTHER,
     workYear: 2020,
     authorName: '[dev] 高橋次郎',
   },

@@ -54,21 +54,32 @@ model User {
 }
 
 // ─────────────────────────────────────────
+// 解体した建物の構造種別
+// ─────────────────────────────────────────
+enum StructureType {
+  WOODEN      // 木造住宅
+  LIGHT_STEEL // 軽量鉄骨造
+  STEEL       // 鉄骨造
+  RC          // RC造（鉄筋コンクリート）
+  OTHER       // その他
+}
+
+// ─────────────────────────────────────────
 // 口コミ
 // ─────────────────────────────────────────
 model Review {
-  id          Int      @id @default(autoincrement())
-  companyId   Int      @map("company_id")
-  userId      Int?     @map("user_id") // nullable（匿名投稿対応）
-  authorName  String?  @map("author_name") // 投稿者表示名（未入力=「匿名」）
-  rating      Int // 1-5
-  title       String?
-  body        String
-  workType    String?  @map("work_type") // 例: 木造, RC, 解体+廃材処理
-  workYear    Int?     @map("work_year") // 施工年
-  isPublished Boolean  @default(false) @map("is_published")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id            Int           @id @default(autoincrement())
+  companyId     Int           @map("company_id")
+  userId        Int?          @map("user_id") // nullable（匿名投稿対応）
+  authorName    String?       @map("author_name") // 投稿者表示名（未入力=「匿名」）
+  priceRating   Int           @map("price_rating") // 価格 1-5
+  serviceRating Int           @map("service_rating") // 対応 1-5
+  qualityRating Int           @map("quality_rating") // 仕上がり 1-5
+  structureType StructureType @map("structure_type") // 解体した建物の構造
+  workYear      Int?          @map("work_year") // 施工年
+  isPublished   Boolean       @default(false) @map("is_published")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
 
   company Company @relation(fields: [companyId], references: [id])
   user    User?   @relation(fields: [userId], references: [id])
