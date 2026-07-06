@@ -58,6 +58,12 @@ export default async function CompaniesPage({
         ],
       },
       orderBy: { name: 'asc' },
+      include: {
+        reviews: {
+          where: { isPublished: true },
+          select: { priceRating: true, serviceRating: true, qualityRating: true },
+        },
+      },
     }),
   ]);
 
