@@ -1,5 +1,14 @@
-import { Button, HStack, Heading, Input, Text, VStack } from '@chakra-ui/react';
+import { Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
+import { TRADE_OPTIONS } from '@/lib/constructionTrades';
+
+const SELECT_STYLE = {
+  padding: '0.5rem 0.75rem',
+  border: '1px solid #e2e8f0',
+  borderRadius: '0.375rem',
+  background: 'white',
+  minWidth: '160px',
+};
 
 type Props = {
   prefNames: string[];
@@ -7,10 +16,22 @@ type Props = {
   pref?: string;
   phone?: string;
   hasWebsite?: string;
+  address?: string;
+  permitType?: string;
+  trade?: string;
 };
 
-export function SearchForm({ prefNames, q, pref, phone, hasWebsite }: Props) {
-  const hasFilter = !!(q || pref || phone || hasWebsite);
+export function SearchForm({
+  prefNames,
+  q,
+  pref,
+  phone,
+  hasWebsite,
+  address,
+  permitType,
+  trade,
+}: Props) {
+  const hasFilter = !!(q || pref || phone || hasWebsite || address || permitType || trade);
 
   return (
     <form
@@ -35,17 +56,7 @@ export function SearchForm({ prefNames, q, pref, phone, hasWebsite }: Props) {
             minW='200px'
             bg='white'
           />
-          <select
-            name='pref'
-            defaultValue={pref ?? ''}
-            style={{
-              padding: '0.5rem 0.75rem',
-              border: '1px solid #e2e8f0',
-              borderRadius: '0.375rem',
-              background: 'white',
-              minWidth: '160px',
-            }}
-          >
+          <select name='pref' defaultValue={pref ?? ''} style={SELECT_STYLE}>
             <option value=''>都道府県（全て）</option>
             {prefNames.map((p) => (
               <option key={p} value={p}>
@@ -53,6 +64,14 @@ export function SearchForm({ prefNames, q, pref, phone, hasWebsite }: Props) {
               </option>
             ))}
           </select>
+          <Input
+            name='address'
+            defaultValue={address ?? ''}
+            placeholder='住所（市区町村など）'
+            flex='1'
+            minW='200px'
+            bg='white'
+          />
         </HStack>
         <HStack gap={3} flexWrap='wrap'>
           <Input
@@ -62,6 +81,21 @@ export function SearchForm({ prefNames, q, pref, phone, hasWebsite }: Props) {
             maxW='220px'
             bg='white'
           />
+          <select name='permitType' defaultValue={permitType ?? ''} style={SELECT_STYLE}>
+            <option value=''>許可種別（全て）</option>
+            <option value='特定建設業'>特定建設業</option>
+            <option value='一般建設業'>一般建設業</option>
+          </select>
+          <select name='trade' defaultValue={trade ?? ''} style={SELECT_STYLE}>
+            <option value=''>保有する建設業許可（全て）</option>
+            {TRADE_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </HStack>
+        <HStack gap={3} flexWrap='wrap'>
           <HStack
             as='label'
             gap={2}

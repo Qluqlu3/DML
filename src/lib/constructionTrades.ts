@@ -34,3 +34,8 @@ export const TRADE_LABELS: Record<string, string> = {
 export function tradeLabel(code: string): string {
   return TRADE_LABELS[code] ?? code;
 }
+
+export const TRADE_OPTIONS = Object.entries(TRADE_LABELS).map(([value, label]) => ({
+  value,
+  label,
+}));

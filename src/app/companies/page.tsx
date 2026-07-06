@@ -8,20 +8,28 @@ import { SearchForm } from './_components/SearchForm';
 export const metadata: Metadata = {
   title: '解体業者を探す | DML',
   description:
-    '全国の解体業者を都道府県・業者名・電話番号で検索。口コミや評判も確認しながら比較検討できます。',
+    '全国の解体業者を都道府県・業者名・住所・電話番号・許可種別・保有する建設業許可で検索。口コミや評判も確認しながら比較検討できます。',
   openGraph: {
     title: '解体業者を探す | DML',
     description:
-      '全国の解体業者を都道府県・業者名・電話番号で検索。口コミや評判も確認しながら比較検討できます。',
+      '全国の解体業者を都道府県・業者名・住所・電話番号・許可種別・保有する建設業許可で検索。口コミや評判も確認しながら比較検討できます。',
   },
 };
 
 export default async function CompaniesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; pref?: string; phone?: string; hasWebsite?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    pref?: string;
+    phone?: string;
+    hasWebsite?: string;
+    address?: string;
+    permitType?: string;
+    trade?: string;
+  }>;
 }) {
-  const { q, pref, phone, hasWebsite } = await searchParams;
+  const { q, pref, phone, hasWebsite, address, permitType, trade } = await searchParams;
 
   const [prefList, companies] = await Promise.all([
     prisma.company.findMany({
@@ -44,6 +52,9 @@ export default async function CompaniesPage({
             : {},
           phone ? { phoneNumber: { contains: phone, mode: 'insensitive' } } : {},
           hasWebsite === '1' ? { websiteUrl: { not: null } } : {},
+          address ? { addressFull: { contains: address, mode: 'insensitive' } } : {},
+          permitType ? { permitType } : {},
+          trade ? { licensedTrades: { array_contains: [{ trade }] } } : {},
         ],
       },
       orderBy: { name: 'asc' },
@@ -63,6 +74,9 @@ export default async function CompaniesPage({
             pref={pref}
             phone={phone}
             hasWebsite={hasWebsite}
+            address={address}
+            permitType={permitType}
+            trade={trade}
           />
           <CompanyGrid companies={companies} />
         </Container>
