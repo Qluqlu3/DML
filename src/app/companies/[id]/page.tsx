@@ -62,7 +62,8 @@ export default async function CompanyDetailPage({
   const companyId = parseInt(id, 10);
   if (Number.isNaN(companyId)) notFound();
 
-  const [company, currentUser] = await Promise.all([
+  const currentUser = await getCurrentUser();
+  const [company, myReview] = await Promise.all([
     prisma.company.findUnique({
       where: { id: companyId },
       include: {
@@ -72,7 +73,20 @@ export default async function CompanyDetailPage({
         },
       },
     }),
-    getCurrentUser(),
+    currentUser
+      ? prisma.review.findUnique({
+          where: { companyId_userId: { companyId, userId: currentUser.id } },
+          select: {
+            priceRating: true,
+            serviceRating: true,
+            qualityRating: true,
+            structureType: true,
+            workYear: true,
+            authorName: true,
+            isPublished: true,
+          },
+        })
+      : Promise.resolve(null),
   ]);
 
   if (!company) notFound();
@@ -229,6 +243,7 @@ export default async function CompanyDetailPage({
                     currentUser={
                       currentUser ? { name: currentUser.name, email: currentUser.email } : null
                     }
+                    myReview={myReview}
                   />
                 </HStack>
 

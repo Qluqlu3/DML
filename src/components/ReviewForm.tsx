@@ -6,20 +6,33 @@ import { useActionState, useState } from 'react';
 import { type SubmitReviewState, submitReview } from '@/app/companies/[id]/actions';
 import { AuthModal } from '@/components/AuthModal';
 import { StarRatingInput } from '@/components/StarRatingInput';
+import type { StructureType } from '@/generated/prisma/client';
 import { RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
 
 const currentYear = new Date().getFullYear();
 const WORK_YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
+type MyReview = {
+  priceRating: number;
+  serviceRating: number;
+  qualityRating: number;
+  structureType: StructureType;
+  workYear: number | null;
+  authorName: string | null;
+  isPublished: boolean;
+};
+
 type Props = {
   companyId: number;
   currentUser: { name: string | null; email: string } | null;
+  myReview: MyReview | null;
 };
 
 const initialState: SubmitReviewState = { success: false };
 
-export function ReviewForm({ companyId, currentUser }: Props) {
+export function ReviewForm({ companyId, currentUser, myReview }: Props) {
+  const isEdit = myReview !== null;
   const [open, setOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register' | null>(null);
   const router = useRouter();
@@ -38,10 +51,10 @@ export function ReviewForm({ companyId, currentUser }: Props) {
         textAlign='center'
       >
         <Text color='green.700' fontWeight='bold'>
-          口コミを投稿しました！
+          {state.updated ? '口コミを更新しました！' : '口コミを投稿しました！'}
         </Text>
         <Text fontSize='sm' color='green.600' mt={1}>
-          ご協力ありがとうございます
+          {state.updated ? '運営の再承認後に公開されます' : 'ご協力ありがとうございます'}
         </Text>
       </Box>
     );
@@ -68,7 +81,7 @@ export function ReviewForm({ companyId, currentUser }: Props) {
   if (!open) {
     return (
       <Button colorPalette='orange' size='sm' onClick={() => setOpen(true)}>
-        口コミを書く
+        {isEdit ? '自分の口コミを編集する' : '口コミを書く'}
       </Button>
     );
   }
@@ -85,7 +98,7 @@ export function ReviewForm({ companyId, currentUser }: Props) {
       }}
     >
       <Heading size='sm' mb={4} color='gray.700'>
-        口コミを投稿する
+        {isEdit ? '口コミを編集する' : '口コミを投稿する'}
       </Heading>
 
       <VStack gap={4} align='stretch'>
@@ -103,7 +116,11 @@ export function ReviewForm({ companyId, currentUser }: Props) {
             >
               {item.label} <span style={{ color: '#e53e3e' }}>*</span>
             </Text>
-            <StarRatingInput name={item.name} label={item.label} />
+            <StarRatingInput
+              name={item.name}
+              label={item.label}
+              defaultValue={myReview?.[item.name]}
+            />
           </Box>
         ))}
 
@@ -125,7 +142,7 @@ export function ReviewForm({ companyId, currentUser }: Props) {
               id='structureType'
               name='structureType'
               required
-              defaultValue=''
+              defaultValue={myReview?.structureType ?? ''}
               style={{
                 width: '100%',
                 padding: '8px 12px',
@@ -161,6 +178,7 @@ export function ReviewForm({ companyId, currentUser }: Props) {
             <select
               id='workYear'
               name='workYear'
+              defaultValue={myReview?.workYear ?? ''}
               style={{
                 width: '100%',
                 padding: '8px 12px',
@@ -201,6 +219,7 @@ export function ReviewForm({ companyId, currentUser }: Props) {
             name='authorName'
             type='text'
             autoComplete='nickname'
+            defaultValue={myReview?.authorName ?? ''}
             placeholder={currentUser.name || '匿名'}
             maxLength={50}
             style={{
@@ -214,6 +233,12 @@ export function ReviewForm({ companyId, currentUser }: Props) {
             }}
           />
         </Box>
+
+        {isEdit && (
+          <Text fontSize='xs' color='gray.500'>
+            更新した内容は運営の再承認後に公開されます。承認までは一覧に表示されません。
+          </Text>
+        )}
 
         {/* エラー表示 */}
         {state.error && (
@@ -236,7 +261,7 @@ export function ReviewForm({ companyId, currentUser }: Props) {
             キャンセル
           </Button>
           <Button type='submit' colorPalette='orange' size='sm' loading={isPending}>
-            投稿する
+            {isEdit ? '更新する' : '投稿する'}
           </Button>
         </Box>
       </VStack>

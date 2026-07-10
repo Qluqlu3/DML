@@ -1,13 +1,13 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { reviewSchema } from '@/lib/reviewSchema';
 import { getCurrentUser } from '@/lib/userSession';
 
 export type SubmitReviewState = {
   success: boolean;
+  updated?: boolean;
   error?: string;
 };
 
@@ -24,10 +24,19 @@ export async function submitReview(
     return { success: false, error: '口コミの投稿にはログインが必要です' };
   }
 
+  const existingReview = await prisma.review.findUnique({
+    where: { companyId_userId: { companyId, userId: currentUser.id } },
+    select: { id: true },
+  });
+
+  const rateLimitWindowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
   const recentReviewCount = await prisma.review.count({
     where: {
       userId: currentUser.id,
-      createdAt: { gte: new Date(Date.now() - RATE_LIMIT_WINDOW_MS) },
+      OR: [
+        { createdAt: { gte: rateLimitWindowStart } },
+        { editedAt: { gte: rateLimitWindowStart } },
+      ],
     },
   });
   if (recentReviewCount >= RATE_LIMIT_MAX_REVIEWS) {
@@ -51,26 +60,30 @@ export async function submitReview(
   const { priceRating, serviceRating, qualityRating, structureType, workYear } = parsed.data;
   const authorName = parsed.data.authorName || currentUser.name || null;
 
-  try {
-    await prisma.review.create({
-      data: {
-        companyId,
-        userId: currentUser.id,
-        priceRating,
-        serviceRating,
-        qualityRating,
-        structureType,
-        authorName,
-        workYear,
-      },
-    });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
-      return { success: false, error: 'この業者への口コミは既に投稿済みです' };
-    }
-    throw e;
-  }
+  await prisma.review.upsert({
+    where: { companyId_userId: { companyId, userId: currentUser.id } },
+    create: {
+      companyId,
+      userId: currentUser.id,
+      priceRating,
+      serviceRating,
+      qualityRating,
+      structureType,
+      authorName,
+      workYear,
+    },
+    update: {
+      priceRating,
+      serviceRating,
+      qualityRating,
+      structureType,
+      authorName,
+      workYear,
+      isPublished: false,
+      editedAt: new Date(),
+    },
+  });
 
   revalidatePath(`/companies/${companyId}`);
-  return { success: true };
+  return { success: true, updated: existingReview !== null };
 }
