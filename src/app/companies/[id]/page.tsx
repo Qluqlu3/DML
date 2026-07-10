@@ -329,7 +329,9 @@ export default async function CompanyDetailPage({
                             </Text>
                           </HStack>
                           <Text fontSize='xs' color='gray.400'>
-                            {review.createdAt.toLocaleDateString('ja-JP')}
+                            {review.createdAt.toLocaleDateString('ja-JP')}投稿
+                            {review.editedAt &&
+                              `（${review.editedAt.toLocaleDateString('ja-JP')}更新）`}
                           </Text>
                         </HStack>
                         <HStack gap={4} flexWrap='wrap' mb={2}>
