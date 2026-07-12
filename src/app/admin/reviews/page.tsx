@@ -1,14 +1,29 @@
+import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { overallRating, RATING_ITEMS } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_LABELS } from '@/lib/structureType';
 import { logoutAction } from '../login/actions';
 import { ReviewActions } from './ReviewActions';
 
-export default async function AdminReviewsPage() {
+const PAGE_SIZE = 20;
+
+export default async function AdminReviewsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+
+  const totalCount = await prisma.review.count({ where: { isPublished: false } });
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const page = Math.min(Math.max(1, Number.parseInt(pageParam ?? '1', 10) || 1), totalPages);
+
   const reviews = await prisma.review.findMany({
     where: { isPublished: false },
     include: { company: { select: { id: true, name: true } } },
     orderBy: { createdAt: 'desc' },
+    skip: (page - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
   });
 
   return (
@@ -25,7 +40,7 @@ export default async function AdminReviewsPage() {
           <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#1a202c', margin: 0 }}>
             承認待ちレビュー
           </h1>
-          <p style={{ fontSize: '14px', color: '#718096', marginTop: '4px' }}>{reviews.length}件</p>
+          <p style={{ fontSize: '14px', color: '#718096', marginTop: '4px' }}>{totalCount}件</p>
         </div>
         <form action={logoutAction}>
           <button
@@ -146,6 +161,52 @@ export default async function AdminReviewsPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '12px',
+            marginTop: '24px',
+          }}
+        >
+          <Link
+            href={`/admin/reviews?page=${page - 1}`}
+            aria-disabled={page <= 1}
+            style={{
+              padding: '6px 14px',
+              border: '1px solid #cbd5e0',
+              borderRadius: '6px',
+              fontSize: '13px',
+              color: page <= 1 ? '#cbd5e0' : '#4a5568',
+              pointerEvents: page <= 1 ? 'none' : 'auto',
+              textDecoration: 'none',
+            }}
+          >
+            ← 前へ
+          </Link>
+          <span style={{ fontSize: '13px', color: '#718096' }}>
+            {page} / {totalPages}
+          </span>
+          <Link
+            href={`/admin/reviews?page=${page + 1}`}
+            aria-disabled={page >= totalPages}
+            style={{
+              padding: '6px 14px',
+              border: '1px solid #cbd5e0',
+              borderRadius: '6px',
+              fontSize: '13px',
+              color: page >= totalPages ? '#cbd5e0' : '#4a5568',
+              pointerEvents: page >= totalPages ? 'none' : 'auto',
+              textDecoration: 'none',
+            }}
+          >
+            次へ →
+          </Link>
         </div>
       )}
     </div>
