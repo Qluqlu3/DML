@@ -1,9 +1,13 @@
 import { Box, Container } from '@chakra-ui/react';
 import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { CompanyGrid } from './_components/CompanyGrid';
+import { Pagination } from './_components/Pagination';
 import { SearchForm } from './_components/SearchForm';
+
+const PAGE_SIZE = 24;
 
 export const metadata: Metadata = {
   title: '解体業者を探す | DML',
@@ -27,45 +31,64 @@ export default async function CompaniesPage({
     address?: string;
     permitType?: string;
     trade?: string;
+    page?: string;
   }>;
 }) {
-  const { q, pref, phone, hasWebsite, address, permitType, trade } = await searchParams;
+  const {
+    q,
+    pref,
+    phone,
+    hasWebsite,
+    address,
+    permitType,
+    trade,
+    page: pageParam,
+  } = await searchParams;
 
-  const [prefList, companies] = await Promise.all([
+  const where: Prisma.CompanyWhereInput = {
+    AND: [
+      pref ? { prefectureName: pref } : {},
+      q
+        ? {
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { furigana: { contains: q, mode: 'insensitive' } },
+            ],
+          }
+        : {},
+      phone ? { phoneNumber: { contains: phone, mode: 'insensitive' } } : {},
+      hasWebsite === '1' ? { websiteUrl: { not: null } } : {},
+      address ? { addressFull: { contains: address, mode: 'insensitive' } } : {},
+      permitType ? { permitType } : {},
+      trade ? { licensedTrades: { array_contains: [{ trade }] } } : {},
+    ],
+  };
+
+  const [prefList, totalCount] = await Promise.all([
     prisma.company.findMany({
       select: { prefectureName: true },
       distinct: ['prefectureName'],
       where: { prefectureName: { not: null } },
       orderBy: { prefectureName: 'asc' },
     }),
-    prisma.company.findMany({
-      where: {
-        AND: [
-          pref ? { prefectureName: pref } : {},
-          q
-            ? {
-                OR: [
-                  { name: { contains: q, mode: 'insensitive' } },
-                  { furigana: { contains: q, mode: 'insensitive' } },
-                ],
-              }
-            : {},
-          phone ? { phoneNumber: { contains: phone, mode: 'insensitive' } } : {},
-          hasWebsite === '1' ? { websiteUrl: { not: null } } : {},
-          address ? { addressFull: { contains: address, mode: 'insensitive' } } : {},
-          permitType ? { permitType } : {},
-          trade ? { licensedTrades: { array_contains: [{ trade }] } } : {},
-        ],
-      },
-      orderBy: { name: 'asc' },
-      include: {
-        reviews: {
-          where: { isPublished: true },
-          select: { priceRating: true, serviceRating: true, qualityRating: true },
-        },
-      },
-    }),
+    prisma.company.count({ where }),
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const page = Math.min(Math.max(1, Number.parseInt(pageParam ?? '1', 10) || 1), totalPages);
+
+  const companies = await prisma.company.findMany({
+    where,
+    orderBy: { name: 'asc' },
+    include: {
+      reviews: {
+        where: { isPublished: true },
+        select: { priceRating: true, serviceRating: true, qualityRating: true },
+      },
+    },
+    skip: (page - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+  });
 
   const prefNames = prefList.map((p) => p.prefectureName).filter(Boolean) as string[];
 
@@ -84,7 +107,12 @@ export default async function CompaniesPage({
             permitType={permitType}
             trade={trade}
           />
-          <CompanyGrid companies={companies} />
+          <CompanyGrid companies={companies} totalCount={totalCount} />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            searchParams={{ q, pref, phone, hasWebsite, address, permitType, trade }}
+          />
         </Container>
       </Box>
     </Box>

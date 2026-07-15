@@ -10,9 +10,10 @@ type CompanyWithReviews = CompanyModel & {
 
 type Props = {
   companies: CompanyWithReviews[];
+  totalCount: number;
 };
 
-export function CompanyGrid({ companies }: Props) {
+export function CompanyGrid({ companies, totalCount }: Props) {
   if (companies.length === 0) {
     return (
       <Box textAlign='center' py={20} color='gray.500'>
@@ -24,7 +25,7 @@ export function CompanyGrid({ companies }: Props) {
   return (
     <>
       <Text mb={4} color='gray.600' fontSize='sm'>
-        {companies.length.toLocaleString()} 件
+        {totalCount.toLocaleString()} 件
       </Text>
 
       <Grid
