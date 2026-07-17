@@ -124,5 +124,6 @@ model Review {
 
   @@unique([companyId, userId]) // 1ユーザー1業者につき口コミは1件まで（userIdがnullの行同士は対象外）
   @@index([companyId])
+  @@index([userId]) // レート制限判定(userId単体での件数カウント)用。(companyId, userId)の複合indexは先頭列companyIdからしか使えない
   @@map("reviews")
 }
