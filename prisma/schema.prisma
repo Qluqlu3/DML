@@ -90,6 +90,27 @@ model AdminUser {
   @@map("admin_users")
 }
 
+enum AuthAttemptType {
+  LOGIN
+  REGISTER
+}
+
+// ─────────────────────────────────────────
+// ログイン・会員登録の試行ログ（レート制限用）
+// 期間で刈り取るバッチは未実装のため、蓄積量が問題になる場合は別途クリーンアップが必要
+// ─────────────────────────────────────────
+model AuthAttempt {
+  id        Int             @id @default(autoincrement())
+  type      AuthAttemptType
+  ip        String? // X-Forwarded-For由来。信頼できるリバースプロキシが手前に無い構成では偽装され得る
+  email     String?
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  @@index([type, ip, createdAt])
+  @@index([type, email, createdAt])
+  @@map("auth_attempts")
+}
+
 // ─────────────────────────────────────────
 // 解体した建物の構造種別
 // ─────────────────────────────────────────
