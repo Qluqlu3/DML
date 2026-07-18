@@ -14,12 +14,14 @@ export default async function AdminReviewsPage({
 }) {
   const { page: pageParam } = await searchParams;
 
-  const totalCount = await prisma.review.count({ where: { isPublished: false } });
+  const pendingWhere = { isPublished: false, rejectedAt: null } as const;
+
+  const totalCount = await prisma.review.count({ where: pendingWhere });
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const page = Math.min(Math.max(1, Number.parseInt(pageParam ?? '1', 10) || 1), totalPages);
 
   const reviews = await prisma.review.findMany({
-    where: { isPublished: false },
+    where: pendingWhere,
     include: { company: { select: { id: true, name: true } } },
     orderBy: { createdAt: 'desc' },
     skip: (page - 1) * PAGE_SIZE,

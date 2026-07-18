@@ -21,6 +21,8 @@ type MyReview = {
   workYear: number | null;
   authorName: string | null;
   isPublished: boolean;
+  rejectedAt: Date | null;
+  rejectionReason: string | null;
 };
 
 type Props = {
@@ -78,11 +80,30 @@ export function ReviewForm({ companyId, currentUser, myReview }: Props) {
     );
   }
 
+  const rejectionBanner = myReview?.rejectedAt ? (
+    <Box p={3} borderRadius='md' bg='red.50' borderWidth='1px' borderColor='red.200' maxW='sm'>
+      <Text fontSize='sm' color='red.700' fontWeight='bold'>
+        口コミが非公開になりました
+      </Text>
+      {myReview.rejectionReason && (
+        <Text fontSize='sm' color='red.600' mt={1}>
+          理由: {myReview.rejectionReason}
+        </Text>
+      )}
+      <Text fontSize='xs' color='red.500' mt={1}>
+        内容を編集して再度投稿すると、運営が再度確認します
+      </Text>
+    </Box>
+  ) : null;
+
   if (!open) {
     return (
-      <Button colorPalette='orange' size='sm' onClick={() => setOpen(true)}>
-        {isEdit ? '自分の口コミを編集する' : '口コミを書く'}
-      </Button>
+      <VStack align='end' gap={2}>
+        {rejectionBanner}
+        <Button colorPalette='orange' size='sm' onClick={() => setOpen(true)}>
+          {isEdit ? '自分の口コミを編集する' : '口コミを書く'}
+        </Button>
+      </VStack>
     );
   }
 
@@ -102,6 +123,7 @@ export function ReviewForm({ companyId, currentUser, myReview }: Props) {
       </Heading>
 
       <VStack gap={4} align='stretch'>
+        {rejectionBanner}
         {/* 項目別評価 */}
         {RATING_ITEMS.map((item) => (
           <Box key={item.name}>

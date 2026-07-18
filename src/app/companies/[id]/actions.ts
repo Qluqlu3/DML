@@ -99,6 +99,8 @@ export async function submitReview(
             authorName,
             workYear,
             isPublished: false,
+            rejectedAt: null,
+            rejectionReason: null,
             editedAt: new Date(),
           },
         });

@@ -126,19 +126,21 @@ enum StructureType {
 // 口コミ
 // ─────────────────────────────────────────
 model Review {
-  id            Int           @id @default(autoincrement())
-  companyId     Int           @map("company_id")
-  userId        Int?          @map("user_id") // nullable（既存の匿名シードデータ向け。新規投稿は必ずログイン必須）
-  authorName    String?       @map("author_name") // 投稿者表示名（未入力=「匿名」）
-  priceRating   Int           @map("price_rating") // 価格 1-5
-  serviceRating Int           @map("service_rating") // 対応 1-5
-  qualityRating Int           @map("quality_rating") // 仕上がり 1-5
-  structureType StructureType @map("structure_type") // 解体した建物の構造
-  workYear      Int?          @map("work_year") // 施工年
-  isPublished   Boolean       @default(false) @map("is_published")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
-  editedAt      DateTime?     @map("edited_at") // ユーザーが編集した日時（承認操作では更新しない）
+  id              Int           @id @default(autoincrement())
+  companyId       Int           @map("company_id")
+  userId          Int?          @map("user_id") // nullable（既存の匿名シードデータ向け。新規投稿は必ずログイン必須）
+  authorName      String?       @map("author_name") // 投稿者表示名（未入力=「匿名」）
+  priceRating     Int           @map("price_rating") // 価格 1-5
+  serviceRating   Int           @map("service_rating") // 対応 1-5
+  qualityRating   Int           @map("quality_rating") // 仕上がり 1-5
+  structureType   StructureType @map("structure_type") // 解体した建物の構造
+  workYear        Int?          @map("work_year") // 施工年
+  isPublished     Boolean       @default(false) @map("is_published")
+  rejectedAt      DateTime?     @map("rejected_at") // 却下日時（nullなら却下されていない。削除はしない）
+  rejectionReason String?       @map("rejection_reason") // 却下理由（投稿者に表示する）
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  editedAt        DateTime?     @map("edited_at") // ユーザーが編集した日時（承認操作では更新しない）
 
   company Company @relation(fields: [companyId], references: [id])
   user    User?   @relation(fields: [userId], references: [id])

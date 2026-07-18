@@ -84,6 +84,8 @@ export default async function CompanyDetailPage({
             workYear: true,
             authorName: true,
             isPublished: true,
+            rejectedAt: true,
+            rejectionReason: true,
           },
         })
       : Promise.resolve(null),
