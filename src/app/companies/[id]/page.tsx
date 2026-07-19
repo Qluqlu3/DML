@@ -19,6 +19,7 @@ import type { StructureType } from '@/generated/prisma/client';
 import { tradeLabel } from '@/lib/constructionTrades';
 import { prisma } from '@/lib/prisma';
 import { overallRating, RATING_ITEMS } from '@/lib/reviewRating';
+import { SITE_URL } from '@/lib/siteUrl';
 import { STRUCTURE_TYPE_LABELS, STRUCTURE_TYPE_OPTIONS } from '@/lib/structureType';
 import { getCurrentUser } from '@/lib/userSession';
 
@@ -118,8 +119,55 @@ export default async function CompanyDetailPage({
     return count > 0 ? [{ type: value, label, count }] : [];
   });
 
+  // 検索結果でのリッチスニペット表示のためのJSON-LD構造化データ
+  // https://schema.org/LocalBusiness / https://schema.org/AggregateRating
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': ['LocalBusiness', 'GeneralContractor'],
+    name: company.name,
+    url: `${SITE_URL}/companies/${company.id}`,
+    telephone: company.phoneNumber ?? undefined,
+    sameAs: company.websiteUrl ?? undefined,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'JP',
+      addressRegion: company.prefectureName ?? undefined,
+      postalCode: company.postCode ?? undefined,
+      streetAddress: company.addressFull ?? undefined,
+    },
+    aggregateRating:
+      avgRating !== null
+        ? {
+            '@type': 'AggregateRating',
+            ratingValue: Number(avgRating.toFixed(1)),
+            reviewCount: company.reviews.length,
+            bestRating: 5,
+            worstRating: 1,
+          }
+        : undefined,
+    review:
+      reviewsWithOverall.length > 0
+        ? reviewsWithOverall.map((r) => ({
+            '@type': 'Review',
+            author: { '@type': 'Person', name: r.authorName ?? '匿名' },
+            datePublished: r.createdAt.toISOString(),
+            reviewRating: {
+              '@type': 'Rating',
+              ratingValue: Number(r.overall.toFixed(1)),
+              bestRating: 5,
+              worstRating: 1,
+            },
+          }))
+        : undefined,
+  };
+
   return (
     <Box minH='100vh' bg='gray.100'>
+      <script
+        type='application/ld+json'
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD埋め込みの定石(`<`はエスケープ済み)
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <Header />
 
       {/* パンくず */}
