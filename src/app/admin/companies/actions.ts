@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getCurrentAdmin } from '@/lib/adminSession';
 import { prisma } from '@/lib/prisma';
 
 export type UpdateWebsiteState = {
@@ -13,6 +14,10 @@ export async function updateCompanyWebsite(
   _prevState: UpdateWebsiteState,
   formData: FormData,
 ): Promise<UpdateWebsiteState> {
+  if (!(await getCurrentAdmin())) {
+    return { success: false, error: '管理者としてログインしてください' };
+  }
+
   const raw = ((formData.get('websiteUrl') as string) || '').trim();
 
   let websiteUrl: string | null = null;
