@@ -87,7 +87,24 @@ model AdminUser {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
+  sessions AdminSession[]
+
   @@map("admin_users")
+}
+
+// ─────────────────────────────────────────
+// 管理者ログインセッション
+// ─────────────────────────────────────────
+model AdminSession {
+  token       String   @id // ランダムな256bitトークン。cookieの値そのもの
+  adminUserId Int      @map("admin_user_id")
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@map("admin_sessions")
 }
 
 enum AuthAttemptType {
