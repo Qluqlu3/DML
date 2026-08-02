@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 const ADMIN_SESSION_COOKIE = 'admin_session';
 const ADMIN_LOGIN_PATH = '/admin/login';
@@ -45,7 +46,7 @@ function checkIpAllowed(request: NextRequest): boolean {
   return !!clientIp && allowed.includes(clientIp);
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!pathname.startsWith('/admin')) {
@@ -67,8 +68,12 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = request.cookies.get(ADMIN_SESSION_COOKIE);
-  if (!session?.value) {
+  const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+  const session = token
+    ? await prisma.adminSession.findUnique({ where: { token } }).catch(() => null)
+    : null;
+
+  if (!session || session.expiresAt < new Date()) {
     const loginUrl = new URL(ADMIN_LOGIN_PATH, request.url);
     return NextResponse.redirect(loginUrl);
   }
