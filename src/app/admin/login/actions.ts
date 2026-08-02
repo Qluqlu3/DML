@@ -1,12 +1,10 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { createAdminSession, destroyAdminSession } from '@/lib/adminSession';
 import { hashPassword, verifyPassword } from '@/lib/password';
 import { prisma } from '@/lib/prisma';
 
-const ADMIN_SESSION_COOKIE = 'admin_session';
-const SESSION_VALUE = 'authenticated';
 const GENERIC_ERROR = 'IDまたはパスワードが違います';
 
 // ユーザーが存在しない場合もこのダミーハッシュで検証し、
@@ -21,24 +19,16 @@ export async function loginAction(formData: FormData) {
   const passwordHash = user?.passwordHash ?? DUMMY_HASH;
   const isValid = verifyPassword(password, passwordHash) && user !== null;
 
-  if (!isValid) {
+  if (!isValid || !user) {
     return { error: GENERIC_ERROR };
   }
 
-  const cookieStore = await cookies();
-  cookieStore.set(ADMIN_SESSION_COOKIE, SESSION_VALUE, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 8, // 8時間
-  });
+  await createAdminSession(user.id);
 
   redirect('/admin/reviews');
 }
 
 export async function logoutAction() {
-  const cookieStore = await cookies();
-  cookieStore.delete(ADMIN_SESSION_COOKIE);
+  await destroyAdminSession();
   redirect('/admin/login');
 }
