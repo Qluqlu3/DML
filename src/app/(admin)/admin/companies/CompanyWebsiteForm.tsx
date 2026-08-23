@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
-import { updateCompanyWebsite, type UpdateWebsiteState } from './actions';
+import { type UpdateWebsiteState, updateCompanyWebsite } from './actions';
 
 const initialState: UpdateWebsiteState = { success: false };
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Provider } from '@/components/ui/provider';
-import './globals.css';
+import '../globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -18,7 +18,8 @@ export const metadata: Metadata = {
   description: '全国の解体業者を検索・比較・口コミで評価できるサービス',
 };
 
-export default function RootLayout({
+// 公開サイト側のルートレイアウト。管理画面は `(admin)` 側に独立したルートレイアウトを持つ。
+export default function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

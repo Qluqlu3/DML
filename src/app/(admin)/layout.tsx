@@ -1,3 +1,13 @@
+import type { Metadata } from 'next';
+
+// 管理画面は公開サイトとは全く別のUI（Chakra UIもWebフォントも使わない）なので、
+// ルートグループ `(admin)` 側のルートレイアウトとして独立した文書を持つ。
+export const metadata: Metadata = {
+  title: 'DML 管理画面',
+  // robots.tsでも /admin を拒否しているが、metaタグ側でも明示しておく
+  robots: { index: false, follow: false },
+};
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='ja'>

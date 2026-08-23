@@ -3,7 +3,7 @@
 import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useActionState, useState } from 'react';
-import { type SubmitReviewState, submitReview } from '@/app/companies/[id]/actions';
+import { type SubmitReviewState, submitReview } from '@/app/(site)/companies/[id]/actions';
 import { AuthModal } from '@/components/AuthModal';
 import { StarRatingInput } from '@/components/StarRatingInput';
 import type { StructureType } from '@/generated/prisma/client';
