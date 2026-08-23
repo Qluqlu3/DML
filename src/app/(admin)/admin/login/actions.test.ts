@@ -36,7 +36,7 @@ describe('loginAction', () => {
   });
 
   it('正しい認証情報の場合、DB管理のセッションを作成してリダイレクトする', async () => {
-    const passwordHash = hashPassword('correct-password');
+    const passwordHash = await hashPassword('correct-password');
     vi.mocked(prisma.adminUser.findUnique).mockResolvedValue({
       id: 42,
       username: 'admin',
@@ -52,7 +52,7 @@ describe('loginAction', () => {
   });
 
   it('パスワードが違う場合はセッションを作成せずエラーを返す', async () => {
-    const passwordHash = hashPassword('correct-password');
+    const passwordHash = await hashPassword('correct-password');
     vi.mocked(prisma.adminUser.findUnique).mockResolvedValue({
       id: 42,
       username: 'admin',

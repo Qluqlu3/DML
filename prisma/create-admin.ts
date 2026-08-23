@@ -54,7 +54,7 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const password = generatePassword(PASSWORD_LENGTH);
-  const passwordHash = hashPassword(password);
+  const passwordHash = await hashPassword(password);
 
   const user = await prisma.adminUser.upsert({
     where: { username: USERNAME },

@@ -3,7 +3,7 @@
 import { headers } from 'next/headers';
 import { AuthAttemptType } from '@/generated/prisma/enums';
 import { loginSchema, registerSchema } from '@/lib/authSchema';
-import { hashPassword, verifyPassword } from '@/lib/password';
+import { dummyPasswordHash, hashPassword, verifyPassword } from '@/lib/password';
 import { prisma } from '@/lib/prisma';
 import { createUserSession, destroyUserSession } from '@/lib/userSession';
 
@@ -11,10 +11,6 @@ export type AuthState = {
   error?: string;
   success?: boolean;
 };
-
-// ユーザーが存在しない場合もこのダミーハッシュで検証し、
-// 応答時間の差からメールアドレスの存在有無が推測されないようにする
-const DUMMY_HASH = hashPassword('dummy-password-for-constant-time-check');
 
 const RATE_LIMIT_ERROR = 'しばらく時間をおいてから再度お試しください';
 
@@ -89,7 +85,7 @@ export async function registerAction(
   }
 
   const user = await prisma.user.create({
-    data: { email, name: name || null, passwordHash: hashPassword(password) },
+    data: { email, name: name || null, passwordHash: await hashPassword(password) },
   });
 
   await createUserSession(user.id);
@@ -117,8 +113,8 @@ export async function loginAction(_prevState: AuthState, formData: FormData): Pr
   }
 
   const user = email ? await prisma.user.findUnique({ where: { email } }) : null;
-  const passwordHash = user?.passwordHash ?? DUMMY_HASH;
-  const isValid = verifyPassword(password, passwordHash) && user !== null;
+  const passwordHash = user?.passwordHash ?? (await dummyPasswordHash());
+  const isValid = (await verifyPassword(password, passwordHash)) && user !== null;
 
   if (!isValid) {
     return { error: 'メールアドレスまたはパスワードが違います' };
