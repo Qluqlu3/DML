@@ -5,3 +5,4 @@ node_modules
 data/raw
 *.log
 npm-debug.log*
+aws-arch-sim

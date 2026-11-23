@@ -48,7 +48,8 @@
       "!node_modules",
       "!src/generated",
       "!prisma/migrations",
-      "!data/processed"
+      "!data/processed",
+      "!aws-arch-sim"
     ]
   }
 }
