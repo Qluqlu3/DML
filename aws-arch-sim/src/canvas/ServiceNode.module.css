@@ -2,30 +2,43 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  width: 112px;
-  min-height: 84px;
-  padding: 8px 6px 6px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  gap: 3px;
+  width: 132px;
+  min-height: 140px;
+  padding-bottom: 4px;
 }
 
-.selected {
-  border-color: var(--info);
-  box-shadow: 0 0 0 2px rgb(9 114 211 / 25%);
+.shape {
+  transition:
+    transform 0.15s,
+    filter 0.15s;
+}
+
+.node:hover .shape {
+  transform: translateY(-2px);
+}
+
+.node.selected .shape {
+  filter: drop-shadow(0 0 1px var(--service-color)) drop-shadow(0 4px 10px rgb(0 0 0 / 18%));
 }
 
 .name {
-  max-width: 100%;
+  max-width: 128px;
+  padding: 1px 8px;
   overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 85%);
   font-size: 12px;
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 700;
+  line-height: 1.4;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.selected .name {
+  background: var(--service-color);
+  color: #fff;
 }
 
 .badges {
@@ -33,10 +46,11 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 2px;
+  max-width: 132px;
 }
 
 .badge {
-  padding: 0 4px;
+  padding: 0 5px;
   border-radius: 3px;
   font-size: 10px;
   line-height: 16px;
@@ -44,7 +58,7 @@
 }
 
 .muted {
-  background: var(--surface-muted);
+  background: rgb(255 255 255 / 85%);
   color: var(--text-muted);
 }
 
@@ -59,10 +73,10 @@
 }
 
 .handle {
-  width: 9px;
-  height: 9px;
-  border: 1.5px solid var(--surface);
-  background: var(--info);
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  background: var(--service-color);
   opacity: 0;
   transition: opacity 0.1s;
 }

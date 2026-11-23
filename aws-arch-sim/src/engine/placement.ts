@@ -12,7 +12,7 @@ export type PlacedNode = {
 
 type Point = { x: number; y: number };
 
-export const SERVICE_NODE_SIZE = { width: 112, height: 84 };
+export const SERVICE_NODE_SIZE = { width: 132, height: 150 };
 
 export function nodeSize(node: PlacedNode): { width: number; height: number } {
   if (node.width !== undefined && node.height !== undefined) {

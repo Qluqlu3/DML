@@ -1,6 +1,6 @@
 import { Handle, type NodeProps, NodeResizer, Position } from '@xyflow/react';
 import { memo } from 'react';
-import { CONTAINERS, type ContainerKind } from '../engine/catalog';
+import { CONTAINERS, type ContainerKind, iconUrl } from '../engine/catalog';
 import { type AppNode, useCanvasStore } from '../store/canvasStore';
 import styles from './ContainerNode.module.css';
 
@@ -18,6 +18,14 @@ function ContainerNodeImpl({ data, selected }: NodeProps<AppNode>) {
   const def = CONTAINERS[kind];
   const resizeStart = useCanvasStore((s) => s.resizeStart);
   const c = data.config;
+  const groupIcon =
+    kind === 'vpc'
+      ? 'group-vpc'
+      : kind === 'subnet'
+        ? c.subnetType === 'private'
+          ? 'group-private-subnet'
+          : 'group-public-subnet'
+        : null;
   const variant =
     kind === 'subnet'
       ? c.subnetType === 'private'
@@ -45,6 +53,9 @@ function ContainerNodeImpl({ data, selected }: NodeProps<AppNode>) {
         />
       )}
       <div className={`${styles.header} ${CONTAINER_DRAG_HANDLE}`}>
+        {groupIcon && (
+          <img className={styles.groupIcon} src={iconUrl(groupIcon)} alt='' draggable={false} />
+        )}
         <span className={styles.kind}>
           {kind === 'subnet' ? (c.subnetType === 'private' ? 'Private' : 'Public') : def.label}
         </span>

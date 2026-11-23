@@ -30,7 +30,7 @@ describe('canvasStore', () => {
 
     // VPC 外にユーザー、Public サブネット内に EC2
     const user = s.addNode('client', { x: -300, y: 100 });
-    const ec2 = s.addNode('ec2', { x: 200, y: 240 });
+    const ec2 = s.addNode('ec2', { x: 200, y: 340 });
     expect(user).not.toBeNull();
     expect(ec2).not.toBeNull();
     const ec2Node = useCanvasStore.getState().nodes.find((n) => n.id === ec2);

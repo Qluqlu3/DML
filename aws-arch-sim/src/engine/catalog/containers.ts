@@ -7,7 +7,7 @@ export const CONTAINERS: Record<ContainerKind, ContainerDef> = {
     label: 'VPC',
     description: 'AWS 上の論理的に分離されたネットワーク。中に AZ を置く。',
     parent: null,
-    defaultSize: { width: 820, height: 520 },
+    defaultSize: { width: 880, height: 680 },
     minSize: { width: 360, height: 240 },
     config: [{ key: 'cidr', label: 'CIDR', type: 'text', default: '10.0.0.0/16' }],
   },
@@ -16,7 +16,7 @@ export const CONTAINERS: Record<ContainerKind, ContainerDef> = {
     label: 'Availability Zone',
     description: '独立した電源・ネットワークを持つデータセンター群。中にサブネットを置く。',
     parent: 'vpc',
-    defaultSize: { width: 360, height: 420 },
+    defaultSize: { width: 380, height: 440 },
     minSize: { width: 220, height: 200 },
     config: [
       {
@@ -33,8 +33,8 @@ export const CONTAINERS: Record<ContainerKind, ContainerDef> = {
     label: 'Subnet',
     description: 'AZ 内の IP アドレス範囲。ルートテーブルで public / private が決まる。',
     parent: 'az',
-    defaultSize: { width: 320, height: 170 },
-    minSize: { width: 180, height: 110 },
+    defaultSize: { width: 340, height: 190 },
+    minSize: { width: 180, height: 170 },
     config: [
       {
         key: 'subnetType',

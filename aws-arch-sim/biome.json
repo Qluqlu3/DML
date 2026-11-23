@@ -18,5 +18,5 @@
     "rules": { "preset": "recommended" }
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
-  "files": { "includes": ["**", "!dist", "!node_modules", "!**/*.md"] }
+  "files": { "includes": ["**", "!dist", "!node_modules", "!**/*.md", "!public/icons"] }
 }

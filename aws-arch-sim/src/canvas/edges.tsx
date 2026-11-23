@@ -5,18 +5,24 @@ import {
   getBezierPath,
   getStraightPath,
 } from '@xyflow/react';
-import type { AppEdge } from '../store/canvasStore';
+import { type AppEdge, useCanvasStore } from '../store/canvasStore';
 import styles from './edges.module.css';
 
 export function TrafficEdge(props: EdgeProps<AppEdge>) {
   const [path, labelX, labelY] = getBezierPath(props);
+  // 選択中の接続、または選択中のノードにつながる接続は、流れる点線で向きを見せる
+  const active = useCanvasStore(
+    (s) =>
+      props.selected ||
+      s.nodes.some((n) => n.selected && (n.id === props.source || n.id === props.target)),
+  );
   return (
     <>
       <BaseEdge
         id={props.id}
         path={path}
         markerEnd={props.markerEnd}
-        className={props.selected ? styles.selectedPath : styles.path}
+        className={`${props.selected ? styles.selectedPath : styles.path} ${active ? styles.flow : ''}`}
         interactionWidth={16}
       />
       <EdgeLabelRenderer>

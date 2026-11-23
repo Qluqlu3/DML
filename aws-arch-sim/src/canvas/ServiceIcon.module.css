@@ -1,10 +1,32 @@
-.icon {
+.fallback,
+.service,
+.plate {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+}
+
+.fallback {
   border-radius: 6px;
   color: #fff;
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+.service {
+  overflow: hidden;
+  border-radius: 18%;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+}
+
+.service img {
+  display: block;
+}
+
+.plate {
+  border: 1px solid rgb(0 0 0 / 8%);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 15%);
 }

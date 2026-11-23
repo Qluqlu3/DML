@@ -110,7 +110,7 @@ function Toolbar() {
 
   const addVpcTemplate = () => {
     const center = viewportCenter();
-    insertNodes(vpcTemplate({ x: center.x - 410, y: center.y - 270 }, newId));
+    insertNodes(vpcTemplate({ x: center.x - 440, y: center.y - 340 }, newId));
   };
 
   return (

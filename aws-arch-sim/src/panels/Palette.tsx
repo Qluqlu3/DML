@@ -84,7 +84,7 @@ export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
               onClick={() => onAdd(kind)}
               title={SERVICES[kind].description}
             >
-              <ServiceIcon kind={kind} size={24} />
+              <ServiceIcon kind={kind} size={28} />
               <span>{SERVICES[kind].label}</span>
             </button>
           ))}

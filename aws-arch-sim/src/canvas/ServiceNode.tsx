@@ -1,9 +1,10 @@
 import { Handle, type NodeProps, Position } from '@xyflow/react';
 import { memo } from 'react';
-import type { ServiceKind } from '../engine/catalog';
+import { CATEGORIES, SERVICE_SHAPES, SERVICES, type ServiceKind } from '../engine/catalog';
 import type { AppNode } from '../store/canvasStore';
 import { ServiceIcon } from './ServiceIcon';
 import styles from './ServiceNode.module.css';
+import { ServiceShape } from './shapes';
 import { serviceBadges } from './summary';
 
 const SIDES = [
@@ -13,11 +14,21 @@ const SIDES = [
   { id: 'l', position: Position.Left },
 ];
 
-function ServiceNodeImpl({ data, selected }: NodeProps<AppNode>) {
+function ServiceNodeImpl({ id, data, selected }: NodeProps<AppNode>) {
   const kind = data.kind as ServiceKind;
-  const badges = serviceBadges(kind, data.config);
+  const c = data.config;
+  const color = CATEGORIES[SERVICES[kind].category].color;
+  const badges = serviceBadges(kind, c);
+  const ghost =
+    (kind === 'rds' && Boolean(c.multiAz)) ||
+    (kind === 'aurora' && Number(c.readers) > 0) ||
+    (kind === 'elasticache' && Boolean(c.multiAz));
+
   return (
-    <div className={`${styles.node} ${selected ? styles.selected : ''}`}>
+    <div
+      className={`${styles.node} ${selected ? styles.selected : ''}`}
+      style={{ '--service-color': color } as React.CSSProperties}
+    >
       {/* ConnectionMode.Loose で使うので全辺 source。ドラッグを始めた側が送信元になる */}
       {SIDES.map((s) => (
         <Handle
@@ -28,7 +39,16 @@ function ServiceNodeImpl({ data, selected }: NodeProps<AppNode>) {
           className={styles.handle}
         />
       ))}
-      <ServiceIcon kind={kind} size={36} />
+      <div className={styles.shape}>
+        <ServiceShape
+          shape={SERVICE_SHAPES[kind]}
+          color={color}
+          uid={`shape-${id}`}
+          layers={kind === 'asg' ? Number(c.desired) : undefined}
+          ghost={ghost}
+          icon={<ServiceIcon kind={kind} size={46} />}
+        />
+      </div>
       <div className={styles.name} title={data.name}>
         {data.name}
       </div>

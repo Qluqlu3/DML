@@ -1,11 +1,22 @@
 .path {
   stroke: #687078;
-  stroke-width: 1.5;
+  stroke-width: 1.8;
 }
 
 .selectedPath {
   stroke: var(--info);
   stroke-width: 2.5;
+}
+
+.flow {
+  stroke-dasharray: 7 5;
+  animation: flow 0.6s linear infinite;
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -12;
+  }
 }
 
 .label {
