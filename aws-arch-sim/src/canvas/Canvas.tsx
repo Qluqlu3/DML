@@ -67,7 +67,14 @@ function miniMapColor(node: AppNode): string {
   return CATEGORIES[SERVICES[kind].category].color;
 }
 
-export function Canvas() {
+type CanvasProps = {
+  /** 光らせるノード（学習モードの置き場所など） */
+  highlightIds?: ReadonlySet<string>;
+  /** 問題があるノード */
+  problemIds?: ReadonlySet<string>;
+};
+
+export function Canvas({ highlightIds, problemIds }: CanvasProps = {}) {
   const nodes = useCanvasStore((s) => s.nodes);
   const edges = useCanvasStore((s) => s.edges);
   const onNodesChange = useCanvasStore((s) => s.onNodesChange);
@@ -82,12 +89,18 @@ export function Canvas() {
   // コンテナはヘッダーでだけ掴めるようにする（中のサービスを動かしやすくするため）
   const flowNodes = useMemo(
     () =>
-      nodes.map((n) =>
-        n.type === 'container' && n.dragHandle !== `.${CONTAINER_DRAG_HANDLE}`
-          ? { ...n, dragHandle: `.${CONTAINER_DRAG_HANDLE}` }
-          : n,
-      ),
-    [nodes],
+      nodes.map((n) => {
+        const classes = [
+          highlightIds?.has(n.id) ? 'is-highlight' : '',
+          problemIds?.has(n.id) ? 'is-problem' : '',
+        ]
+          .filter(Boolean)
+          .join(' ');
+        const dragHandle = n.type === 'container' ? `.${CONTAINER_DRAG_HANDLE}` : undefined;
+        if (n.dragHandle === dragHandle && (n.className ?? '') === classes) return n;
+        return { ...n, dragHandle, className: classes || undefined };
+      }),
+    [nodes, highlightIds, problemIds],
   );
 
   // vpc 配置のサービス → 配置サブネットの点線を、設定から導出して重ねる

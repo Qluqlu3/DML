@@ -33,6 +33,18 @@
   font-weight: 700;
 }
 
+.title {
+  overflow: hidden;
+  color: rgb(255 255 255 / 85%);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title a {
+  color: inherit;
+}
+
 .toolbar {
   display: flex;
   align-items: center;

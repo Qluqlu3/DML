@@ -32,3 +32,27 @@ input,
 select {
   font: inherit;
 }
+
+/* 学習モード: 置き場所などを光らせる */
+.react-flow__node.is-highlight {
+  border-radius: 10px;
+  animation: node-highlight 1.4s ease-in-out infinite;
+}
+
+@keyframes node-highlight {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgb(255 153 0 / 70%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 9px rgb(255 153 0 / 20%);
+  }
+}
+
+/* 判定で問題があったノード */
+.react-flow__node.is-problem {
+  border-radius: 10px;
+  outline: 2px dashed var(--danger);
+  outline-offset: 4px;
+}

@@ -1,12 +1,7 @@
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react';
 import { type ChangeEvent, useEffect, useRef } from 'react';
-import { Link } from 'react-router';
-import { Canvas } from '../canvas/Canvas';
 import { emptyDocument } from '../engine/document';
 import { vpcTemplate } from '../engine/templates';
-import { Inspector } from '../panels/Inspector';
-import { NoticeToast } from '../panels/NoticeToast';
-import { Palette } from '../panels/Palette';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import {
@@ -16,24 +11,12 @@ import {
   SANDBOX_KEY,
   saveStored,
 } from '../store/persistence';
-import styles from './SandboxPage.module.css';
-
-/** キャンバス表示範囲の中心（フロー座標） */
-function useViewportCenter() {
-  const { screenToFlowPosition } = useReactFlow();
-  return () => {
-    const rect = document.querySelector('.react-flow')?.getBoundingClientRect();
-    return rect
-      ? screenToFlowPosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 })
-      : { x: 0, y: 0 };
-  };
-}
-
-function SandboxPalette() {
-  const addNode = useCanvasStore((s) => s.addNode);
-  const viewportCenter = useViewportCenter();
-  return <Palette onAdd={(kind) => addNode(kind, viewportCenter())} />;
-}
+import {
+  ToolbarSeparator,
+  UndoRedoButtons,
+  useViewportCenter,
+  Workspace,
+} from '../workspace/Workspace';
 
 const AUTOSAVE_DELAY_MS = 500;
 
@@ -69,10 +52,6 @@ function useSandboxAutosave() {
 }
 
 function Toolbar() {
-  const canUndo = useCanvasStore((s) => s.past.length > 0);
-  const canRedo = useCanvasStore((s) => s.future.length > 0);
-  const undo = useCanvasStore((s) => s.undo);
-  const redo = useCanvasStore((s) => s.redo);
   const insertNodes = useCanvasStore((s) => s.insertNodes);
   const loadDocument = useCanvasStore((s) => s.loadDocument);
   const notify = useCanvasStore((s) => s.notify);
@@ -114,18 +93,13 @@ function Toolbar() {
   };
 
   return (
-    <div className={styles.toolbar}>
-      <button type='button' onClick={undo} disabled={!canUndo} title='元に戻す (⌘Z)'>
-        元に戻す
-      </button>
-      <button type='button' onClick={redo} disabled={!canRedo} title='やり直す (⇧⌘Z)'>
-        やり直す
-      </button>
-      <span className={styles.separator} />
+    <>
+      <UndoRedoButtons />
+      <ToolbarSeparator />
       <button type='button' onClick={addVpcTemplate}>
         VPC 雛形を追加
       </button>
-      <span className={styles.separator} />
+      <ToolbarSeparator />
       <button type='button' onClick={exportJson} disabled={isEmpty}>
         書き出し
       </button>
@@ -142,31 +116,13 @@ function Toolbar() {
       <button type='button' onClick={clearAll} disabled={isEmpty}>
         全消去
       </button>
-    </div>
+    </>
   );
 }
 
 function SandboxLayout() {
   useSandboxAutosave();
-  return (
-    <div className={styles.layout}>
-      <header className={styles.header}>
-        <Link to='/' className={styles.brand}>
-          AWS Arch Sim
-        </Link>
-        <span className={styles.mode}>サンドボックス</span>
-        <Toolbar />
-      </header>
-      <SandboxPalette />
-      <main className={styles.main}>
-        <Canvas />
-        <NoticeToast />
-      </main>
-      <aside className={styles.inspector}>
-        <Inspector />
-      </aside>
-    </div>
-  );
+  return <Workspace mode='サンドボックス' toolbar={<Toolbar />} />;
 }
 
 export function SandboxPage() {

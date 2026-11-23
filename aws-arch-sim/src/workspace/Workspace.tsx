@@ -1,0 +1,92 @@
+import { useReactFlow } from '@xyflow/react';
+import type { ReactNode } from 'react';
+import { Link } from 'react-router';
+import { Canvas } from '../canvas/Canvas';
+import type { NodeKind } from '../engine/catalog';
+import { Inspector } from '../panels/Inspector';
+import { NoticeToast } from '../panels/NoticeToast';
+import { Palette } from '../panels/Palette';
+import { useCanvasStore } from '../store/canvasStore';
+import styles from './Workspace.module.css';
+
+/** キャンバス表示範囲の中心（フロー座標） */
+export function useViewportCenter() {
+  const { screenToFlowPosition } = useReactFlow();
+  return () => {
+    const rect = document.querySelector('.react-flow')?.getBoundingClientRect();
+    return rect
+      ? screenToFlowPosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 })
+      : { x: 0, y: 0 };
+  };
+}
+
+export function UndoRedoButtons() {
+  const canUndo = useCanvasStore((s) => s.past.length > 0);
+  const canRedo = useCanvasStore((s) => s.future.length > 0);
+  const undo = useCanvasStore((s) => s.undo);
+  const redo = useCanvasStore((s) => s.redo);
+  return (
+    <>
+      <button type='button' onClick={undo} disabled={!canUndo} title='元に戻す (⌘Z)'>
+        元に戻す
+      </button>
+      <button type='button' onClick={redo} disabled={!canRedo} title='やり直す (⇧⌘Z)'>
+        やり直す
+      </button>
+    </>
+  );
+}
+
+export function ToolbarSeparator() {
+  return <span className={styles.separator} />;
+}
+
+type WorkspaceProps = {
+  mode: string;
+  /** モード名の右に出すパンくずなど */
+  title?: ReactNode;
+  toolbar?: ReactNode;
+  /** パレットで光らせる項目 */
+  highlightKinds?: NodeKind[];
+  /** キャンバスで光らせるノード（置き場所など） */
+  highlightIds?: ReadonlySet<string>;
+  /** キャンバスで問題を示すノード */
+  problemIds?: ReadonlySet<string>;
+  /** キャンバスの上に重ねる要素（学習ガイドなど） */
+  overlay?: ReactNode;
+};
+
+/** パレット・キャンバス・インスペクターからなる編集画面。各モードで共通 */
+export function Workspace({
+  mode,
+  title,
+  toolbar,
+  highlightKinds,
+  highlightIds,
+  problemIds,
+  overlay,
+}: WorkspaceProps) {
+  const addNode = useCanvasStore((s) => s.addNode);
+  const viewportCenter = useViewportCenter();
+  return (
+    <div className={styles.layout}>
+      <header className={styles.header}>
+        <Link to='/' className={styles.brand}>
+          AWS Arch Sim
+        </Link>
+        <span className={styles.mode}>{mode}</span>
+        {title && <span className={styles.title}>{title}</span>}
+        <div className={styles.toolbar}>{toolbar}</div>
+      </header>
+      <Palette onAdd={(kind) => addNode(kind, viewportCenter())} highlightKinds={highlightKinds} />
+      <main className={styles.main}>
+        <Canvas highlightIds={highlightIds} problemIds={problemIds} />
+        {overlay}
+        <NoticeToast />
+      </main>
+      <aside className={styles.inspector}>
+        <Inspector />
+      </aside>
+    </div>
+  );
+}

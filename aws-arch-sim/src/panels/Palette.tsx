@@ -1,4 +1,4 @@
-import { type DragEvent, useMemo, useState } from 'react';
+import { type DragEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { DND_MIME } from '../canvas/Canvas';
 import { ServiceIcon } from '../canvas/ServiceIcon';
 import {
@@ -19,7 +19,25 @@ function onDragStart(e: DragEvent, kind: NodeKind) {
   e.dataTransfer.effectAllowed = 'copy';
 }
 
-export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
+type PaletteProps = {
+  onAdd: (kind: NodeKind) => void;
+  /** 光らせる項目（学習モード） */
+  highlightKinds?: NodeKind[];
+};
+
+export function Palette({ onAdd, highlightKinds }: PaletteProps) {
+  const listRef = useRef<HTMLElement>(null);
+  const highlightKey = highlightKinds?.join(',') ?? '';
+  // 光らせる項目が見えるようにスクロールする
+  useEffect(() => {
+    if (!highlightKey) return;
+    listRef.current
+      ?.querySelector(`.${styles.highlight}`)
+      ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [highlightKey]);
+  const itemClass = (kind: NodeKind) =>
+    `${styles.item} ${highlightKinds?.includes(kind) ? styles.highlight : ''}`;
+
   const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
 
@@ -41,7 +59,7 @@ export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
   );
 
   return (
-    <aside className={styles.palette}>
+    <aside className={styles.palette} ref={listRef}>
       <input
         className={styles.search}
         type='search'
@@ -58,7 +76,7 @@ export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
             <button
               type='button'
               key={kind}
-              className={styles.item}
+              className={itemClass(kind)}
               draggable
               onDragStart={(e) => onDragStart(e, kind)}
               onClick={() => onAdd(kind)}
@@ -78,7 +96,7 @@ export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
             <button
               type='button'
               key={kind}
-              className={styles.item}
+              className={itemClass(kind)}
               draggable
               onDragStart={(e) => onDragStart(e, kind)}
               onClick={() => onAdd(kind)}
