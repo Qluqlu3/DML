@@ -9,6 +9,7 @@ import {
   any,
   configIs,
   connected,
+  distinctValues,
   exists,
   hasSg,
   noDirect,
@@ -18,6 +19,7 @@ import {
   type Rule,
   reachable,
   sgAllows,
+  sgHasRule,
   spansAzs,
   subnetRoute,
   withMessage,
@@ -222,6 +224,56 @@ describe('不合格の理由と対象ノード', () => {
     const r = subnetRoute('private', 'nat')(m);
     expect(r.pass).toBe(false);
     expect(r.nodeIds).toHaveLength(2);
+  });
+});
+
+describe('追加の述語と操作', () => {
+  it('route: サブネットのルートを IGW / 同じ AZ の NAT に向ける', () => {
+    const { doc, errors } = applyAnswer(
+      base(),
+      [
+        { op: 'add', kind: 'natgw', in: pub('first'), name: 'nat-a' },
+        { op: 'add', kind: 'natgw', in: pub('second'), name: 'nat-c' },
+        {
+          op: 'route',
+          subnets: { kind: 'subnet', where: { subnetType: 'private' } },
+          to: { kind: 'natgw' },
+        },
+      ],
+      makeId,
+    );
+    expect(errors).toEqual([]);
+    const m = buildModel(doc);
+    expect(subnetRoute('private', 'nat')(m).pass).toBe(true);
+    for (const s of select(m, { kind: 'subnet', where: { subnetType: 'private' } })) {
+      expect(m.byId.get(String(s.config.route))?.azIds).toEqual(s.azIds);
+    }
+  });
+
+  it('sgHasRule: インターネット全体からか、限定した送信元からかを区別する', () => {
+    const { doc } = applyAnswer(
+      base(),
+      [
+        { op: 'add', kind: 'ec2', in: pub('first') },
+        { op: 'createSg', for: EC2, name: 'web' },
+        { op: 'allow', to: EC2, from: { cidr: '0.0.0.0/0' }, port: 443 },
+        { op: 'allow', to: EC2, from: { cidr: '203.0.113.0/24' }, port: 22 },
+      ],
+      makeId,
+    );
+    const m = buildModel(doc);
+    expect(sgHasRule(EC2, 443, 'internet')(m).pass).toBe(true);
+    expect(sgHasRule(EC2, 22, 'internet')(m).pass).toBe(false);
+    expect(sgHasRule(EC2, 22, 'restricted')(m).pass).toBe(true);
+    expect(sgHasRule(EC2, 3306)(m).pass).toBe(false);
+  });
+
+  it('distinctValues: 異なる値の数', () => {
+    const m = buildModel(base());
+    expect(distinctValues({ kind: 'az' }, 'azName', 2)(m).pass).toBe(true);
+    expect(distinctValues({ kind: 'az' }, 'azName', 3, 'AZ 名')(m).message).toBe(
+      'Availability Zone のAZ 名が 3 種類必要です（現在 2）',
+    );
   });
 });
 

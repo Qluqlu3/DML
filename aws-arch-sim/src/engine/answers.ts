@@ -21,7 +21,9 @@ export type AnswerOp =
   | { op: 'config'; target: Selector; set: Partial<Config> }
   | { op: 'attachSubnets'; target: Selector; subnets: Selector }
   | { op: 'createSg'; for: Selector; name: string }
-  | { op: 'allow'; to: Selector; from: Selector | { cidr: string }; port: number };
+  | { op: 'allow'; to: Selector; from: Selector | { cidr: string }; port: number }
+  /** サブネットのデフォルトルートを、同じ VPC の IGW / NAT Gateway に向ける */
+  | { op: 'route'; subnets: Selector; to: Selector };
 
 export type ApplyResult = { doc: ArchDocument; errors: string[] };
 
@@ -225,6 +227,27 @@ function applyOne(
           })),
           securityGroups: [...doc.securityGroups, { id: sgId, name: op.name, vpcId, inbound: [] }],
         },
+      };
+    }
+
+    case 'route': {
+      const subnets = pick(op.subnets).filter((s) => s.kind === 'subnet');
+      if (!subnets.length) return { doc, error: `${describe(op.subnets)} が見つかりません` };
+      const targets = pick(op.to).filter((t) => t.kind === 'igw' || t.kind === 'natgw');
+      const routeOf = new Map<string, string>();
+      for (const s of subnets) {
+        // 同じ AZ の NAT を優先し、なければ同じ VPC の最初のもの
+        const sameVpc = targets.filter((t) => t.vpcId === s.vpcId);
+        const sameAz = sameVpc.find((t) => t.azIds.some((az) => s.azIds.includes(az)));
+        const target = sameAz ?? sameVpc[0];
+        if (target) routeOf.set(s.id, target.id);
+      }
+      if (!routeOf.size) return { doc, error: `${describe(op.to)}（同じ VPC 内）が見つかりません` };
+      return {
+        doc: updateNodes(new Set(routeOf.keys()), (n) => ({
+          ...n,
+          config: { ...n.config, route: routeOf.get(n.id) ?? 'none' },
+        })),
       };
     }
 

@@ -335,6 +335,51 @@ export function sgAllows(a: Selector, b: Selector, opts: SgAllowsOptions = {}): 
   };
 }
 
+type RuleSource = 'internet' | 'restricted' | 'any';
+
+/**
+ * sel に合うノードのいずれかの SG に、port へのインバウンドルールがある。
+ * source: 'internet' = 0.0.0.0/0 から / 'restricted' = それ以外（特定の CIDR や SG）から / 'any' = どちらでも
+ */
+export function sgHasRule(sel: Selector, port: number, source: RuleSource = 'any'): Rule {
+  const label = { internet: 'インターネット全体', restricted: '限定した送信元', any: 'いずれか' }[
+    source
+  ];
+  return (m) => {
+    const found = select(m, sel);
+    if (!found.length) return fail(`${describe(sel)} がありません`);
+    const has = found.some((n) =>
+      sgIdsOf(n).some((id) =>
+        m.sgById.get(id)?.inbound.some((r) => {
+          if (r.port !== port) return false;
+          const internet = r.source.type === 'cidr' && cidrContains(r.source.cidr, '0.0.0.0/0');
+          return source === 'any' || (source === 'internet') === internet;
+        }),
+      ),
+    );
+    return has
+      ? ok
+      : fail(
+          `${describe(sel)} の SG に、${label}からのポート ${port} を許可するルールがありません`,
+          found.map((n) => n.id),
+        );
+  };
+}
+
+/** sel に合うノードの設定 key が、n 種類以上の異なる値を持つ */
+export function distinctValues(sel: Selector, key: string, n: number, label?: string): Rule {
+  return (m) => {
+    const found = select(m, sel);
+    const values = new Set(found.map((x) => String(x.config[key])));
+    return values.size >= n
+      ? ok
+      : fail(
+          `${describe(sel)} の${label ?? key}が ${n} 種類必要です（現在 ${values.size}）`,
+          found.map((x) => x.id),
+        );
+  };
+}
+
 // ---- 組み合わせ ----
 
 /** すべて満たす。最初に満たさなかったルールの理由を返す */
