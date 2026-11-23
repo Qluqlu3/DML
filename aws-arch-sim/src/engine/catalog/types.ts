@@ -6,7 +6,9 @@ export type Category =
   | 'compute'
   | 'integration'
   | 'database'
-  | 'storage';
+  | 'storage'
+  | 'security'
+  | 'management';
 
 export type ContainerKind = 'vpc' | 'az' | 'subnet';
 
@@ -31,7 +33,13 @@ export type ServiceKind =
   | 'aurora'
   | 'dynamodb'
   | 'elasticache'
-  | 's3';
+  | 's3'
+  | 'vpce'
+  | 'cloudwatch'
+  | 'acm'
+  | 'cognito'
+  | 'secrets'
+  | 'eventbridge';
 
 export type NodeKind = ContainerKind | ServiceKind;
 

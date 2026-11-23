@@ -29,6 +29,9 @@ const COMPUTE_TARGETS: ServiceKind[] = [
   'alb',
   'nlb',
   'natgw',
+  'vpce',
+  'secrets',
+  'eventbridge',
   'external',
 ];
 
@@ -43,7 +46,18 @@ const SERVICE_LIST: ServiceDef[] = [
     description: 'インターネット上の利用者。リクエストの起点。',
     config: [],
     defaultPort: 443,
-    canConnectTo: ['route53', 'cloudfront', 'waf', 'alb', 'nlb', 'apigw', 's3', 'igw', 'ec2'],
+    canConnectTo: [
+      'route53',
+      'cloudfront',
+      'waf',
+      'alb',
+      'nlb',
+      'apigw',
+      's3',
+      'igw',
+      'ec2',
+      'cognito',
+    ],
   },
   {
     kind: 'external',
@@ -114,7 +128,7 @@ const SERVICE_LIST: ServiceDef[] = [
     kind: 'waf',
     label: 'AWS WAF',
     short: 'WAF',
-    category: 'edge',
+    category: 'security',
     placement: 'global',
     description:
       'Web アプリケーションファイアウォール。CloudFront / ALB / API Gateway の前段で攻撃を遮断。',
@@ -336,7 +350,19 @@ const SERVICE_LIST: ServiceDef[] = [
       securityGroups,
     ],
     defaultPort: 443,
-    canConnectTo: ['rds', 'aurora', 'dynamodb', 'elasticache', 's3', 'sqs', 'sns', 'external'],
+    canConnectTo: [
+      'rds',
+      'aurora',
+      'dynamodb',
+      'elasticache',
+      's3',
+      'sqs',
+      'sns',
+      'vpce',
+      'secrets',
+      'eventbridge',
+      'external',
+    ],
   },
   // ---- アプリケーション統合 ----
   {
@@ -366,9 +392,21 @@ const SERVICE_LIST: ServiceDef[] = [
         unit: 'req/s',
         default: 10000,
       },
+      {
+        key: 'authorizer',
+        label: '認可',
+        type: 'select',
+        options: [
+          { value: 'none', label: 'なし' },
+          { value: 'cognito', label: 'Cognito' },
+          { value: 'lambda', label: 'Lambda オーソライザー' },
+          { value: 'iam', label: 'IAM' },
+        ],
+        default: 'none',
+      },
     ],
     defaultPort: 443,
-    canConnectTo: ['lambda', 'alb', 'nlb', 'ec2', 'sqs', 'sns', 'dynamodb'],
+    canConnectTo: ['lambda', 'alb', 'nlb', 'ec2', 'sqs', 'sns', 'dynamodb', 'cognito'],
   },
   {
     kind: 'sqs',
@@ -565,7 +603,158 @@ const SERVICE_LIST: ServiceDef[] = [
       },
     ],
     defaultPort: 443,
-    canConnectTo: ['lambda', 'sqs', 'sns'],
+    canConnectTo: ['lambda', 'sqs', 'sns', 'eventbridge'],
+  },
+  // ---- ネットワーク（追加） ----
+  {
+    kind: 'vpce',
+    label: 'VPC エンドポイント',
+    short: 'VPCE',
+    category: 'network',
+    placement: 'vpc',
+    description:
+      'インターネットや NAT を通らずに、VPC から S3・DynamoDB などの AWS サービスへ接続する。',
+    config: [
+      {
+        key: 'endpointType',
+        label: '種類',
+        type: 'select',
+        options: [
+          { value: 'gateway', label: 'ゲートウェイ型（S3 / DynamoDB、無料）' },
+          { value: 'interface', label: 'インターフェース型（PrivateLink）' },
+        ],
+        default: 'gateway',
+      },
+      {
+        key: 'subnetIds',
+        label: '配置サブネット（インターフェース型）',
+        type: 'subnets',
+        min: 0,
+        default: [],
+      },
+      securityGroups,
+    ],
+    defaultPort: 443,
+    canConnectTo: ['s3', 'dynamodb', 'sqs', 'sns', 'secrets', 'eventbridge', 'cloudwatch'],
+  },
+  // ---- セキュリティ ----
+  {
+    kind: 'acm',
+    label: 'Certificate Manager',
+    short: 'ACM',
+    category: 'security',
+    placement: 'global',
+    description: 'HTTPS 用の SSL/TLS 証明書を無料で発行・自動更新する。矢印は証明書の提供先。',
+    config: [
+      { key: 'domain', label: 'ドメイン', type: 'text', default: 'example.com' },
+      {
+        key: 'validation',
+        label: '検証方法',
+        type: 'select',
+        options: [
+          { value: 'dns', label: 'DNS 検証' },
+          { value: 'email', label: 'メール検証' },
+        ],
+        default: 'dns',
+      },
+    ],
+    defaultPort: 443,
+    canConnectTo: ['alb', 'nlb', 'cloudfront', 'apigw'],
+  },
+  {
+    kind: 'cognito',
+    label: 'Cognito',
+    short: 'Cognito',
+    category: 'security',
+    placement: 'global',
+    description: 'アプリのユーザー登録・サインインを提供する認証サービス。',
+    config: [
+      {
+        key: 'mfa',
+        label: '多要素認証 (MFA)',
+        type: 'select',
+        options: [
+          { value: 'off', label: 'オフ' },
+          { value: 'optional', label: '任意' },
+          { value: 'required', label: '必須' },
+        ],
+        default: 'optional',
+      },
+    ],
+    defaultPort: 443,
+    canConnectTo: ['lambda'],
+  },
+  {
+    kind: 'secrets',
+    label: 'Secrets Manager',
+    short: 'Secrets',
+    category: 'security',
+    placement: 'global',
+    description: 'DB のパスワードなどの秘密情報を安全に保管し、自動でローテーションする。',
+    config: [
+      { key: 'rotation', label: '自動ローテーション', type: 'boolean', default: true },
+      {
+        key: 'rotationDays',
+        label: 'ローテーション間隔',
+        type: 'number',
+        min: 1,
+        max: 365,
+        unit: '日',
+        default: 30,
+      },
+    ],
+    defaultPort: 443,
+    canConnectTo: [],
+  },
+  // ---- 運用・統合（追加） ----
+  {
+    kind: 'cloudwatch',
+    label: 'CloudWatch',
+    short: 'CW',
+    category: 'management',
+    placement: 'global',
+    description:
+      'メトリクスとログを集めて監視し、しきい値を超えたらアラームで通知や Auto Scaling を起動する。',
+    config: [
+      {
+        key: 'alarm',
+        label: 'アラーム',
+        type: 'select',
+        options: [
+          { value: 'none', label: 'なし' },
+          { value: 'cpu', label: 'CPU 使用率が高い' },
+          { value: '5xx', label: '5xx エラーが多い' },
+          { value: 'queue', label: 'キューが滞留している' },
+        ],
+        default: 'cpu',
+      },
+    ],
+    defaultPort: 443,
+    canConnectTo: ['sns', 'asg', 'ecs', 'eventbridge'],
+  },
+  {
+    kind: 'eventbridge',
+    label: 'EventBridge',
+    short: 'EB',
+    category: 'integration',
+    placement: 'global',
+    description:
+      'イベントを条件で振り分けて Lambda などに届けるイベントバス。定期実行（スケジュール）にも使う。',
+    config: [
+      {
+        key: 'ruleType',
+        label: 'ルールの種類',
+        type: 'select',
+        options: [
+          { value: 'event', label: 'イベントパターン' },
+          { value: 'schedule', label: 'スケジュール（定期実行）' },
+        ],
+        default: 'event',
+      },
+      { key: 'schedule', label: 'スケジュール式', type: 'text', default: 'rate(5 minutes)' },
+    ],
+    defaultPort: 443,
+    canConnectTo: ['lambda', 'sqs', 'sns', 'ecs'],
   },
 ];
 

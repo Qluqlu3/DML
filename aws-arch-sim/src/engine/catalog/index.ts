@@ -18,6 +18,8 @@ export * from './types';
 export const CATEGORIES: Record<Category, { label: string; color: string }> = {
   actor: { label: 'ユーザー・外部', color: '#5a6b86' },
   edge: { label: 'エッジ・DNS', color: '#8c4fff' },
+  security: { label: 'セキュリティ', color: '#dd344c' },
+  management: { label: '監視・運用', color: '#e7157b' },
   network: { label: 'ネットワーク', color: '#8c4fff' },
   loadbalancing: { label: 'ロードバランサー', color: '#8c4fff' },
   compute: { label: 'コンピュート', color: '#ed7100' },
@@ -35,6 +37,8 @@ export const CATEGORY_ORDER: Category[] = [
   'integration',
   'database',
   'storage',
+  'security',
+  'management',
 ];
 
 export function isContainerKind(kind: NodeKind): kind is ContainerKind {
@@ -87,3 +91,4 @@ export function connectionHint(from: NodeKind, to: NodeKind): string {
     ? `${SERVICES[from].label} から ${SERVICES[to].label} へは接続できません（接続先: ${allowed.join(', ')}）`
     : `${SERVICES[from].label} から他へリクエストを送る接続はありません`;
 }
+export * from './visuals';
