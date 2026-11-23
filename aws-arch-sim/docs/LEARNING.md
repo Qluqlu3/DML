@@ -233,7 +233,7 @@ type ServiceGuide = {
 
 ## 7. カリキュラム（案）
 
-全 8 コース・26 レッスン。各レッスン 4〜8 ステップ。
+全 8 コース・34 レッスン。各レッスン 4〜8 ステップ。
 
 | コース | レッスン | レベル | 主なサービス |
 |---|---|---|---|
@@ -248,14 +248,20 @@ type ServiceGuide = {
 | | 1-4 DB を Private サブネットに置く（SG の連鎖） | 2 | RDS |
 | | 1-5 RDS の Multi-AZ とリードレプリカ | 2 | RDS |
 | | 1-6 Private サブネットから外へ（NAT Gateway） | 2 | NAT GW, 外部サービス |
+| | 1-7 VPC エンドポイントで NAT を通さず S3 へ | 2 | VPC エンドポイント |
+| | 1-8 DB のパスワードを Secrets Manager で管理 | 2 | Secrets Manager |
+| | 1-9 CloudWatch で監視し Auto Scaling を動かす | 2 | CloudWatch, SNS |
 | **2. 配信と DNS** | 2-1 Route 53 で独自ドメイン | 2 | Route 53 |
 | | 2-2 S3 で静的サイト＋CloudFront（OAC） | 2 | S3, CloudFront |
 | | 2-3 動的サイトを CloudFront で高速化 | 2 | CloudFront, ALB |
 | | 2-4 WAF で攻撃から守る | 2 | WAF |
+| | 2-5 ACM の証明書で HTTPS 化 | 2 | ACM |
 | **3. サーバーレス** | 3-1 API Gateway＋Lambda | 2 | API Gateway, Lambda |
 | | 3-2 DynamoDB でデータを保存 | 2 | DynamoDB |
 | | 3-3 S3 へのアップロードで処理を起動 | 3 | S3, Lambda |
-| | 3-4 Lambda から VPC 内の RDS へ | 3 | Lambda(VPC), RDS |
+| | 3-4 Lambda から VPC 内の RDS へ | 3 | Lambda(VPC), RDS, Secrets Manager |
+| | 3-5 Cognito でユーザー認証 | 3 | Cognito, API Gateway |
+| | 3-6 EventBridge で定期実行 | 3 | EventBridge |
 | **4. 疎結合・非同期** | 4-1 SQS で処理を後回しにする | 2 | SQS |
 | | 4-2 SNS で 1 つの通知を複数に配る | 3 | SNS, SQS |
 | | 4-3 失敗したメッセージを DLQ へ | 3 | SQS |
@@ -268,18 +274,9 @@ type ServiceGuide = {
 
 同じコースの中では、前のレッスンの完成形から次のレッスンを始める（VPC を毎回作り直さない）。
 
-### カタログへの追加候補
+### カタログへの追加（対応済み）
 
-よく使われるパターンを学ぶには、次のサービスも欲しい。追加するとカリキュラムを広げられる。
-
-| サービス | 追加すると学べること |
-|---|---|
-| VPC エンドポイント | NAT を通さずに S3 / DynamoDB へ接続（コスト削減） |
-| CloudWatch | 監視とアラーム、Auto Scaling の仕組み |
-| ACM | HTTPS 証明書（ALB / CloudFront） |
-| Cognito | ユーザー認証（サーバーレス構成でよく使う） |
-| Secrets Manager | DB パスワードの安全な管理 |
-| EventBridge | イベント駆動・定期実行 |
+VPC エンドポイント・CloudWatch・ACM・Cognito・Secrets Manager・EventBridge をカタログに追加し、上のレッスン（1-7〜1-9、2-5、3-5、3-6）で扱う。
 
 ## 8. 進捗の保存
 
@@ -302,12 +299,15 @@ type ServiceGuide = {
 | `cylinder` | 円柱 | RDS, Aurora, DynamoDB |
 | `cylinder-short` | 平たい円柱 | ElastiCache |
 | `bucket` | 上が広いバケツ | S3 |
-| `tube` | 横向きの筒 | SQS |
+| `tube` | 横向きの筒 | SQS, EventBridge |
 | `broadcast` | 扇形（拡声器） | SNS |
 | `hexagon` | 横長の六角形の台 | ALB, NLB |
-| `gate` | アーチ型の門 | API Gateway, IGW, NAT GW |
+| `gate` | アーチ型の門 | API Gateway, IGW, NAT GW, VPC エンドポイント |
 | `globe` | 球 | CloudFront, Route 53 |
 | `shield` | 盾 | WAF |
+| `card` | 厚みのあるカード | ACM, Cognito |
+| `safe` | 金庫 | Secrets Manager |
+| `panel` | モニター | CloudWatch |
 | `person` | 人型のカード | ユーザー |
 | `cloud` | 雲 | 外部サービス |
 
@@ -336,7 +336,7 @@ AWS Architecture Icons（公式）をシェイプの中央に描く。取り込�
 | フェーズ | 内容 | 完了の目安 |
 |---|---|---|
 | 1. 土台 | サンドボックス | 完了 |
-| 2. ビジュアル刷新 | シェイプ・サービス色・大きなアイコン、公式アイコン取り込み、コンテナと接続線の装飾 | 全サービスが固有のシェイプで描かれる |
+| 2. ビジュアル刷新 | シェイプ・サービス色・大きなアイコン、公式アイコン取り込み、コンテナと接続線の装飾 | 完了 |
 | 3. 判定エンジン | ArchModel、セレクター、述語、AnswerOp の適用 | 述語ごとの単体テスト |
 | 4. 学習モードの枠組み | コース一覧、レッスン画面、ガイド、ハイライト、解説カード、図鑑、クイズ、進捗保存 | コース 0 で一通り遊べる |
 | 5. 学習コンテンツ | コース 0〜1 → 2〜4 → 5〜7 の順に追加 | 全レッスンが「初期構成では未達・answer 適用で全達成」のテストに通る |
