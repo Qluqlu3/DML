@@ -42,6 +42,8 @@ const ICONS = {
   'group-vpc': 'Virtual-private-cloud-VPC_32.svg',
   'group-public-subnet': 'Public-subnet_32.svg',
   'group-private-subnet': 'Private-subnet_32.svg',
+  // 解説トピック（ノードではない概念）
+  'topic-sg': 'Res_Firewall_48_Light.svg',
 };
 
 function indexFiles(dir, index = new Map()) {

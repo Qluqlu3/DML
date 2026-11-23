@@ -48,6 +48,7 @@ describe('catalog', () => {
       'group-vpc',
       'group-public-subnet',
       'group-private-subnet',
+      'topic-sg',
     ]) {
       expect(existsSync(resolve(dir, `${kind}.svg`)), kind).toBe(true);
     }

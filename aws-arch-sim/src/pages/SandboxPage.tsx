@@ -1,55 +1,17 @@
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react';
-import { type ChangeEvent, useEffect, useRef } from 'react';
+import { type ChangeEvent, useRef } from 'react';
 import { emptyDocument } from '../engine/document';
 import { vpcTemplate } from '../engine/templates';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
-import {
-  downloadJson,
-  loadStored,
-  readJsonFile,
-  SANDBOX_KEY,
-  saveStored,
-} from '../store/persistence';
+import { downloadJson, loadStored, readJsonFile, SANDBOX_KEY } from '../store/persistence';
+import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import {
   ToolbarSeparator,
   UndoRedoButtons,
   useViewportCenter,
   Workspace,
 } from '../workspace/Workspace';
-
-const AUTOSAVE_DELAY_MS = 500;
-
-/** 画面を開いたら前回の構成を復元し、以降の変更を自動保存する */
-function useSandboxAutosave() {
-  const replaceDocument = useCanvasStore((s) => s.replaceDocument);
-  const { fitView } = useReactFlow();
-
-  useEffect(() => {
-    const stored = loadStored(SANDBOX_KEY);
-    replaceDocument(stored ?? emptyDocument());
-    if (stored?.nodes.length) requestAnimationFrame(() => fitView({ padding: 0.1 }));
-
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const unsubscribe = useCanvasStore.subscribe((state, prev) => {
-      if (
-        state.nodes === prev.nodes &&
-        state.edges === prev.edges &&
-        state.securityGroups === prev.securityGroups
-      ) {
-        return;
-      }
-      clearTimeout(timer);
-      timer = setTimeout(() => saveStored(SANDBOX_KEY, toDocument(state)), AUTOSAVE_DELAY_MS);
-    });
-    return () => {
-      // 画面を離れるときは保留中の保存をすぐ行う
-      clearTimeout(timer);
-      saveStored(SANDBOX_KEY, toDocument(useCanvasStore.getState()));
-      unsubscribe();
-    };
-  }, [replaceDocument, fitView]);
-}
 
 function Toolbar() {
   const insertNodes = useCanvasStore((s) => s.insertNodes);
@@ -121,7 +83,7 @@ function Toolbar() {
 }
 
 function SandboxLayout() {
-  useSandboxAutosave();
+  useDocumentAutosave(SANDBOX_KEY, () => loadStored(SANDBOX_KEY) ?? emptyDocument());
   return <Workspace mode='サンドボックス' toolbar={<Toolbar />} />;
 }
 

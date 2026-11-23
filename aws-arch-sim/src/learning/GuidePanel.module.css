@@ -1,0 +1,340 @@
+.panel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  max-height: calc(100% - 24px);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+  font-size: 13px;
+}
+
+.collapsed {
+  width: 240px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #232f3e;
+  color: #fff;
+}
+
+.panelTitle {
+  flex: 1;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collapse {
+  padding: 2px 8px;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 4px;
+  background: none;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.stepLabel {
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.instruction {
+  line-height: 1.7;
+}
+
+.instruction p,
+.why p {
+  margin: 0 0 6px;
+}
+
+.instruction ul {
+  margin: 0 0 6px;
+  padding-left: 18px;
+}
+
+.instruction code {
+  padding: 0 4px;
+  border-radius: 3px;
+  background: var(--surface-muted);
+}
+
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px 2px 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.topic:hover {
+  border-color: var(--info);
+  color: var(--info);
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--surface-muted);
+  list-style: none;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.done .mark {
+  border-color: #2c8a12;
+  background: #2c8a12;
+  color: #fff;
+}
+
+.done {
+  color: #2c6e12;
+}
+
+.reason {
+  display: block;
+  color: var(--danger);
+  font-size: 11px;
+}
+
+.regression {
+  padding: 8px 10px;
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  background: #fdecea;
+  font-size: 12px;
+}
+
+.regression ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.cleared {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #9bd08a;
+  border-radius: 8px;
+  background: #f0f9ec;
+}
+
+.clearedTitle {
+  color: #2c6e12;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.whyLabel,
+.badLabel,
+.hintLabel {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.whyLabel {
+  color: #2c6e12;
+}
+
+.badLabel {
+  color: var(--danger);
+}
+
+.why {
+  line-height: 1.7;
+}
+
+.help {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hint {
+  margin: 0;
+  padding: 6px 10px;
+  border-left: 3px solid var(--accent);
+  background: rgb(255 153 0 / 8%);
+}
+
+.hintLabel {
+  display: block;
+  color: var(--accent-strong);
+}
+
+.helpButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.answer {
+  padding: 8px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+}
+
+.answer ol {
+  margin: 4px 0 8px;
+  padding-left: 18px;
+}
+
+.primary,
+.primaryLink {
+  align-self: flex-start;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #232f3e;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary:hover,
+.primaryLink:hover {
+  background: var(--accent-strong);
+}
+
+.secondary,
+.secondaryLink {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.secondary:hover,
+.secondaryLink:hover {
+  border-color: var(--info);
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice:hover:not(:disabled) {
+  border-color: var(--info);
+}
+
+.choice:disabled {
+  cursor: default;
+}
+
+.choiceCorrect {
+  border-color: #2c8a12;
+  background: #f0f9ec;
+}
+
+.choiceWrong {
+  border-color: var(--danger);
+  background: #fdecea;
+}
+
+.explanation {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selfBadge,
+.scoreBadge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selfBadge {
+  background: var(--accent);
+  color: #232f3e;
+}
+
+.scoreBadge {
+  background: var(--surface-muted);
+}

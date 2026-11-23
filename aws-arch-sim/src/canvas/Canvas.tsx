@@ -33,6 +33,8 @@ const nodeTypes = { service: ServiceNode, container: ContainerNode };
 const edgeTypes = { traffic: TrafficEdge, attachment: AttachmentEdge };
 const defaultEdgeOptions = { markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 } };
 const ATTACH_PREFIX = 'attach:';
+/** 入れ子は親 + 1 ずつ重なるので、VPC > AZ > サブネット > サービス（4 段）より上にする */
+const TOP_LEVEL_SERVICE_Z = 10;
 
 function isEditableTarget(target: EventTarget | null): boolean {
   return (
@@ -97,8 +99,12 @@ export function Canvas({ highlightIds, problemIds }: CanvasProps = {}) {
           .filter(Boolean)
           .join(' ');
         const dragHandle = n.type === 'container' ? `.${CONTAINER_DRAG_HANDLE}` : undefined;
-        if (n.dragHandle === dragHandle && (n.className ?? '') === classes) return n;
-        return { ...n, dragHandle, className: classes || undefined };
+        // VPC の外のサービスは、後から置いた VPC の枠に隠れないよう常に手前に描く
+        const zIndex = n.type === 'service' && !n.parentId ? TOP_LEVEL_SERVICE_Z : undefined;
+        if (n.dragHandle === dragHandle && (n.className ?? '') === classes && n.zIndex === zIndex) {
+          return n;
+        }
+        return { ...n, dragHandle, zIndex, className: classes || undefined };
       }),
     [nodes, highlightIds, problemIds],
   );
@@ -249,6 +255,7 @@ export function Canvas({ highlightIds, problemIds }: CanvasProps = {}) {
         onSelectionDragStart={(_e, dragged) => dragStart(dragged)}
         onSelectionDragStop={(_e, dragged) => dragStop(dragged)}
         deleteKeyCode={null}
+        elevateNodesOnSelect={false}
         snapToGrid
         snapGrid={[8, 8]}
         minZoom={0.2}

@@ -9,6 +9,18 @@ const MODES = [
     ready: true,
   },
   {
+    to: '/learn',
+    title: '学習モード',
+    body: '指示とチェックポイントに沿って構成を作りながら、サービスの役割と組み合わせ方を学ぶ。',
+    ready: true,
+  },
+  {
+    to: '/guide',
+    title: 'サービス図鑑',
+    body: '各サービスの役割・たとえ・よくある勘違いをいつでも見返せる。',
+    ready: true,
+  },
+  {
     to: '/challenges',
     title: '問題モード',
     body: '要件に合う構成を組み立て、ルール判定で採点する。',

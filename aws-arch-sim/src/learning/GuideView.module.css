@@ -1,0 +1,81 @@
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid var(--topic-color);
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+}
+
+.analogy {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--topic-color);
+  border-radius: 4px;
+  background: var(--surface-muted);
+}
+
+.analogyLabel {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sectionTitle {
+  margin: 0 0 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.text {
+  margin: 0;
+}
+
+.list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.warn li::marker {
+  color: var(--danger);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: inherit;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.chip:hover {
+  border-color: var(--topic-color);
+}
