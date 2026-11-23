@@ -1,0 +1,73 @@
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 112px;
+  min-height: 84px;
+  padding: 8px 6px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+}
+
+.selected {
+  border-color: var(--info);
+  box-shadow: 0 0 0 2px rgb(9 114 211 / 25%);
+}
+
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+}
+
+.badge {
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.muted {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.ok {
+  background: #e3f4dc;
+  color: #2c6e12;
+}
+
+.warn {
+  background: #fdecea;
+  color: var(--danger);
+}
+
+.handle {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--surface);
+  background: var(--info);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.node:hover .handle,
+.node.selected .handle {
+  opacity: 1;
+}

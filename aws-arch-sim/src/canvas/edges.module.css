@@ -1,0 +1,32 @@
+.path {
+  stroke: #687078;
+  stroke-width: 1.5;
+}
+
+.selectedPath {
+  stroke: var(--info);
+  stroke-width: 2.5;
+}
+
+.label {
+  position: absolute;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.labelSelected {
+  border-color: var(--info);
+  color: var(--info);
+}
+
+.attachment {
+  stroke: #8c4fff;
+  stroke-dasharray: 3 4;
+  stroke-width: 1.2;
+  opacity: 0.55;
+}

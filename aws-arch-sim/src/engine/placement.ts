@@ -21,7 +21,9 @@ export function nodeSize(node: PlacedNode): { width: number; height: number } {
   return isContainerKind(node.kind) ? CONTAINERS[node.kind].defaultSize : SERVICE_NODE_SIZE;
 }
 
-export function indexById<T extends PlacedNode>(nodes: T[]): Map<string, T> {
+type TreeNode = { id: string; parentId?: string };
+
+export function indexById<T extends TreeNode>(nodes: T[]): Map<string, T> {
   return new Map(nodes.map((n) => [n.id, n]));
 }
 
@@ -39,7 +41,7 @@ export function absolutePosition(id: string, byId: Map<string, PlacedNode>): Poi
   return { x, y };
 }
 
-export function depth(id: string, byId: Map<string, PlacedNode>): number {
+export function depth(id: string, byId: Map<string, TreeNode>): number {
   let d = 0;
   let current = byId.get(id);
   while (current?.parentId) {
@@ -67,7 +69,7 @@ export function descendantIds(id: string, nodes: PlacedNode[]): Set<string> {
 }
 
 /** React Flow は親が子より前にある必要があるため、深さ順に並べ替える（同じ深さは元の順を保つ） */
-export function sortParentsFirst<T extends PlacedNode>(nodes: T[]): T[] {
+export function sortParentsFirst<T extends TreeNode>(nodes: T[]): T[] {
   const byId = indexById(nodes);
   return nodes
     .map((n, i) => ({ n, i, d: depth(n.id, byId) }))
