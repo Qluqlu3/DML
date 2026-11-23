@@ -162,11 +162,19 @@ type ServiceDef = {
 React Flow のノード・エッジから、判定とシミュレーション用の `ArchModel` を作る。
 
 ```ts
+type ModelNode = DocNode & {
+  vpcId: string | null;    // 所属 VPC（Lambda はサブネット指定から決まる）
+  subnetIds: string[];     // 置かれている・配置先に選ばれているサブネット
+  azIds: string[];         // 上のサブネットが属する AZ
+};
 type ArchModel = {
-  vpcs: Vpc[]; azs: Az[]; subnets: Subnet[];
-  services: ServiceInstance[];     // kind, config, 所属（subnetId / vpcId / global）
-  edges: Connection[];             // from, to, port
+  doc: ArchDocument;
+  nodes: ModelNode[];
+  byId: Map<string, ModelNode>;
+  edges: DocEdge[];
+  outgoing: Map<string, DocEdge[]>;
   securityGroups: SecurityGroup[];
+  sgById: Map<string, SecurityGroup>;
 };
 ```
 
