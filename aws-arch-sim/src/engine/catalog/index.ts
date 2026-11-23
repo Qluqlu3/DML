@@ -91,4 +91,15 @@ export function connectionHint(from: NodeKind, to: NodeKind): string {
     ? `${SERVICES[from].label} から ${SERVICES[to].label} へは接続できません（接続先: ${allowed.join(', ')}）`
     : `${SERVICES[from].label} から他へリクエストを送る接続はありません`;
 }
+/** その種類・設定のノードへ接続するときの既定ポート */
+export function defaultPort(kind: NodeKind, config: Config): number {
+  if (isContainerKind(kind)) return 443;
+  if (kind === 'rds' || kind === 'aurora') {
+    return String(config.engine).includes('postg') ? 5432 : 3306;
+  }
+  if (kind === 'elasticache' && config.engine === 'memcached') return 11211;
+  if (kind === 'alb' && config.listener === 'http') return 80;
+  return SERVICES[kind].defaultPort;
+}
+
 export * from './visuals';

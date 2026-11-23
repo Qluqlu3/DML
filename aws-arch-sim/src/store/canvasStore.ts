@@ -5,6 +5,7 @@ import {
   type Config,
   configFields,
   defaultConfig,
+  defaultPort,
   isContainerKind,
   type NodeKind,
   SERVICES,
@@ -195,15 +196,7 @@ function snapshotOf(s: Snapshot): Snapshot {
 }
 
 function defaultPortFor(target: AppNode | undefined): number {
-  if (!target || isContainerKind(target.data.kind)) return 443;
-  if (target.data.kind === 'rds' || target.data.kind === 'aurora') {
-    return String(target.data.config.engine).includes('postg') ? 5432 : 3306;
-  }
-  if (target.data.kind === 'elasticache' && target.data.config.engine === 'memcached') {
-    return 11211;
-  }
-  if (target.data.kind === 'alb' && target.data.config.listener === 'http') return 80;
-  return SERVICES[target.data.kind].defaultPort;
+  return target ? defaultPort(target.data.kind, target.data.config) : 443;
 }
 
 function nextName(kind: NodeKind, nodes: AppNode[], config: Config): string {
