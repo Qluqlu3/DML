@@ -2,6 +2,7 @@ import { ReactFlowProvider, useReactFlow } from '@xyflow/react';
 import { Link } from 'react-router';
 import { Canvas } from '../canvas/Canvas';
 import { vpcTemplate } from '../engine/templates';
+import { Inspector } from '../panels/Inspector';
 import { NoticeToast } from '../panels/NoticeToast';
 import { Palette } from '../panels/Palette';
 import { useCanvasStore } from '../store/canvasStore';
@@ -77,7 +78,7 @@ export function SandboxPage() {
           <NoticeToast />
         </main>
         <aside className={styles.inspector}>
-          <p className={styles.placeholder}>ノードや接続を選択すると、ここに設定が表示されます。</p>
+          <Inspector />
         </aside>
       </div>
     </ReactFlowProvider>

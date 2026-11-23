@@ -83,7 +83,7 @@ const COALESCE_MS = 1000;
 
 // ---- 変換 ----
 
-const toPlaced = (n: AppNode): ScopedNode => ({
+export const toPlaced = (n: AppNode): ScopedNode => ({
   id: n.id,
   kind: n.data.kind,
   name: n.data.name,

@@ -1,0 +1,242 @@
+.inspector {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  font-size: 13px;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.tab,
+.tabActive {
+  flex: 1;
+  padding: 10px 4px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabActive {
+  border-bottom-color: var(--accent);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.title {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.kind {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.description {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field select,
+.sgCard input[type="text"],
+.ruleRow input,
+.ruleRow select {
+  width: 100%;
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.numberRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.unit {
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.help {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.warn {
+  margin: 0;
+  color: var(--danger);
+  font-size: 11px;
+}
+
+.checkList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tagPublic,
+.tagPrivate {
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tagPublic {
+  background: rgb(122 161 22 / 18%);
+  color: #4b6a0a;
+}
+
+.tagPrivate {
+  background: rgb(9 114 211 / 14%);
+  color: #0961b3;
+}
+
+.connections {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.port {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.edgeRoute {
+  margin: 0;
+  font-weight: 600;
+}
+
+.tips {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.danger,
+.secondary {
+  align-self: flex-start;
+  padding: 5px 12px;
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.danger {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.secondary {
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.linkButton {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--info);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.iconButton {
+  padding: 0 6px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  color: var(--danger);
+}
+
+.sgVpc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sgCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.sgHeader {
+  display: flex;
+  gap: 4px;
+}
+
+.ruleRow {
+  display: grid;
+  grid-template-columns: 64px 1fr 1fr 24px;
+  gap: 4px;
+  align-items: center;
+}
