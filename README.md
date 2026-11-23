@@ -4,15 +4,15 @@
 
 ## 技術スタック
 
-| カテゴリ | 技術 |
-|---|---|
-| フレームワーク | Next.js (App Router) |
-| 言語 | TypeScript |
-| スタイリング | Chakra UI v3 |
-| ORM | Prisma 7 |
-| DB | PostgreSQL 16 |
-| コンテナ | Docker / Docker Compose |
-| パッケージマネージャ | pnpm |
+| カテゴリ             | 技術                    |
+| -------------------- | ----------------------- |
+| フレームワーク       | Next.js (App Router)    |
+| 言語                 | TypeScript              |
+| スタイリング         | Chakra UI v3            |
+| ORM                  | Prisma 7                |
+| DB                   | PostgreSQL 16           |
+| コンテナ             | Docker / Docker Compose |
+| パッケージマネージャ | pnpm                    |
 
 ## 起動
 
