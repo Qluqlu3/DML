@@ -16,6 +16,8 @@
 
 ## 起動
 
+コマンドはすべてこの `dml/` フォルダで実行する。
+
 ```bash
 docker compose up -d
 ```

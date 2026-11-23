@@ -1,3 +1,2 @@
-# 親リポジトリ(demolition)の pnpm workspace から独立させるために置いている
 allowBuilds:
   esbuild: true

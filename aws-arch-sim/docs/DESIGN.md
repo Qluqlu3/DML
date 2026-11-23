@@ -3,7 +3,7 @@
 AWS サービスをボックスとして D&D で配置・接続し、構成図を作る学習用アプリ。
 「自由に作る」「指示どおりに作る」「障害を直す」の 3 モードを持つ。
 
-> demolition リポジトリに同居しているが、アプリとしては完全に独立している。
+> demolition リポジトリのルート直下に、解体アプリ（`dml/`）と並べて置いている。アプリとしては完全に独立している。
 > 将来別リポジトリに切り出すときは `aws-arch-sim/` をそのまま移せばよい。
 
 ---
@@ -12,7 +12,7 @@ AWS サービスをボックスとして D&D で配置・接続し、構成図�
 
 | 項目 | 決定 |
 |---|---|
-| 配置 | `demolition/aws-arch-sim/`（このリポジトリにコミット） |
+| 配置 | `demolition/aws-arch-sim/`（`dml/` と並列。このリポジトリにコミット） |
 | 構成 | フロントのみの SPA。バックエンド・DB なし |
 | 判定 | ルール判定 ＋ 疑似メトリクス（定常状態の計算） |
 | ネットワーク | VPC > AZ > Subnet を入れ子の枠で表現 |
@@ -28,24 +28,26 @@ AWS サービスをボックスとして D&D で配置・接続し、構成図�
 |---|---|
 | ビルド | Vite + React + TypeScript |
 | キャンバス | `@xyflow/react`（React Flow）：D&D、接続、入れ子（`parentId`）、リサイズ |
-| 状態管理 | Zustand（＋ undo/redo 用に `zundo`） |
+| 状態管理 | Zustand（undo/redo は操作確定時のスナップショットを自前で保持） |
 | UI | CSS Modules（UI ライブラリは入れず軽量に保つ） |
 | ルーティング | React Router（hash ルーティング） |
 | テスト | Vitest（判定エンジン・シミュレーターは純粋 TS なので単体テスト中心） |
-| Lint/Format | Biome（親と同じ設定方針を独自に持つ） |
-| パッケージ管理 | pnpm（独自の `pnpm-workspace.yaml` を置き、親のワークスペースから独立させる） |
+| Lint/Format | Biome（dml と同じ設定方針を独自に持つ） |
+| パッケージ管理 | pnpm（独自の `package.json` / `pnpm-lock.yaml` / `pnpm-workspace.yaml` を持つ） |
 
-### 親リポジトリ側で必要な変更
+### リポジトリ内での位置づけ
 
-親の設定はルート配下を全部対象にしているため、以下で除外する。
+```
+demolition/            # git ルート
+├── .github/           # CI（dml のみ対象）
+├── lefthook.yml       # git フック（dml / aws-arch-sim をフォルダ別ジョブで検査）
+├── dml/               # 解体アプリ（Next.js）
+└── aws-arch-sim/      # このアプリ
+```
 
-- `tsconfig.json` の `exclude` に `aws-arch-sim` を追加
-- `biome.json` の `files.includes` に `!aws-arch-sim` を追加
-- `.dockerignore` に `aws-arch-sim` を追加
-- `aws-arch-sim/pnpm-workspace.yaml` を置く（置かないと親の workspace 扱いになり、親の lockfile に依存が入る）
-
-CI（`.github/workflows/ci.yml`）は親の lint/typecheck のみなので、除外すれば影響しない。
-aws-arch-sim 用の CI は当面作らない。
+- dml と aws-arch-sim は設定・依存を共有しない。互いの tsconfig / biome の対象にも入らない
+- git フックはルートの `lefthook.yml` で、各ジョブを `root:` 指定でそれぞれのフォルダで実行する
+- aws-arch-sim 用の CI は当面作らない
 
 ## 3. ディレクトリ構成
 
@@ -369,7 +371,7 @@ JSON の書き出しは `SerializedCanvas`（ノード・エッジ・SG・バー
 
 | フェーズ | 内容 | 完了の目安 |
 |---|---|---|
-| 1. 土台 | プロジェクト作成、親の除外設定、カタログ、キャンバス（D&D・入れ子・接続・リサイズ）、インスペクター、SG パネル、保存 | サンドボックスで C1 相当の構成を作って保存・復元できる |
+| 1. 土台 | プロジェクト作成、カタログ、キャンバス（D&D・入れ子・接続・リサイズ）、インスペクター、SG パネル、保存 | サンドボックスで C1 相当の構成を作って保存・復元できる |
 | 2. 判定 | ArchModel 正規化、述語ライブラリ、Linter、問題モード、C1〜C5 | 5 問すべてを模範解答で解けることをテストで確認 |
 | 3. シミュレーター | 負荷伝播、メトリクス、ログ生成、インシデントモード、I1〜I5 | 各インシデントで「初期構成は未解決・想定対策後は解決」をテストで確認 |
 | 4. 仕上げ | 公式アイコン取り込み、ヒント・解説・模範解答表示、ターン履歴の振り返り、PNG 書き出し | — |

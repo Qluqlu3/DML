@@ -3,8 +3,8 @@
 AWS サービスをボックスとして D&D で配置・接続し、構成図を作って学ぶシミュレーター。
 設計は [docs/DESIGN.md](docs/DESIGN.md) を参照。
 
-demolition リポジトリに同居しているが、依存・設定・lint はすべてこのフォルダ内で完結している
-（親の tsconfig / biome / lefthook / Docker ビルドからは除外済み）。
+demolition リポジトリのルート直下に、解体アプリ（`../dml/`）と並べて置いている。
+依存・設定・lint はすべてこのフォルダ内で完結している。
 
 ## 起動
 
@@ -24,7 +24,8 @@ pnpm dev        # http://localhost:5173
 | `pnpm typecheck` | 型チェック |
 | `pnpm check` | biome で lint + format（自動修正） |
 
-親リポジトリの pre-commit フックはこのフォルダを検査しないため、コミット前に `pnpm check && pnpm typecheck && pnpm test` を実行する。
+git フック（ルートの `lefthook.yml`）が、コミット時に biome、push 時に biome・型チェック・テストを実行する。
+フックは `dml/` で `pnpm install` したときにインストールされる。
 
 ## 実装状況
 
