@@ -1,35 +1,59 @@
+# git フックは git ルートで 1 つしか設定できないため、ここで dml / aws-arch-sim の両方を扱う。
+# 各ジョブは root で指定したフォルダで実行され、そのフォルダの依存（biome 等）と設定を使う。
 pre-commit:
   parallel: true
-  # aws-arch-sim は独立したアプリで、独自の biome 設定を持つため親のフックでは検査しない
-  exclude:
-    - "aws-arch-sim/**"
   jobs:
-    - name: biome (ts/js/json)
+    - name: dml biome (ts/js/json)
+      root: dml/
       glob: "*.{ts,tsx,js,jsx,json}"
       stage_fixed: true
       run: pnpm exec biome check --write --error-on-warnings --no-errors-on-unmatched {staged_files}
 
-    - name: biome format (css)
+    - name: dml biome format (css)
+      root: dml/
       glob: "*.css"
       stage_fixed: true
-      run: pnpm exec biome format --write {staged_files}
+      run: pnpm exec biome format --write --no-errors-on-unmatched {staged_files}
 
-    - name: stylelint (css)
+    - name: dml stylelint (css)
+      root: dml/
       glob: "*.css"
       stage_fixed: true
       run: pnpm exec stylelint --fix {staged_files}
 
+    - name: aws-arch-sim biome
+      root: aws-arch-sim/
+      glob: "*.{ts,tsx,js,jsx,json,css}"
+      stage_fixed: true
+      run: pnpm exec biome check --write --error-on-warnings --no-errors-on-unmatched {staged_files}
+
 pre-push:
   parallel: true
   jobs:
-    - name: lint
+    - name: dml lint
+      root: dml/
       run: pnpm run lint
 
-    - name: lint:css
+    - name: dml lint:css
+      root: dml/
       run: pnpm run lint:css
 
-    - name: format:check
+    - name: dml format:check
+      root: dml/
       run: pnpm run format:check
 
-    - name: typecheck
+    - name: dml typecheck
+      root: dml/
       run: pnpm run typecheck
+
+    - name: aws-arch-sim check
+      root: aws-arch-sim/
+      run: pnpm exec biome check --error-on-warnings .
+
+    - name: aws-arch-sim typecheck
+      root: aws-arch-sim/
+      run: pnpm run typecheck
+
+    - name: aws-arch-sim test
+      root: aws-arch-sim/
+      run: pnpm test

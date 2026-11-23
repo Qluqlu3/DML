@@ -9,6 +9,11 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# 解体アプリは dml/ 配下にある
+defaults:
+  run:
+    working-directory: dml
+
 jobs:
   lint:
     name: Lint & Typecheck
@@ -17,11 +22,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: dml/package.json
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: dml/pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
 
@@ -59,11 +67,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: dml/package.json
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: dml/pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
 
