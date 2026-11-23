@@ -56,12 +56,18 @@ function freeSlot(
   if (parentId) {
     const parent = doc.nodes.find((n) => n.id === parentId);
     const area = parent ? nodeSize(parent) : { width: 400, height: 300 };
-    for (let y = HEADER; y + size.height <= area.height - 4; y += 12) {
-      for (let x = GAP; x + size.width <= area.width - 4; x += 12) {
+    // 候補は「左上」と「既存ノードのすぐ右・すぐ下」。上の行・左の列から順に試す
+    const xs = [GAP, ...siblings.map((r) => r.x + r.width + GAP)].sort((a, b) => a - b);
+    const ys = [HEADER, ...siblings.map((r) => r.y + r.height + GAP)].sort((a, b) => a - b);
+    for (const y of ys) {
+      if (y + size.height > area.height - 4) continue;
+      for (const x of xs) {
+        if (x + size.width > area.width - 4) continue;
         if (free({ x, y, ...size })) return { x, y };
       }
     }
-    return { x: GAP, y: HEADER };
+    // 入りきらないときは、既存ノードの下に置く（枠からはみ出すが重ならない）
+    return { x: GAP, y: Math.max(HEADER, ...siblings.map((r) => r.y + r.height + GAP)) };
   }
 
   if (!siblings.length) return { x: 0, y: 0 };

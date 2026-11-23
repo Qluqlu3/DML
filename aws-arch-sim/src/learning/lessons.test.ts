@@ -3,7 +3,15 @@ import { COURSES } from '../content/courses';
 import { GUIDES } from '../content/guides';
 import { applyAnswer } from '../engine/answers';
 import { buildModel } from '../engine/model';
-import { ALL_LESSONS, docBeforeStep, evaluateStep, findLesson, initialDoc } from './lessons';
+import { nodeSize } from '../engine/placement';
+import {
+  ALL_LESSONS,
+  docBeforeStep,
+  evaluateStep,
+  finalDoc,
+  findLesson,
+  initialDoc,
+} from './lessons';
 
 describe('レッスンの構成', () => {
   it('レッスン ID とステップ ID が重複しない', () => {
@@ -61,6 +69,23 @@ describe('レッスンの構成', () => {
 describe.each(ALL_LESSONS.map((l) => [l.id, l] as const))('レッスン %s', (_, lesson) => {
   it('初期構成は読み込める', () => {
     expect(() => initialDoc(lesson)).not.toThrow();
+  });
+
+  it('完成形で同じ親の中のノードが重ならない', () => {
+    const nodes = finalDoc(lesson).nodes;
+    for (const a of nodes) {
+      for (const b of nodes) {
+        if (a.id >= b.id || (a.parentId ?? null) !== (b.parentId ?? null)) continue;
+        const sa = nodeSize(a);
+        const sb = nodeSize(b);
+        const overlap =
+          a.position.x < b.position.x + sb.width &&
+          b.position.x < a.position.x + sa.width &&
+          a.position.y < b.position.y + sb.height &&
+          b.position.y < a.position.y + sa.height;
+        expect(overlap, `${a.name} と ${b.name} が重なっている`).toBe(false);
+      }
+    }
   });
 
   it.each(lesson.steps.map((s, i) => [s.id, i] as const))(
