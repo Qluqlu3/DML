@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CONTAINERS, canConnect, defaultConfig, SERVICE_KINDS, SERVICES } from '.';
 
@@ -37,6 +39,18 @@ describe('catalog', () => {
     expect(a.subnetIds).toEqual([]);
     expect(a.subnetIds).not.toBe(b.subnetIds);
     expect(defaultConfig('subnet')).toMatchObject({ subnetType: 'public', route: 'none' });
+  });
+
+  it('全サービスの公式アイコンが取り込まれている', () => {
+    const dir = resolve(import.meta.dirname, '../../../public/icons/aws');
+    for (const kind of [
+      ...SERVICE_KINDS,
+      'group-vpc',
+      'group-public-subnet',
+      'group-private-subnet',
+    ]) {
+      expect(existsSync(resolve(dir, `${kind}.svg`)), kind).toBe(true);
+    }
   });
 
   it('接続可否', () => {
