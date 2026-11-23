@@ -1,5 +1,8 @@
 pre-commit:
   parallel: true
+  # aws-arch-sim は独立したアプリで、独自の biome 設定を持つため親のフックでは検査しない
+  exclude:
+    - "aws-arch-sim/**"
   jobs:
     - name: biome (ts/js/json)
       glob: "*.{ts,tsx,js,jsx,json}"
