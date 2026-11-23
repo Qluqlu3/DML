@@ -2,6 +2,7 @@ import { Box, Container } from '@chakra-ui/react';
 import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import type { Prisma } from '@/generated/prisma/client';
+import { resolvePage } from '@/lib/pagination';
 import { prisma } from '@/lib/prisma';
 import { CompanyGrid } from './_components/CompanyGrid';
 import { Pagination } from './_components/Pagination';
@@ -74,8 +75,7 @@ export default async function CompaniesPage({
     prisma.company.count({ where }),
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-  const page = Math.min(Math.max(1, Number.parseInt(pageParam ?? '1', 10) || 1), totalPages);
+  const { page, totalPages } = resolvePage(pageParam, totalCount, PAGE_SIZE);
 
   const companies = await prisma.company.findMany({
     where,

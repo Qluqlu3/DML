@@ -3,6 +3,7 @@
 import { headers } from 'next/headers';
 import { AuthAttemptType } from '@/generated/prisma/enums';
 import { loginSchema, registerSchema } from '@/lib/authSchema';
+import { clientIpFromHeaders } from '@/lib/clientIp';
 import { dummyPasswordHash, hashPassword, verifyPassword } from '@/lib/password';
 import { prisma } from '@/lib/prisma';
 import { createUserSession, destroyUserSession } from '@/lib/userSession';
@@ -26,8 +27,7 @@ const REGISTER_MAX_PER_IP = 5;
 const REGISTER_MAX_PER_EMAIL = 3;
 
 async function getClientIp(): Promise<string | null> {
-  const headerList = await headers();
-  return headerList.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  return clientIpFromHeaders(await headers());
 }
 
 // 試行を記録した上で、直近ウィンドウ内の件数がIP・メールアドレスいずれかの上限を

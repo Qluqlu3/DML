@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { getCurrentAdmin } from '@/lib/adminSession';
+import { getFormString } from '@/lib/formData';
 import { prisma } from '@/lib/prisma';
 
 export type UpdateWebsiteState = {
@@ -18,7 +19,7 @@ export async function updateCompanyWebsite(
     return { success: false, error: '管理者としてログインしてください' };
   }
 
-  const raw = ((formData.get('websiteUrl') as string) || '').trim();
+  const raw = getFormString(formData, 'websiteUrl').trim();
 
   let websiteUrl: string | null = null;
   if (raw) {

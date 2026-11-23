@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { ADMIN_SESSION_COOKIE, hasActiveAdminSession } from '@/lib/adminSession';
+import { clientIpFromHeaders } from '@/lib/clientIp';
 
-const ADMIN_SESSION_COOKIE = 'admin_session';
 const ADMIN_LOGIN_PATH = '/admin/login';
 
 // Basic認証: /admin 全体（ログイン画面自体も含む）の手前に置く常時有効なゲート。
@@ -30,8 +30,7 @@ function checkBasicAuth(request: NextRequest): boolean {
 }
 
 // IP許可リスト（任意）: ADMIN_ALLOWED_IPS が設定されている場合のみ有効。
-// X-Forwarded-For はクライアントが自由に偽装できるヘッダーのため、
-// 信頼できるリバースプロキシ（実IPで上書きするもの）を手前に置いた場合のみ意味を持つ。
+// X-Forwarded-For を使うため、信頼できるリバースプロキシを手前に置いた場合のみ意味を持つ。
 function checkIpAllowed(request: NextRequest): boolean {
   const allowList = process.env.ADMIN_ALLOWED_IPS;
   if (!allowList) return true;
@@ -42,7 +41,7 @@ function checkIpAllowed(request: NextRequest): boolean {
     .filter(Boolean);
   if (allowed.length === 0) return true;
 
-  const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  const clientIp = clientIpFromHeaders(request.headers);
   return !!clientIp && allowed.includes(clientIp);
 }
 
@@ -69,11 +68,9 @@ export async function proxy(request: NextRequest) {
   }
 
   const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-  const session = token
-    ? await prisma.adminSession.findUnique({ where: { token } }).catch(() => null)
-    : null;
+  const isLoggedIn = await hasActiveAdminSession(token).catch(() => false);
 
-  if (!session || session.expiresAt < new Date()) {
+  if (!isLoggedIn) {
     const loginUrl = new URL(ADMIN_LOGIN_PATH, request.url);
     return NextResponse.redirect(loginUrl);
   }

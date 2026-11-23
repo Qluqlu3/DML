@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import { resolvePage } from '@/lib/pagination';
 import { prisma } from '@/lib/prisma';
-import { overallRating, RATING_ITEMS } from '@/lib/reviewRating';
+import { overallRating, RATING_ITEMS, starString } from '@/lib/reviewRating';
 import { STRUCTURE_TYPE_LABELS } from '@/lib/structureType';
 import { logoutAction } from '../login/actions';
 import { ReviewActions } from './ReviewActions';
@@ -17,8 +18,7 @@ export default async function AdminReviewsPage({
   const pendingWhere = { isPublished: false, rejectedAt: null } as const;
 
   const totalCount = await prisma.review.count({ where: pendingWhere });
-  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-  const page = Math.min(Math.max(1, Number.parseInt(pageParam ?? '1', 10) || 1), totalPages);
+  const { page, totalPages } = resolvePage(pageParam, totalCount, PAGE_SIZE);
 
   const reviews = await prisma.review.findMany({
     where: pendingWhere,
@@ -123,8 +123,7 @@ export default async function AdminReviewsPage({
                         fontWeight: 600,
                       }}
                     >
-                      総合 {'★'.repeat(Math.round(overallRating(review)))}
-                      {'☆'.repeat(5 - Math.round(overallRating(review)))}
+                      総合 {starString(overallRating(review))}
                     </span>
                     <span style={{ fontSize: '12px', color: '#718096' }}>
                       {STRUCTURE_TYPE_LABELS[review.structureType]}
@@ -141,8 +140,7 @@ export default async function AdminReviewsPage({
                   >
                     {RATING_ITEMS.map((item) => (
                       <span key={item.name} style={{ fontSize: '13px', color: '#4a5568' }}>
-                        {item.label}: {'★'.repeat(review[item.name])}
-                        {'☆'.repeat(5 - review[item.name])}
+                        {item.label}: {starString(review[item.name])}
                       </span>
                     ))}
                   </div>

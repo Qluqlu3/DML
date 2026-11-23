@@ -2,7 +2,7 @@ import { Badge, Box, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/rea
 import Link from 'next/link';
 import type { CompanyModel } from '@/generated/prisma/models/Company';
 import type { ReviewModel } from '@/generated/prisma/models/Review';
-import { overallRating } from '@/lib/reviewRating';
+import { averageOverallRating } from '@/lib/reviewRating';
 
 type CompanyWithReviews = CompanyModel & {
   reviews: Pick<ReviewModel, 'priceRating' | 'serviceRating' | 'qualityRating'>[];
@@ -39,10 +39,7 @@ export function CompanyGrid({ companies, totalCount }: Props) {
       >
         {companies.map((c) => {
           const reviewCount = c.reviews.length;
-          const avgRating =
-            reviewCount > 0
-              ? c.reviews.reduce((sum, r) => sum + overallRating(r), 0) / reviewCount
-              : null;
+          const avgRating = averageOverallRating(c.reviews);
 
           return (
             <GridItem key={c.id}>
