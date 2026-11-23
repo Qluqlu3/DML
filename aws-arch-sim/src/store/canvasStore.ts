@@ -69,7 +69,10 @@ type Actions = {
   removeSgRule: (sgId: string, ruleId: string) => void;
   undo: () => void;
   redo: () => void;
+  /** 構成を読み込む（undo で戻せる） */
   loadDocument: (doc: ArchDocument) => void;
+  /** 構成を読み込み、履歴も初期化する（画面を開いたときの復元用） */
+  replaceDocument: (doc: ArchDocument) => void;
   /** 雛形などのノードを今の構成に追加する */
   insertNodes: (docNodes: DocNode[]) => void;
   notify: (text: string, tone?: Notice['tone']) => void;
@@ -550,6 +553,16 @@ export const useCanvasStore = create<CanvasStore>()((set, get) => {
       const s = get();
       if (s.nodes.length || s.edges.length) checkpoint();
       commit(fromDocument(doc), { normalize: true });
+    },
+
+    replaceDocument: (doc) => {
+      set({
+        ...normalize(fromDocument(doc)),
+        past: [],
+        future: [],
+        lastCheckpoint: null,
+        dragOrigins: {},
+      });
     },
 
     insertNodes: (docNodes) => {
