@@ -302,6 +302,23 @@ function ruleAllows(
   });
 }
 
+/**
+ * target の SG が source からの port への通信を許可しているか。
+ * target に SG が 1 つも割り当てられていない場合は null（SG を設計していない構成として扱う）
+ */
+export function sgPermits(
+  m: ArchModel,
+  source: ModelNode,
+  target: ModelNode,
+  port: number,
+): boolean | null {
+  const sgs = sgIdsOf(target)
+    .map((id) => m.sgById.get(id))
+    .filter((g): g is SecurityGroup => g !== undefined);
+  if (!sgs.length) return null;
+  return sgs.some((g) => ruleAllows(m, g, source, port, false));
+}
+
 type SgAllowsOptions = {
   /** 省略時は a → b の接続のポート、接続がなければ b の既定ポート */
   port?: number;
