@@ -22,32 +22,44 @@ function inline(text: string): ReactNode[] {
   });
 }
 
+type Group = { list: boolean; lines: { key: string; value: string }[] };
+
+/** 段落の中で、「- 」で始まる行の並びと、それ以外の行の並びに分ける */
+function groupLines(block: string): Group[] {
+  const groups: Group[] = [];
+  for (const line of keyed(block.split('\n'))) {
+    const list = line.value.startsWith('- ');
+    const last = groups[groups.length - 1];
+    if (last && last.list === list) last.lines.push(line);
+    else groups.push({ list, lines: [line] });
+  }
+  return groups;
+}
+
 /** レッスン文用の簡易表示。空行で段落、「- 」で始まる行を箇条書きにする */
 export function RichText({ text, className }: { text: string; className?: string }) {
   return (
     <div className={className}>
-      {keyed(text.split(/\n\s*\n/)).map(({ key, value: block }) => {
-        const lines = keyed(block.split('\n'));
-        if (lines.every((l) => l.value.startsWith('- '))) {
-          return (
-            <ul key={key}>
-              {lines.map((l) => (
+      {keyed(text.split(/\n\s*\n/)).flatMap(({ key, value: block }) =>
+        groupLines(block).map((g) =>
+          g.list ? (
+            <ul key={`${key}:${g.lines[0]?.key}`}>
+              {g.lines.map((l) => (
                 <li key={l.key}>{inline(l.value.slice(2))}</li>
               ))}
             </ul>
-          );
-        }
-        return (
-          <p key={key}>
-            {lines.map((l, i) => (
-              <Fragment key={l.key}>
-                {i > 0 && <br />}
-                {inline(l.value)}
-              </Fragment>
-            ))}
-          </p>
-        );
-      })}
+          ) : (
+            <p key={`${key}:${g.lines[0]?.key}`}>
+              {g.lines.map((l, i) => (
+                <Fragment key={l.key}>
+                  {i > 0 && <br />}
+                  {inline(l.value)}
+                </Fragment>
+              ))}
+            </p>
+          ),
+        ),
+      )}
     </div>
   );
 }
