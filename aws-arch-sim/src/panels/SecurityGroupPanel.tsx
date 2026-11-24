@@ -1,5 +1,8 @@
+import { CloseButton, Input } from '@chakra-ui/react';
 import type { SecurityGroup, SgRule } from '../engine/document';
 import { useCanvasStore } from '../store/canvasStore';
+import { SecondaryButton } from '../ui/buttons';
+import { SelectInput, TextButton } from '../ui/forms';
 import styles from './Inspector.module.css';
 
 const COMMON_PORTS = [22, 80, 443, 3306, 5432, 6379, 11211];
@@ -10,7 +13,8 @@ function RuleRow({ sg, rule, peers }: { sg: SecurityGroup; rule: SgRule; peers: 
   const sourceValue = rule.source.type === 'sg' ? `sg:${rule.source.sgId}` : 'cidr';
   return (
     <div className={styles.ruleRow}>
-      <input
+      <Input
+        size='xs'
         type='number'
         list='common-ports'
         min={1}
@@ -24,27 +28,23 @@ function RuleRow({ sg, rule, peers }: { sg: SecurityGroup; rule: SgRule; peers: 
           }
         }}
       />
-      <select
+      <SelectInput
         value={sourceValue}
-        aria-label='送信元'
-        onChange={(e) => {
-          const v = e.target.value;
+        ariaLabel='送信元'
+        onChange={(v) =>
           updateSgRule(sg.id, rule.id, {
             source:
               v === 'cidr' ? { type: 'cidr', cidr: '0.0.0.0/0' } : { type: 'sg', sgId: v.slice(3) },
-          });
-        }}
-      >
-        <option value='cidr'>CIDR</option>
-        {peers.map((p) => (
-          <option key={p.id} value={`sg:${p.id}`}>
-            SG: {p.name}
-          </option>
-        ))}
-      </select>
+          })
+        }
+        options={[
+          { value: 'cidr', label: 'CIDR' },
+          ...peers.map((p) => ({ value: `sg:${p.id}`, label: `SG: ${p.name}` })),
+        ]}
+      />
       {rule.source.type === 'cidr' ? (
-        <input
-          type='text'
+        <Input
+          size='xs'
           value={rule.source.cidr}
           aria-label='CIDR'
           onChange={(e) =>
@@ -54,14 +54,11 @@ function RuleRow({ sg, rule, peers }: { sg: SecurityGroup; rule: SgRule; peers: 
       ) : (
         <span />
       )}
-      <button
-        type='button'
-        className={styles.iconButton}
+      <CloseButton
+        size='2xs'
         aria-label='ルールを削除'
         onClick={() => removeSgRule(sg.id, rule.id)}
-      >
-        ×
-      </button>
+      />
     </div>
   );
 }
@@ -79,20 +76,13 @@ function SecurityGroupCard({ sg, peers }: { sg: SecurityGroup; peers: SecurityGr
   return (
     <div className={styles.sgCard}>
       <div className={styles.sgHeader}>
-        <input
-          type='text'
+        <Input
+          size='sm'
           value={sg.name}
           aria-label='SG 名'
           onChange={(e) => updateSecurityGroup(sg.id, { name: e.target.value })}
         />
-        <button
-          type='button'
-          className={styles.iconButton}
-          aria-label='SG を削除'
-          onClick={() => removeSecurityGroup(sg.id)}
-        >
-          ×
-        </button>
+        <CloseButton size='xs' aria-label='SG を削除' onClick={() => removeSecurityGroup(sg.id)} />
       </div>
       <p className={styles.help}>
         割り当て先: {users.length ? users.map((n) => n.data.name).join(', ') : 'なし'}
@@ -102,13 +92,11 @@ function SecurityGroupCard({ sg, peers }: { sg: SecurityGroup; peers: SecurityGr
       {sg.inbound.map((rule) => (
         <RuleRow key={rule.id} sg={sg} rule={rule} peers={peers} />
       ))}
-      <button
-        type='button'
-        className={styles.linkButton}
+      <TextButton
         onClick={() => addSgRule(sg.id, { port: 443, source: { type: 'cidr', cidr: '0.0.0.0/0' } })}
       >
         + ルールを追加
-      </button>
+      </TextButton>
     </div>
   );
 }
@@ -144,13 +132,9 @@ export function SecurityGroupPanel() {
             {groups.map((sg) => (
               <SecurityGroupCard key={sg.id} sg={sg} peers={groups} />
             ))}
-            <button
-              type='button'
-              className={styles.secondary}
-              onClick={() => addSecurityGroup(vpc.id)}
-            >
+            <SecondaryButton alignSelf='flex-start' onClick={() => addSecurityGroup(vpc.id)}>
               + SG を追加
-            </button>
+            </SecondaryButton>
           </section>
         );
       })}

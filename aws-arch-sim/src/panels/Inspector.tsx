@@ -1,3 +1,4 @@
+import { Field, Input, Tabs } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { ServiceIcon } from '../canvas/ServiceIcon';
 import {
@@ -9,6 +10,7 @@ import {
   type ServiceKind,
 } from '../engine/catalog';
 import { type AppEdge, type AppNode, toPlaced, useCanvasStore } from '../store/canvasStore';
+import { DangerButton } from '../ui/forms';
 import { ConfigFieldInput } from './fields';
 import styles from './Inspector.module.css';
 import { SecurityGroupPanel } from './SecurityGroupPanel';
@@ -38,14 +40,14 @@ function NodeInspector({ node }: { node: AppNode }) {
         </div>
       </div>
 
-      <label className={styles.field}>
-        <span className={styles.label}>名前</span>
-        <input
-          type='text'
+      <Field.Root className={styles.field}>
+        <Field.Label className={styles.label}>名前</Field.Label>
+        <Input
+          size='sm'
           value={node.data.name}
           onChange={(e) => updateNode(node.id, { name: e.target.value })}
         />
-      </label>
+      </Field.Root>
 
       {configFields(kind).map((field) => (
         <div key={field.key} className={styles.field}>
@@ -80,9 +82,9 @@ function NodeInspector({ node }: { node: AppNode }) {
         </div>
       )}
 
-      <button type='button' className={styles.danger} onClick={() => removeElements([node.id], [])}>
+      <DangerButton onClick={() => removeElements([node.id], [])}>
         {container ? '枠と中身を削除' : '削除'}
-      </button>
+      </DangerButton>
     </div>
   );
 }
@@ -100,9 +102,10 @@ function EdgeInspector({ edge }: { edge: AppEdge }) {
         {from?.data.name} → {to?.data.name}
       </p>
       <p className={styles.help}>矢印の向きはリクエスト（メッセージ）を送る方向です。</p>
-      <label className={styles.field}>
-        <span className={styles.label}>宛先ポート</span>
-        <input
+      <Field.Root className={styles.field}>
+        <Field.Label className={styles.label}>宛先ポート</Field.Label>
+        <Input
+          size='sm'
           type='number'
           min={1}
           max={65535}
@@ -112,10 +115,8 @@ function EdgeInspector({ edge }: { edge: AppEdge }) {
             if (Number.isInteger(port) && port >= 1 && port <= 65535) updateEdgePort(edge.id, port);
           }}
         />
-      </label>
-      <button type='button' className={styles.danger} onClick={() => removeElements([], [edge.id])}>
-        接続を削除
-      </button>
+      </Field.Root>
+      <DangerButton onClick={() => removeElements([], [edge.id])}>接続を削除</DangerButton>
     </div>
   );
 }
@@ -152,9 +153,7 @@ function SelectionInspector() {
   return (
     <div className={styles.section}>
       <p>{total} 件を選択中</p>
-      <button
-        type='button'
-        className={styles.danger}
+      <DangerButton
         onClick={() =>
           removeElements(
             selectedNodes.map((n) => n.id),
@@ -163,7 +162,7 @@ function SelectionInspector() {
         }
       >
         選択をすべて削除
-      </button>
+      </DangerButton>
     </div>
   );
 }
@@ -174,28 +173,31 @@ export function Inspector() {
   const [tab, setTab] = useState<Tab>('props');
   const sgCount = useCanvasStore((s) => s.securityGroups.length);
   return (
-    <div className={styles.inspector}>
-      <div className={styles.tabs} role='tablist'>
-        <button
-          type='button'
-          role='tab'
-          aria-selected={tab === 'props'}
-          className={tab === 'props' ? styles.tabActive : styles.tab}
-          onClick={() => setTab('props')}
-        >
+    <Tabs.Root
+      className={styles.inspector}
+      value={tab}
+      onValueChange={(e) => setTab(e.value as Tab)}
+      variant='line'
+      size='sm'
+      fitted
+      colorPalette='aws'
+      lazyMount
+      unmountOnExit
+    >
+      <Tabs.List className={styles.tabs}>
+        <Tabs.Trigger value='props' fontSize='xs' whiteSpace='nowrap'>
           プロパティ
-        </button>
-        <button
-          type='button'
-          role='tab'
-          aria-selected={tab === 'sg'}
-          className={tab === 'sg' ? styles.tabActive : styles.tab}
-          onClick={() => setTab('sg')}
-        >
+        </Tabs.Trigger>
+        <Tabs.Trigger value='sg' fontSize='xs' whiteSpace='nowrap'>
           セキュリティグループ ({sgCount})
-        </button>
-      </div>
-      {tab === 'props' ? <SelectionInspector /> : <SecurityGroupPanel />}
-    </div>
+        </Tabs.Trigger>
+      </Tabs.List>
+      <Tabs.Content value='props' p='0'>
+        <SelectionInspector />
+      </Tabs.Content>
+      <Tabs.Content value='sg' p='0'>
+        <SecurityGroupPanel />
+      </Tabs.Content>
+    </Tabs.Root>
   );
 }

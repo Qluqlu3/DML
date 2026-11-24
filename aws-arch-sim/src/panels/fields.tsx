@@ -1,8 +1,10 @@
+import { Group, Input, InputAddon } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import type { ConfigField, ConfigValue } from '../engine/catalog';
 import { indexById } from '../engine/placement';
 import { routeOptions, type ScopedNode, scopeVpcId, subnetOptions } from '../engine/scope';
 import { useCanvasStore } from '../store/canvasStore';
+import { CheckInput, SelectInput, TextButton } from '../ui/forms';
 import styles from './Inspector.module.css';
 
 type FieldProps = {
@@ -38,17 +40,16 @@ function SubnetsField({ field, value, node, nodes, onChange }: FieldProps) {
   return (
     <div className={styles.checkList}>
       {options.map((o) => (
-        <label key={o.id} className={styles.check}>
-          <input
-            type='checkbox'
-            checked={selected.includes(o.id)}
-            onChange={(e) => onChange(toggle(selected, o.id, e.target.checked))}
-          />
+        <CheckInput
+          key={o.id}
+          checked={selected.includes(o.id)}
+          onChange={(on) => onChange(toggle(selected, o.id, on))}
+        >
           <span className={o.subnetType === 'private' ? styles.tagPrivate : styles.tagPublic}>
             {o.subnetType === 'private' ? 'Pri' : 'Pub'}
           </span>
           {o.label}
-        </label>
+        </CheckInput>
       ))}
       <p className={selected.length < field.min ? styles.warn : styles.note}>
         {selected.length < field.min
@@ -71,86 +72,71 @@ function SecurityGroupsField({ value, node, nodes, onChange }: FieldProps) {
   return (
     <div className={styles.checkList}>
       {options.map((g) => (
-        <label key={g.id} className={styles.check}>
-          <input
-            type='checkbox'
-            checked={selected.includes(g.id)}
-            onChange={(e) => onChange(toggle(selected, g.id, e.target.checked))}
-          />
+        <CheckInput
+          key={g.id}
+          checked={selected.includes(g.id)}
+          onChange={(on) => onChange(toggle(selected, g.id, on))}
+        >
           {g.name}
-        </label>
+        </CheckInput>
       ))}
-      <button
-        type='button'
-        className={styles.linkButton}
+      <TextButton
         onClick={() => {
           const id = addSecurityGroup(vpcId, `${node.name.toLowerCase().replace(/\s+/g, '-')}-sg`);
           onChange([...selected, id]);
         }}
       >
         + 新しい SG を作成して割り当て
-      </button>
+      </TextButton>
     </div>
   );
 }
 
 function RouteField({ value, node, nodes, onChange }: FieldProps) {
   const options = useMemo(() => routeOptions(node.id, nodes), [node.id, nodes]);
-  return (
-    <select value={String(value)} onChange={(e) => onChange(e.target.value)}>
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
-  );
+  return <SelectInput value={String(value)} onChange={onChange} options={options} />;
 }
 
 export function ConfigFieldInput(props: FieldProps) {
   const { field, value, onChange } = props;
   switch (field.type) {
     case 'select':
-      return (
-        <select value={String(value)} onChange={(e) => onChange(e.target.value)}>
-          {field.options.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+      return <SelectInput value={String(value)} onChange={onChange} options={field.options} />;
+    case 'number': {
+      const input = (
+        <Input
+          size='sm'
+          type='number'
+          min={field.min}
+          max={field.max}
+          step={field.step ?? 1}
+          value={Number(value)}
+          onChange={(e) => {
+            const n = Number(e.target.value);
+            if (Number.isFinite(n)) onChange(Math.min(field.max, Math.max(field.min, n)));
+          }}
+        />
       );
-    case 'number':
-      return (
-        <div className={styles.numberRow}>
-          <input
-            type='number'
-            min={field.min}
-            max={field.max}
-            step={field.step ?? 1}
-            value={Number(value)}
-            onChange={(e) => {
-              const n = Number(e.target.value);
-              if (Number.isFinite(n)) onChange(Math.min(field.max, Math.max(field.min, n)));
-            }}
-          />
-          {field.unit && <span className={styles.unit}>{field.unit}</span>}
-        </div>
+      return field.unit ? (
+        <Group attached>
+          {input}
+          <InputAddon fontSize='xs' color='fg.muted'>
+            {field.unit}
+          </InputAddon>
+        </Group>
+      ) : (
+        input
       );
+    }
     case 'boolean':
       return (
-        <label className={styles.check}>
-          <input
-            type='checkbox'
-            checked={Boolean(value)}
-            onChange={(e) => onChange(e.target.checked)}
-          />
+        <CheckInput checked={Boolean(value)} onChange={onChange}>
           有効
-        </label>
+        </CheckInput>
       );
     case 'text':
       return (
-        <input type='text' value={String(value ?? '')} onChange={(e) => onChange(e.target.value)} />
+        <Input size='sm' value={String(value ?? '')} onChange={(e) => onChange(e.target.value)} />
       );
     case 'subnets':
       return <SubnetsField {...props} />;
