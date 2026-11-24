@@ -1,9 +1,11 @@
+import { Badge, Slider as ChakraSlider, Field, HStack, Tabs, Tag, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import type { LintIssue } from '../engine/rules/linter';
 import type { SimResult, TrafficProfile } from '../engine/simulator/types';
 import { NodeView, Overview, type SelectedNode } from '../incidents/IncidentPanel';
 import base from '../learning/GuidePanel.module.css';
 import { CollapseButton, SecondaryButton } from '../ui/buttons';
+import { SelectInput } from '../ui/forms';
 import styles from './SandboxPanel.module.css';
 
 export type SandboxTab = 'check' | 'simulate';
@@ -53,18 +55,30 @@ function Slider({
   onChange: (v: number) => void;
 }) {
   return (
-    <label className={styles.slider}>
-      <span>{label}</span>
-      <input
-        type='range'
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-      />
-      <strong>{format(value)}</strong>
-    </label>
+    <ChakraSlider.Root
+      size='sm'
+      colorPalette='aws'
+      min={min}
+      max={max}
+      step={step}
+      value={[value]}
+      onValueChange={(e) => onChange(e.value[0] ?? value)}
+    >
+      <HStack justify='space-between'>
+        <ChakraSlider.Label fontSize='xs' fontWeight='normal'>
+          {label}
+        </ChakraSlider.Label>
+        <Text fontSize='xs' fontWeight='bold'>
+          {format(value)}
+        </Text>
+      </HStack>
+      <ChakraSlider.Control>
+        <ChakraSlider.Track>
+          <ChakraSlider.Range />
+        </ChakraSlider.Track>
+        <ChakraSlider.Thumbs />
+      </ChakraSlider.Control>
+    </ChakraSlider.Root>
   );
 }
 
@@ -142,34 +156,36 @@ function SimulateTab({ settings, onSettings, azNames, sim, selected }: SandboxPa
           format={(v) => `${Math.round(v * 100)}%`}
           onChange={(cacheableRatio) => setTraffic({ cacheableRatio })}
         />
-        <label className={styles.slider}>
-          <span>AZ 障害</span>
-          <select
+        <Field.Root>
+          <Field.Label fontSize='xs' fontWeight='normal'>
+            AZ 障害
+          </Field.Label>
+          <SelectInput
             value={settings.azDown}
-            onChange={(e) => onSettings({ ...settings, azDown: e.target.value })}
-          >
-            <option value=''>なし</option>
-            {azNames.map((az) => (
-              <option key={az} value={az}>
-                {az} を停止
-              </option>
-            ))}
-          </select>
-        </label>
+            onChange={(azDown) => onSettings({ ...settings, azDown })}
+            options={[
+              { value: '', label: 'なし' },
+              ...azNames.map((az) => ({ value: az, label: `${az} を停止` })),
+            ]}
+          />
+        </Field.Root>
         <div className={styles.failed}>
           <span>停止中のノード</span>
           {settings.failed.map((f) => (
-            <button
-              key={f.id}
-              type='button'
-              className={styles.failedChip}
-              onClick={() =>
-                onSettings({ ...settings, failed: settings.failed.filter((x) => x.id !== f.id) })
-              }
-              title='クリックで復旧'
-            >
-              {f.name} ×
-            </button>
+            <Tag.Root key={f.id} size='md' variant='solid' colorPalette='gray'>
+              <Tag.Label>{f.name}</Tag.Label>
+              <Tag.EndElement>
+                <Tag.CloseTrigger
+                  aria-label={`${f.name} を復旧`}
+                  onClick={() =>
+                    onSettings({
+                      ...settings,
+                      failed: settings.failed.filter((x) => x.id !== f.id),
+                    })
+                  }
+                />
+              </Tag.EndElement>
+            </Tag.Root>
           ))}
           {canFail && (
             <SecondaryButton
@@ -213,37 +229,31 @@ export function SandboxPanel(props: SandboxPanelProps) {
       aria-label='チェックとシミュレーション'
     >
       <header className={base.panelHeader}>
-        <div className={styles.tabs} role='tablist'>
-          <button
-            type='button'
-            role='tab'
-            aria-selected={props.tab === 'check'}
-            className={props.tab === 'check' ? styles.tabActive : styles.tab}
-            onClick={() => {
-              props.onTab('check');
-              setCollapsed(false);
-            }}
-          >
-            チェック
-            {props.issues.length > 0 && (
-              <span className={warnings ? styles.countWarn : styles.count}>
-                {props.issues.length}
-              </span>
-            )}
-          </button>
-          <button
-            type='button'
-            role='tab'
-            aria-selected={props.tab === 'simulate'}
-            className={props.tab === 'simulate' ? styles.tabActive : styles.tab}
-            onClick={() => {
-              props.onTab('simulate');
-              setCollapsed(false);
-            }}
-          >
-            シミュレーション
-          </button>
-        </div>
+        <Tabs.Root
+          flex='1'
+          size='sm'
+          variant='subtle'
+          colorPalette='gray'
+          value={props.tab}
+          onValueChange={(e) => {
+            props.onTab(e.value as SandboxTab);
+            setCollapsed(false);
+          }}
+        >
+          <Tabs.List border='none'>
+            <Tabs.Trigger value='check' fontSize='xs' fontWeight='bold'>
+              チェック
+              {props.issues.length > 0 && (
+                <Badge size='xs' variant='solid' colorPalette={warnings ? 'aws' : 'gray'}>
+                  {props.issues.length}
+                </Badge>
+              )}
+            </Tabs.Trigger>
+            <Tabs.Trigger value='simulate' fontSize='xs' fontWeight='bold'>
+              シミュレーション
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Tabs.Root>
         <CollapseButton onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}>
           {collapsed ? '開く' : 'たたむ'}
         </CollapseButton>

@@ -2,48 +2,6 @@
   width: 380px;
 }
 
-.tabs {
-  display: flex;
-  flex: 1;
-  gap: 4px;
-}
-
-.tab,
-.tabActive {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: none;
-  color: rgb(255 255 255 / 75%);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.tabActive {
-  border-color: rgb(255 255 255 / 35%);
-  background: rgb(255 255 255 / 12%);
-  color: #fff;
-}
-
-.count,
-.countWarn {
-  min-width: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 25%);
-  font-size: 11px;
-  text-align: center;
-}
-
-.countWarn {
-  background: var(--accent);
-  color: var(--on-accent);
-}
-
 .empty,
 .note,
 .hint {
@@ -125,22 +83,6 @@
   background: var(--surface-muted);
 }
 
-.slider {
-  display: grid;
-  grid-template-columns: 110px 1fr 72px;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-}
-
-.slider strong {
-  text-align: right;
-}
-
-.slider select {
-  grid-column: 2 / 4;
-}
-
 .failed {
   display: flex;
   flex-wrap: wrap;
@@ -151,14 +93,4 @@
 
 .failed > span:first-child {
   width: 110px;
-}
-
-.failedChip {
-  padding: 1px 8px;
-  border: none;
-  border-radius: 999px;
-  background: var(--down);
-  color: #fff;
-  font-size: 11px;
-  cursor: pointer;
 }

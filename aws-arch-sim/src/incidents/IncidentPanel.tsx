@@ -9,6 +9,9 @@ import { RichText } from '../learning/RichText';
 import { TopicIcon } from '../learning/TopicIcon';
 import { topicTitle } from '../learning/topics';
 import { CollapseButton, PrimaryButton, SecondaryButton } from '../ui/buttons';
+import { TextButton } from '../ui/forms';
+import { Meter } from '../ui/Meter';
+import { StatusBadge } from '../ui/StatusBadge';
 import styles from './IncidentPanel.module.css';
 import { formatPct, type IncidentRun, type IncidentScore } from './incidents';
 import type { IncidentProgress, TurnRecord } from './progressStore';
@@ -40,12 +43,12 @@ type IncidentPanelProps = {
   onRestart: () => void;
 };
 
-const STATUS: Record<NodeStatus, { label: string; className?: string }> = {
-  ok: { label: '正常', className: styles.ok },
-  warn: { label: '注意', className: styles.warn },
-  crit: { label: '異常', className: styles.crit },
-  down: { label: '停止', className: styles.down },
-  idle: { label: 'リクエストなし', className: styles.idle },
+const STATUS_LABEL: Record<NodeStatus, string> = {
+  ok: '正常',
+  warn: '注意',
+  crit: '異常',
+  down: '停止',
+  idle: 'リクエストなし',
 };
 
 const fmt = (n: number) => Math.round(n).toLocaleString();
@@ -116,11 +119,7 @@ export function NodeView({ selected }: { selected: SelectedNode | null }) {
       <div className={styles.nodeHead}>
         <strong>{selected.name}</strong>
         <span className={styles.kind}>{kindLabel(selected.kind)}</span>
-        {m && (
-          <span className={`${styles.chip} ${STATUS[m.status].className}`}>
-            {STATUS[m.status].label}
-          </span>
-        )}
+        {m && <StatusBadge tone={m.status}>{STATUS_LABEL[m.status]}</StatusBadge>}
       </div>
       {!m ? (
         <p className={styles.placeholder}>
@@ -137,18 +136,12 @@ export function NodeView({ selected }: { selected: SelectedNode | null }) {
               <>
                 <dt>利用率</dt>
                 <dd>
-                  <span className={styles.util}>
-                    <span
-                      className={
-                        m.utilization >= 0.9
-                          ? styles.utilCrit
-                          : m.utilization >= 0.7
-                            ? styles.utilWarn
-                            : styles.utilOk
-                      }
-                      style={{ width: `${Math.min(m.utilization, 1) * 100}%` }}
-                    />
-                  </span>
+                  <Meter
+                    ratio={m.utilization}
+                    tone={m.utilization >= 0.9 ? 'crit' : m.utilization >= 0.7 ? 'warn' : 'ok'}
+                    width='80px'
+                    label='利用率'
+                  />
                   {Math.round(m.utilization * 100)}%
                 </dd>
               </>
@@ -230,7 +223,11 @@ function History({ turns }: { turns: TurnRecord[] }) {
                 ・$
                 {fmt(t.costUsd)}
               </span>
-              {t.resolved && <span className={`${styles.chip} ${styles.ok}`}>解決</span>}
+              {t.resolved && (
+                <StatusBadge tone='ok' ml='0'>
+                  解決
+                </StatusBadge>
+              )}
             </div>
             <ul>
               {t.changes.map((c) => (
@@ -383,9 +380,9 @@ function WorkingView(props: IncidentPanelProps) {
       {progress.gaveUp ? (
         <Explanation incident={incident} />
       ) : (
-        <button type='button' className={styles.giveUp} onClick={props.onGiveUp}>
+        <TextButton color='fg.muted' textDecoration='underline' onClick={props.onGiveUp}>
           あきらめて解説を見る
-        </button>
+        </TextButton>
       )}
       <History turns={progress.turns} />
     </div>

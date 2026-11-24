@@ -96,29 +96,6 @@
   font-size: 11px;
 }
 
-.status {
-  margin-left: auto;
-  padding: 1px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.statusDoing {
-  background: var(--info-bg);
-  color: var(--info);
-}
-
-.statusDone {
-  background: var(--ok-bg);
-  color: var(--ok);
-}
-
-.statusSelf {
-  background: var(--accent);
-  color: var(--on-accent);
-}
-
 .lessonTitle {
   margin: 0;
   font-size: 15px;

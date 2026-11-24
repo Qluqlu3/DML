@@ -1,3 +1,4 @@
+import { Input } from '@chakra-ui/react';
 import { type DragEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { DND_MIME } from '../canvas/Canvas';
 import { ServiceIcon } from '../canvas/ServiceIcon';
@@ -67,8 +68,10 @@ export function Palette({ onAdd, highlightKinds, allowedKinds }: PaletteProps) {
 
   return (
     <aside className={styles.palette} ref={listRef}>
-      <input
-        className={styles.search}
+      <Input
+        size='sm'
+        mb='1.5'
+        flexShrink={0}
         type='search'
         placeholder='サービスを検索'
         value={query}

@@ -5,6 +5,8 @@ import { RichText } from '../learning/RichText';
 import { TopicIcon } from '../learning/TopicIcon';
 import { topicTitle } from '../learning/topics';
 import { CollapseButton, PrimaryButton, SecondaryButton } from '../ui/buttons';
+import { Meter } from '../ui/Meter';
+import { StatusBadge } from '../ui/StatusBadge';
 import styles from './ChallengePanel.module.css';
 import { type Evaluation, HINT_PENALTY, type RuleOutcome, type Score } from './challenges';
 import type { ChallengeProgress } from './progressStore';
@@ -55,12 +57,7 @@ function CostMeter({ cost, budget }: { cost: number; budget?: number }) {
       <strong className={over ? styles.over : undefined}>
         ${cost.toLocaleString()} / 予算 ${budget.toLocaleString()}
       </strong>
-      <span className={styles.meter} aria-hidden>
-        <span
-          className={over ? styles.meterOver : styles.meterFill}
-          style={{ width: `${ratio * 100}%` }}
-        />
-      </span>
+      <Meter ratio={ratio} tone={over ? 'crit' : 'ok'} label='予算に対する月額' />
     </div>
   );
 }
@@ -218,9 +215,9 @@ function BriefView(props: ChallengePanelProps) {
         <span className={base.stepLabel}>問題 {number}</span>
         <Stars n={challenge.difficulty} />
         {progress.cleared && (
-          <span className={styles.clearedBadge}>
+          <StatusBadge tone='done'>
             クリア済み{progress.bestScore !== undefined ? `・ベスト ${progress.bestScore} 点` : ''}
-          </span>
+          </StatusBadge>
         )}
       </div>
       <h2 className={base.stepTitle}>{challenge.title}</h2>

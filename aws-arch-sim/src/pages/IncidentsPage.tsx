@@ -3,23 +3,24 @@ import { Stars } from '../challenges/ChallengePanel';
 import { INCIDENTS } from '../incidents/incidents';
 import { NEW_INCIDENT, useIncidentStore } from '../incidents/progressStore';
 import type { Incident } from '../incidents/types';
+import { StatusBadge } from '../ui/StatusBadge';
 import styles from './LearnPage.module.css';
 
 function IncidentCard({ incident, number }: { incident: Incident; number: number }) {
   const progress = useIncidentStore((s) => s.incidents[incident.id] ?? NEW_INCIDENT);
   const status = progress.everSolved
     ? progress.bestScore !== undefined
-      ? { label: `解決・${progress.bestScore} 点`, className: styles.statusSelf }
-      : { label: '解決', className: styles.statusDone }
+      ? { label: `解決・${progress.bestScore} 点`, tone: 'self' as const }
+      : { label: '解決', tone: 'done' as const }
     : progress.turns.length > 0 || progress.hintsUsed > 0
-      ? { label: `対応中（${progress.turns.length} ターン）`, className: styles.statusDoing }
+      ? { label: `対応中（${progress.turns.length} ターン）`, tone: 'doing' as const }
       : null;
   return (
     <Link to={`/incidents/${incident.id}`} className={styles.lesson}>
       <div className={styles.lessonTop}>
         <span className={styles.number}>インシデント {number}</span>
         <Stars n={incident.difficulty} />
-        {status && <span className={`${styles.status} ${status.className}`}>{status.label}</span>}
+        {status && <StatusBadge tone={status.tone}>{status.label}</StatusBadge>}
       </div>
       <h3 className={styles.lessonTitle}>{incident.title}</h3>
       <p className={styles.lessonSummary}>{incident.summary}</p>

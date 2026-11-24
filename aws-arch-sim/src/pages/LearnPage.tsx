@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { COURSES, UPCOMING_COURSES } from '../content/courses';
 import { NEW_PROGRESS, useProgressStore } from '../learning/progressStore';
 import type { Lesson } from '../learning/types';
+import { StatusBadge } from '../ui/StatusBadge';
 import styles from './LearnPage.module.css';
 
 const LEVEL = { 1: '入門', 2: '中級', 3: '応用' };
@@ -10,12 +11,12 @@ function LessonCard({ lesson, number }: { lesson: Lesson; number: string }) {
   const progress = useProgressStore((s) => s.lessons[lesson.id] ?? NEW_PROGRESS);
   const status = progress.completed
     ? progress.assisted
-      ? { label: '完了', className: styles.statusDone }
-      : { label: '自力でクリア', className: styles.statusSelf }
+      ? { label: '完了', tone: 'done' as const }
+      : { label: '自力でクリア', tone: 'self' as const }
     : progress.phase !== 'intro'
       ? {
           label: `途中（${Math.min(progress.stepIndex + 1, lesson.steps.length)}/${lesson.steps.length}）`,
-          className: styles.statusDoing,
+          tone: 'doing' as const,
         }
       : null;
   return (
@@ -23,7 +24,7 @@ function LessonCard({ lesson, number }: { lesson: Lesson; number: string }) {
       <div className={styles.lessonTop}>
         <span className={styles.number}>{number}</span>
         <span className={styles.level}>{LEVEL[lesson.level]}</span>
-        {status && <span className={`${styles.status} ${status.className}`}>{status.label}</span>}
+        {status && <StatusBadge tone={status.tone}>{status.label}</StatusBadge>}
       </div>
       <h3 className={styles.lessonTitle}>{lesson.title}</h3>
       <p className={styles.lessonSummary}>{lesson.summary}</p>
