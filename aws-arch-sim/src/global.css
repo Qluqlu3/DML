@@ -1,14 +1,32 @@
 :root {
-  --bg: #f6f7f9;
-  --surface: #fff;
-  --surface-muted: #f0f2f5;
-  --border: #d9dde3;
-  --text: #1d2330;
-  --text-muted: #5f6b7a;
+  color-scheme: dark;
+
+  /* 基本（ダーク） */
+  --bg: #0f141b;
+  --surface: #18202b;
+  --surface-muted: #212b38;
+  --surface-raised: #263141;
+  --border: #344051;
+  --text: #e6ebf1;
+  --text-muted: #9aa7b8;
+  --header-bg: #1b2430;
+  --node-label-bg: rgb(24 32 43 / 88%);
+
+  /* アクセント・状態 */
   --accent: #f90;
-  --accent-strong: #e07f00;
-  --danger: #d13212;
-  --info: #0972d3;
+  --accent-strong: #ffb84d;
+  --on-accent: #1a1f26;
+  --danger: #ff6b5a;
+  --danger-bg: rgb(255 107 90 / 14%);
+  --info: #4ea3ff;
+  --info-bg: rgb(78 163 255 / 14%);
+  --ok: #6fd36f;
+  --ok-strong: #2f9e44;
+  --ok-bg: rgb(111 211 111 / 13%);
+  --ok-border: rgb(111 211 111 / 45%);
+  --warn: #f5b830;
+  --warn-bg: rgb(245 184 48 / 14%);
+  --down: #5d6878;
   --radius: 6px;
 
   font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
@@ -31,6 +49,29 @@ button,
 input,
 select {
   font: inherit;
+}
+
+input:not([type="range"], [type="checkbox"], [type="radio"]),
+select,
+textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input[type="range"],
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+a {
+  color: var(--info);
 }
 
 /* 学習モード: 置き場所などを光らせる */
@@ -66,11 +107,11 @@ select {
 }
 
 .react-flow__node.sim-ok {
-  outline: 2px solid rgb(44 138 18 / 55%);
+  outline: 2px solid rgb(111 211 111 / 55%);
 }
 
 .react-flow__node.sim-warn {
-  outline: 3px solid #e8a200;
+  outline: 3px solid var(--warn);
 }
 
 .react-flow__node.sim-crit {
@@ -86,11 +127,11 @@ select {
 @keyframes sim-crit {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgb(209 50 18 / 45%);
+    box-shadow: 0 0 0 0 rgb(255 107 90 / 45%);
   }
 
   50% {
-    box-shadow: 0 0 0 10px rgb(209 50 18 / 0%);
+    box-shadow: 0 0 0 10px rgb(255 107 90 / 0%);
   }
 }
 
@@ -110,4 +151,19 @@ select {
 .page-loading {
   padding: 32px;
   color: var(--text-muted);
+}
+
+/* React Flow の配色をアプリのトークンに合わせる（color-scheme: dark で暗い既定値になる） */
+.react-flow {
+  --xy-background-color: var(--bg);
+  --xy-background-pattern-dots-color: #2c3746;
+  --xy-minimap-background-color: var(--surface);
+  --xy-minimap-mask-background-color: rgb(15 20 27 / 65%);
+  --xy-controls-button-background-color: var(--surface);
+  --xy-controls-button-background-color-hover: var(--surface-muted);
+  --xy-controls-button-color: var(--text);
+  --xy-controls-button-border-color: var(--border);
+  --xy-edge-label-background-color: var(--surface);
+  --xy-edge-label-color: var(--text-muted);
+  --xy-attribution-background-color: transparent;
 }

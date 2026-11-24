@@ -24,7 +24,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #232f3e;
+  background: var(--header-bg);
   color: #fff;
 }
 
@@ -141,13 +141,13 @@
 }
 
 .done .mark {
-  border-color: #2c8a12;
-  background: #2c8a12;
+  border-color: var(--ok-strong);
+  background: var(--ok-strong);
   color: #fff;
 }
 
 .done {
-  color: #2c6e12;
+  color: var(--ok);
 }
 
 .reason {
@@ -160,7 +160,7 @@
   padding: 8px 10px;
   border: 1px solid var(--danger);
   border-radius: 6px;
-  background: #fdecea;
+  background: var(--danger-bg);
   font-size: 12px;
 }
 
@@ -174,13 +174,13 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px;
-  border: 1px solid #9bd08a;
+  border: 1px solid var(--ok-border);
   border-radius: 8px;
-  background: #f0f9ec;
+  background: var(--ok-bg);
 }
 
 .clearedTitle {
-  color: #2c6e12;
+  color: var(--ok);
   font-size: 18px;
   font-weight: 800;
 }
@@ -193,7 +193,7 @@
 }
 
 .whyLabel {
-  color: #2c6e12;
+  color: var(--ok);
 }
 
 .badLabel {
@@ -246,7 +246,7 @@
   border: none;
   border-radius: 6px;
   background: var(--accent);
-  color: #232f3e;
+  color: var(--on-accent);
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
@@ -302,13 +302,13 @@
 }
 
 .choiceCorrect {
-  border-color: #2c8a12;
-  background: #f0f9ec;
+  border-color: var(--ok-strong);
+  background: var(--ok-bg);
 }
 
 .choiceWrong {
   border-color: var(--danger);
-  background: #fdecea;
+  background: var(--danger-bg);
 }
 
 .explanation {
@@ -332,7 +332,7 @@
 
 .selfBadge {
   background: var(--accent);
-  color: #232f3e;
+  color: var(--on-accent);
 }
 
 .scoreBadge {

@@ -105,18 +105,18 @@
 }
 
 .statusDoing {
-  background: #e6f0fa;
+  background: var(--info-bg);
   color: var(--info);
 }
 
 .statusDone {
-  background: #e3f4dc;
-  color: #2c6e12;
+  background: var(--ok-bg);
+  color: var(--ok);
 }
 
 .statusSelf {
   background: var(--accent);
-  color: #232f3e;
+  color: var(--on-accent);
 }
 
 .lessonTitle {

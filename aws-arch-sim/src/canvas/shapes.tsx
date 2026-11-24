@@ -6,23 +6,29 @@ export const SHAPE_BOX = { width: 132, height: 104 };
 
 type Tones = { top: string; front: string; side: string; deep: string; stroke: string };
 
-function mixWithWhite(hex: string, ratio: number): string {
+/** ダーク背景になじむ面の下地 */
+const DARK_BASE = [0x14, 0x1b, 0x25] as const;
+
+/** hex 色を base 色へ ratio だけ寄せる（0 = 元の色, 1 = base） */
+function mix(hex: string, base: readonly [number, number, number], ratio: number): string {
   const n = Number.parseInt(hex.slice(1), 16);
-  const ch = (shift: number) => {
+  const ch = (shift: number, b: number) => {
     const c = (n >> shift) & 0xff;
-    return Math.round(c + (255 - c) * ratio);
+    return Math.round(c + (b - c) * ratio);
   };
-  return `rgb(${ch(16)} ${ch(8)} ${ch(0)})`;
+  return `rgb(${ch(16, base[0])} ${ch(8, base[1])} ${ch(0, base[2])})`;
 }
 
-/** サービス色から各面の色を作る（上面は明るく、側面は暗く） */
+const WHITE = [0xff, 0xff, 0xff] as const;
+
+/** サービス色から各面の色を作る（上面は明るく、側面は暗く。ダーク背景向けに暗い下地へ寄せる） */
 export function tones(color: string): Tones {
   return {
-    top: mixWithWhite(color, 0.74),
-    front: mixWithWhite(color, 0.86),
-    side: mixWithWhite(color, 0.58),
-    deep: mixWithWhite(color, 0.4),
-    stroke: color,
+    top: mix(color, DARK_BASE, 0.42),
+    front: mix(color, DARK_BASE, 0.6),
+    side: mix(color, DARK_BASE, 0.72),
+    deep: mix(color, DARK_BASE, 0.82),
+    stroke: mix(color, WHITE, 0.15),
   };
 }
 
@@ -296,7 +302,7 @@ function draw(shape: Shape, t: Tones, v: ShapeVariant, uid: string): Drawing {
           <g>
             <defs>
               <radialGradient id={`${uid}-r`} cx='0.35' cy='0.3' r='0.75'>
-                <stop offset='0' stopColor='#fff' />
+                <stop offset='0' stopColor={t.top} />
                 <stop offset='0.35' stopColor={t.front} />
                 <stop offset='1' stopColor={t.side} />
               </radialGradient>
@@ -408,7 +414,7 @@ export function ServiceShape({ shape, color, uid, icon, ...variant }: ShapeProps
         aria-hidden
         style={{ overflow: 'visible' }}
       >
-        <ellipse cx={62} cy={101} rx={44} ry={4} fill='#000' opacity={0.08} />
+        <ellipse cx={62} cy={101} rx={44} ry={4} fill='#000' opacity={0.35} />
         {body}
       </svg>
       <div

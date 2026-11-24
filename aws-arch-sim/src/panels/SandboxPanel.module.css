@@ -41,7 +41,7 @@
 
 .countWarn {
   background: var(--accent);
-  color: #232f3e;
+  color: var(--on-accent);
 }
 
 .empty,
@@ -102,7 +102,8 @@
 }
 
 .warning {
-  background: #e8a200;
+  background: var(--warn);
+  color: var(--on-accent);
 }
 
 .info {
@@ -156,7 +157,7 @@
   padding: 1px 8px;
   border: none;
   border-radius: 999px;
-  background: #555;
+  background: var(--down);
   color: #fff;
   font-size: 11px;
   cursor: pointer;

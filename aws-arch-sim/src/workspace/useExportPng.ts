@@ -16,7 +16,7 @@ export function useExportPng() {
     const width = Math.min(MAX_SIZE, Math.ceil(bounds.width + PADDING * 2));
     const height = Math.min(MAX_SIZE, Math.ceil(bounds.height + PADDING * 2));
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.1, 1, `${PADDING}px`);
-    const background = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#f5f7fa';
+    const background = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#0f141b';
     // 判定やシミュレーションの色・接続点は図に含めない
     const root = viewport.closest('.react-flow');
     root?.classList.add('is-exporting');

@@ -20,12 +20,12 @@
 
 .alarm {
   border: 1px solid var(--danger);
-  background: #fdecea;
+  background: var(--danger-bg);
 }
 
 .alarmOk {
-  border: 1px solid #9bd08a;
-  background: #f0f9ec;
+  border: 1px solid var(--ok-border);
+  background: var(--ok-bg);
 }
 
 .alarmHead {
@@ -44,7 +44,7 @@
 }
 
 .alarmOk .alarmState {
-  background: #2c8a12;
+  background: var(--ok-strong);
 }
 
 .report summary {
@@ -93,7 +93,7 @@
 }
 
 .better {
-  color: #2c8a12;
+  color: var(--ok-strong);
 }
 
 .worse {
@@ -136,22 +136,22 @@
 }
 
 .ok {
-  background: #e3f4dc;
-  color: #2c6e12;
+  background: var(--ok-bg);
+  color: var(--ok);
 }
 
 .warn {
-  background: #fff3d6;
-  color: #9a6700;
+  background: var(--warn-bg);
+  color: var(--warn);
 }
 
 .crit {
-  background: #fdecea;
+  background: var(--danger-bg);
   color: var(--danger);
 }
 
 .down {
-  background: #555;
+  background: var(--down);
   color: #fff;
 }
 
@@ -196,11 +196,11 @@
 }
 
 .utilOk {
-  background: #2c8a12;
+  background: var(--ok-strong);
 }
 
 .utilWarn {
-  background: #e8a200;
+  background: var(--warn);
 }
 
 .utilCrit {
@@ -216,7 +216,7 @@
   padding: 8px;
   overflow-y: auto;
   border-radius: 6px;
-  background: #1b2430;
+  background: #0a0e14;
   color: #d7dde5;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
@@ -249,9 +249,9 @@
 
 .unmet {
   padding: 8px 10px;
-  border: 1px solid #e8a200;
+  border: 1px solid var(--warn);
   border-radius: 8px;
-  background: #fff8e6;
+  background: var(--warn-bg);
   font-size: 12px;
 }
 

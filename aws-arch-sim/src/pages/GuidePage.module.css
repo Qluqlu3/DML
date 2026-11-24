@@ -67,8 +67,8 @@
 }
 
 .learned {
-  background: #e3f4dc;
-  color: #2c6e12;
+  background: var(--ok-bg);
+  color: var(--ok);
 }
 
 .pending {

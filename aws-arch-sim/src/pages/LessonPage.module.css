@@ -15,7 +15,7 @@
 }
 
 .dotDone {
-  background: #7bc96f;
+  background: var(--ok);
 }
 
 .dotNow {

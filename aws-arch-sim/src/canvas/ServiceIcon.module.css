@@ -24,9 +24,10 @@
   display: block;
 }
 
+/* 線だけのアイコン（ユーザー・IGW など）は暗い背景で見えなくなるので、明るい台に載せる */
 .plate {
-  border: 1px solid rgb(0 0 0 / 8%);
+  border: 1px solid rgb(255 255 255 / 20%);
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 15%);
+  background: #eef1f5;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
 }

@@ -19,7 +19,7 @@
 }
 
 .node.selected .shape {
-  filter: drop-shadow(0 0 1px var(--service-color)) drop-shadow(0 4px 10px rgb(0 0 0 / 18%));
+  filter: drop-shadow(0 0 1px var(--service-color)) drop-shadow(0 4px 10px rgb(0 0 0 / 45%));
 }
 
 .name {
@@ -27,7 +27,7 @@
   padding: 1px 8px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgb(255 255 255 / 85%);
+  background: var(--node-label-bg);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.4;
@@ -58,24 +58,24 @@
 }
 
 .muted {
-  background: rgb(255 255 255 / 85%);
+  background: var(--node-label-bg);
   color: var(--text-muted);
 }
 
 .ok {
-  background: #e3f4dc;
-  color: #2c6e12;
+  background: var(--ok-bg);
+  color: var(--ok);
 }
 
 .warn {
-  background: #fdecea;
+  background: var(--danger-bg);
   color: var(--danger);
 }
 
 .handle {
   width: 10px;
   height: 10px;
-  border: 2px solid #fff;
+  border: 2px solid var(--surface);
   background: var(--service-color);
   opacity: 0;
   transition: opacity 0.1s;

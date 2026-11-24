@@ -20,7 +20,7 @@
 }
 
 .info {
-  background: #232f3e;
+  background: var(--header-bg);
 }
 
 .close {
