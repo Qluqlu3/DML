@@ -3,6 +3,8 @@ import { ChallengePage } from './pages/ChallengePage';
 import { ChallengesPage } from './pages/ChallengesPage';
 import { GuidePage } from './pages/GuidePage';
 import { HomePage } from './pages/HomePage';
+import { IncidentPage } from './pages/IncidentPage';
+import { IncidentsPage } from './pages/IncidentsPage';
 import { LearnPage } from './pages/LearnPage';
 import { LessonPage } from './pages/LessonPage';
 import { SandboxPage } from './pages/SandboxPage';
@@ -17,6 +19,8 @@ export function App() {
         <Route path='/learn/:lessonId' element={<LessonPage />} />
         <Route path='/challenges' element={<ChallengesPage />} />
         <Route path='/challenges/:challengeId' element={<ChallengePage />} />
+        <Route path='/incidents' element={<IncidentsPage />} />
+        <Route path='/incidents/:incidentId' element={<IncidentPage />} />
         <Route path='/guide' element={<GuidePage />} />
         <Route path='/guide/:topic' element={<GuidePage />} />
       </Routes>

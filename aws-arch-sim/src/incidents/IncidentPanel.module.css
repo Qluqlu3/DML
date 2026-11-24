@@ -1,0 +1,304 @@
+.panel {
+  width: 380px;
+}
+
+.turn {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.alarm,
+.alarmOk {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.alarm {
+  border: 1px solid var(--danger);
+  background: #fdecea;
+}
+
+.alarmOk {
+  border: 1px solid #9bd08a;
+  background: #f0f9ec;
+}
+
+.alarmHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alarmState {
+  padding: 0 6px;
+  border-radius: 3px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.alarmOk .alarmState {
+  background: #2c8a12;
+}
+
+.report summary {
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.report[open] summary {
+  margin-bottom: 6px;
+}
+
+.overview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--surface-muted);
+}
+
+.stat span {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.stat strong {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 16px;
+}
+
+.bad {
+  color: var(--danger);
+}
+
+.better,
+.worse {
+  font-size: 11px;
+}
+
+.better {
+  color: #2c8a12;
+}
+
+.worse {
+  color: var(--danger);
+}
+
+.placeholder {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.nodeHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.kind {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.chip {
+  margin-left: auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ok {
+  background: #e3f4dc;
+  color: #2c6e12;
+}
+
+.warn {
+  background: #fff3d6;
+  color: #9a6700;
+}
+
+.crit {
+  background: #fdecea;
+  color: var(--danger);
+}
+
+.down {
+  background: #555;
+  color: #fff;
+}
+
+.idle {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.metrics dt {
+  color: var(--text-muted);
+}
+
+.metrics dd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.util {
+  display: inline-block;
+  width: 80px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--border);
+}
+
+.utilOk,
+.utilWarn,
+.utilCrit {
+  display: block;
+  height: 100%;
+}
+
+.utilOk {
+  background: #2c8a12;
+}
+
+.utilWarn {
+  background: #e8a200;
+}
+
+.utilCrit {
+  background: var(--danger);
+}
+
+.logs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 160px;
+  margin: 0;
+  padding: 8px;
+  overflow-y: auto;
+  border-radius: 6px;
+  background: #1b2430;
+  color: #d7dde5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  list-style: none;
+}
+
+.logs span {
+  font-weight: 700;
+}
+
+.logError span {
+  color: #ff7b6b;
+}
+
+.logWarn span {
+  color: #ffc34d;
+}
+
+.logInfo span {
+  color: #7fc7ff;
+}
+
+.changes {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.unmet {
+  padding: 8px 10px;
+  border: 1px solid #e8a200;
+  border-radius: 8px;
+  background: #fff8e6;
+  font-size: 12px;
+}
+
+.unmet ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.giveUp {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  list-style: none;
+}
+
+.history > li {
+  padding: 6px 8px;
+  border-left: 3px solid var(--border);
+}
+
+.history ul {
+  margin: 2px 0 0;
+  padding-left: 16px;
+  color: var(--text-muted);
+}
+
+.historyHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.historyHead span:not(.chip) {
+  color: var(--text-muted);
+}
