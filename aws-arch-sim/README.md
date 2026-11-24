@@ -27,6 +27,10 @@ pnpm dev        # http://localhost:5173
 git フック（ルートの `lefthook.yml`）が、コミット時に biome、push 時に biome・型チェック・テストを実行する。
 フックは `dml/` で `pnpm install` したときにインストールされる。
 
+## UI
+
+基礎部品は Chakra UI v3、画面の配置とキャンバスは CSS Modules。方針は [DESIGN.md の 2 章](docs/DESIGN.md#ui-の方針chakra-ui-への移行後) を参照。
+
 ## 実装状況
 
 - [x] フェーズ 1: サンドボックス（D&D 配置、VPC / AZ / サブネットの入れ子、接続、設定編集、SG、undo/redo、自動保存、JSON 入出力）
