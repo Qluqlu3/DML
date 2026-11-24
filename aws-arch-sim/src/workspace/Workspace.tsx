@@ -4,7 +4,6 @@ import { Link } from 'react-router';
 import { Canvas } from '../canvas/Canvas';
 import type { NodeKind } from '../engine/catalog';
 import { Inspector } from '../panels/Inspector';
-import { NoticeToast } from '../panels/NoticeToast';
 import { Palette } from '../panels/Palette';
 import { useCanvasStore } from '../store/canvasStore';
 import styles from './Workspace.module.css';
@@ -100,7 +99,6 @@ export function Workspace({
           fitViewOptions={fitViewOptions}
         />
         {overlay}
-        <NoticeToast />
       </main>
       <aside className={styles.inspector}>
         <Inspector />

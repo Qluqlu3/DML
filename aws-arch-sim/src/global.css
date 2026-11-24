@@ -1,3 +1,5 @@
+@layer reset, base, tokens, recipes;
+
 :root {
   color-scheme: dark;
 
@@ -45,33 +47,99 @@ body,
   height: 100%;
 }
 
-button,
-input,
-select {
-  font: inherit;
-}
+/*
+ * 要素の既定スタイル。Chakra の CSS レイヤー（reset → base → tokens → recipes）の base に置き、
+ * Chakra のリセットより強く、Chakra のコンポーネント（recipes）より弱くする。
+ */
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
 
-input:not([type="range"], [type="checkbox"], [type="radio"]),
-select,
-textarea {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-muted);
-  color: var(--text);
-}
+  input:not([type="range"], [type="checkbox"], [type="radio"]),
+  select,
+  textarea {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-muted);
+    color: var(--text);
+  }
 
-input::placeholder {
-  color: var(--text-muted);
-}
+  input::placeholder {
+    color: var(--text-muted);
+  }
 
-input[type="range"],
-input[type="checkbox"],
-input[type="radio"] {
-  accent-color: var(--accent);
-}
+  input[type="range"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--accent);
+  }
 
-a {
-  color: var(--info);
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: default;
+  }
+
+  a {
+    color: var(--info);
+    text-decoration: underline;
+  }
+
+  /* リセットで消えるブラウザ既定の見た目を戻す（CSS Modules で個別に上書きしている所はそちらが優先） */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 0.67em 0;
+    font-size: 2em;
+  }
+
+  h2 {
+    margin: 0.83em 0;
+    font-size: 1.5em;
+  }
+
+  h3 {
+    margin: 1em 0;
+    font-size: 1.17em;
+  }
+
+  p {
+    margin: 1em 0;
+  }
+
+  ul,
+  ol {
+    margin: 1em 0;
+    padding-inline-start: 40px;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  strong,
+  b {
+    font-weight: 700;
+  }
+
+  dl {
+    margin: 1em 0;
+  }
 }
 
 /* 学習モード: 置き場所などを光らせる */

@@ -7,8 +7,8 @@ import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 const fixed = (value: string) => ({ value });
 
 const config = defineConfig({
-  // 既存の global.css でリセット済みなので、Chakra のリセットは使わない（CSS Modules との衝突を避ける）
-  preflight: false,
+  // Chakra のリセットは CSS の @layer reset に入るので、レイヤー外の CSS Modules より優先度が低い
+  preflight: true,
   theme: {
     tokens: {
       fonts: {

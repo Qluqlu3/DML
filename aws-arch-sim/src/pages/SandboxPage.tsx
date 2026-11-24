@@ -17,6 +17,7 @@ import {
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import { downloadJson, loadStored, readJsonFile, SANDBOX_KEY } from '../store/persistence';
+import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useExportPng } from '../workspace/useExportPng';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
@@ -70,10 +71,14 @@ function Toolbar() {
     }
   };
 
-  const clearAll = () => {
-    if (window.confirm('キャンバスをすべて消去しますか？（元に戻すで取り消せます）')) {
-      loadDocument(emptyDocument());
-    }
+  const clearAll = async () => {
+    const ok = await confirmDialog({
+      title: 'キャンバスをすべて消去しますか？',
+      message: '「元に戻す」で取り消せます。',
+      confirmLabel: '消去する',
+      danger: true,
+    });
+    if (ok) loadDocument(emptyDocument());
   };
 
   const addVpcTemplate = () => {

@@ -12,6 +12,7 @@ import type { Course, GuideTopic, Lesson } from '../learning/types';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import { loadStored } from '../store/persistence';
+import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
 import { ToolbarSeparator, UndoRedoButtons, Workspace } from '../workspace/Workspace';
@@ -96,10 +97,13 @@ function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson })
     );
   };
 
-  const resetStep = () => {
-    if (window.confirm('このステップの開始時点の構成に戻しますか？（元に戻すで取り消せます）')) {
-      loadDocument(docBeforeStep(lesson, progress.stepIndex));
-    }
+  const resetStep = async () => {
+    const ok = await confirmDialog({
+      title: 'このステップの開始時点に戻しますか？',
+      message: '「元に戻す」で取り消せます。',
+      confirmLabel: '戻す',
+    });
+    if (ok) loadDocument(docBeforeStep(lesson, progress.stepIndex));
   };
 
   const restartLesson = () => {
@@ -145,7 +149,16 @@ function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson })
       )}
       <button
         type='button'
-        onClick={() => window.confirm('レッスンを最初からやり直しますか？') && restartLesson()}
+        onClick={async () => {
+          if (
+            await confirmDialog({
+              title: 'レッスンを最初からやり直しますか？',
+              confirmLabel: 'やり直す',
+            })
+          ) {
+            restartLesson();
+          }
+        }}
       >
         最初から
       </button>

@@ -14,6 +14,7 @@ import {
 import type { Incident } from '../incidents/types';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { loadStored, saveStored } from '../store/persistence';
+import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
 import { ToolbarSeparator, UndoRedoButtons, Workspace } from '../workspace/Workspace';
@@ -109,14 +110,23 @@ function IncidentWorkspace({ incident, index }: { incident: Incident; index: num
     setApplied(current);
   };
 
-  const giveUp = () => {
-    if (window.confirm('根本原因と解説を表示しますか？（この挑戦の点数は記録されなくなります）')) {
-      update(incident.id, { gaveUp: true });
-    }
+  const giveUp = async () => {
+    const ok = await confirmDialog({
+      title: '根本原因と解説を表示しますか？',
+      message: 'この挑戦の点数は記録されなくなります。',
+      confirmLabel: '解説を見る',
+      danger: true,
+    });
+    if (ok) update(incident.id, { gaveUp: true });
   };
 
-  const restartIncident = () => {
-    if (!window.confirm('障害発生直後の構成からやり直しますか？')) return;
+  const restartIncident = async () => {
+    const ok = await confirmDialog({
+      title: '障害発生直後の構成からやり直しますか？',
+      message: 'ターンの記録とヒントの使用数がリセットされます。',
+      confirmLabel: 'やり直す',
+    });
+    if (!ok) return;
     restart(incident.id);
     saveStored(appliedKey, incident.initial);
     setApplied(incident.initial);

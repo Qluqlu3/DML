@@ -24,6 +24,7 @@ import { vpcTemplate } from '../engine/templates';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import { loadStored, saveStored } from '../store/persistence';
+import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
 import {
@@ -97,15 +98,16 @@ function ChallengeWorkspace({ challenge, index }: { challenge: Challenge; index:
 
   const fitLater = () => requestAnimationFrame(() => fitView(CHALLENGE_FIT));
 
-  const viewAnswer = () => {
+  const viewAnswer = async () => {
     if (!progress.cleared && !progress.answerViewed) {
-      if (
-        !window.confirm(
-          'クリア前に模範解答を見ると、この挑戦の点数は記録されません（最初からやり直すと記録できます）。見ますか？',
-        )
-      ) {
-        return;
-      }
+      const ok = await confirmDialog({
+        title: '模範解答を見ますか？',
+        message:
+          'クリア前に模範解答を見ると、この挑戦の点数は記録されません（最初からやり直すと記録できます）。',
+        confirmLabel: '模範解答を見る',
+        danger: true,
+      });
+      if (!ok) return;
       update(challenge.id, { answerViewed: true });
     }
     mine.current = toDocument(useCanvasStore.getState());
@@ -123,10 +125,13 @@ function ChallengeWorkspace({ challenge, index }: { challenge: Challenge; index:
     fitLater();
   };
 
-  const restartChallenge = () => {
-    if (!window.confirm('最初の構成からやり直しますか？（ヒントの使用数もリセットされます）')) {
-      return;
-    }
+  const restartChallenge = async () => {
+    const ok = await confirmDialog({
+      title: '最初の構成からやり直しますか？',
+      message: 'ヒントの使用数もリセットされます。',
+      confirmLabel: 'やり直す',
+    });
+    if (!ok) return;
     paused.current = false;
     setViewingAnswer(false);
     setSubmitted(null);
