@@ -69,19 +69,21 @@ export function LearnPage() {
         );
       })}
 
-      <section className={styles.course}>
-        <h2 className={styles.courseTitle}>準備中のコース</h2>
-        <div className={styles.upcoming}>
-          {UPCOMING_COURSES.map((c, i) => (
-            <div key={c.title} className={styles.upcomingItem}>
-              <strong>
-                コース {COURSES.length + i}. {c.title}
-              </strong>
-              <span>{c.topics}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {UPCOMING_COURSES.length > 0 && (
+        <section className={styles.course}>
+          <h2 className={styles.courseTitle}>準備中のコース</h2>
+          <div className={styles.upcoming}>
+            {UPCOMING_COURSES.map((c, i) => (
+              <div key={c.title} className={styles.upcomingItem}>
+                <strong>
+                  コース {COURSES.length + i}. {c.title}
+                </strong>
+                <span>{c.topics}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
