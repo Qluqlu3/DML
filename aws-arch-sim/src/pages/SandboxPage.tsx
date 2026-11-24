@@ -17,6 +17,7 @@ import {
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import { downloadJson, loadStored, readJsonFile, SANDBOX_KEY } from '../store/persistence';
+import { ToolbarButton } from '../ui/buttons';
 import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useExportPng } from '../workspace/useExportPng';
@@ -90,19 +91,15 @@ function Toolbar() {
     <>
       <UndoRedoButtons />
       <ToolbarSeparator />
-      <button type='button' onClick={addVpcTemplate}>
-        VPC 雛形を追加
-      </button>
+      <ToolbarButton onClick={addVpcTemplate}>VPC 雛形を追加</ToolbarButton>
       <ToolbarSeparator />
-      <button type='button' onClick={exportJson} disabled={isEmpty}>
+      <ToolbarButton onClick={exportJson} disabled={isEmpty}>
         書き出し
-      </button>
-      <button type='button' onClick={exportImage} disabled={isEmpty}>
+      </ToolbarButton>
+      <ToolbarButton onClick={exportImage} disabled={isEmpty}>
         PNG
-      </button>
-      <button type='button' onClick={() => fileInput.current?.click()}>
-        読み込み
-      </button>
+      </ToolbarButton>
+      <ToolbarButton onClick={() => fileInput.current?.click()}>読み込み</ToolbarButton>
       <input
         ref={fileInput}
         type='file'
@@ -110,9 +107,9 @@ function Toolbar() {
         hidden
         onChange={importJson}
       />
-      <button type='button' onClick={clearAll} disabled={isEmpty}>
+      <ToolbarButton onClick={clearAll} disabled={isEmpty}>
         全消去
-      </button>
+      </ToolbarButton>
     </>
   );
 }

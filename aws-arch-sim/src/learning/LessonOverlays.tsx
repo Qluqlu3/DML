@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { PrimaryButton, SecondaryButton } from '../ui/buttons';
 import { GuideView } from './GuideView';
 import styles from './LessonOverlays.module.css';
 import { TopicIcon } from './TopicIcon';
@@ -45,9 +46,7 @@ export function LessonIntro({
             </div>
           </>
         )}
-        <button type='button' className={styles.start} onClick={onStart}>
-          はじめる
-        </button>
+        <PrimaryButton onClick={onStart}>はじめる</PrimaryButton>
       </div>
     </div>
   );
@@ -70,9 +69,7 @@ export function GuideCard({ topics, onClose }: { topics: GuideTopic[]; onClose: 
         <Link to={`/guide/${topic}`} className={styles.more}>
           図鑑で詳しく見る
         </Link>
-        <button type='button' className={styles.close} onClick={onClose}>
-          {topics.length > 1 ? '次へ' : '閉じる'}
-        </button>
+        <SecondaryButton onClick={onClose}>{topics.length > 1 ? '次へ' : '閉じる'}</SecondaryButton>
       </div>
     </aside>
   );

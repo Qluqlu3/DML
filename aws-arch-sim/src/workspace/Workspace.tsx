@@ -6,6 +6,7 @@ import type { NodeKind } from '../engine/catalog';
 import { Inspector } from '../panels/Inspector';
 import { Palette } from '../panels/Palette';
 import { useCanvasStore } from '../store/canvasStore';
+import { ToolbarButton } from '../ui/buttons';
 import styles from './Workspace.module.css';
 
 /** キャンバス表示範囲の中心（フロー座標） */
@@ -26,12 +27,12 @@ export function UndoRedoButtons() {
   const redo = useCanvasStore((s) => s.redo);
   return (
     <>
-      <button type='button' onClick={undo} disabled={!canUndo} title='元に戻す (⌘Z)'>
+      <ToolbarButton onClick={undo} disabled={!canUndo} title='元に戻す (⌘Z)'>
         元に戻す
-      </button>
-      <button type='button' onClick={redo} disabled={!canRedo} title='やり直す (⇧⌘Z)'>
+      </ToolbarButton>
+      <ToolbarButton onClick={redo} disabled={!canRedo} title='やり直す (⇧⌘Z)'>
         やり直す
-      </button>
+      </ToolbarButton>
     </>
   );
 }

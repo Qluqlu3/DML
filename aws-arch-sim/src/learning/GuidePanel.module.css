@@ -36,16 +36,6 @@
   white-space: nowrap;
 }
 
-.collapse {
-  padding: 2px 8px;
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 4px;
-  background: none;
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
 .body {
   display: flex;
   flex-direction: column;
@@ -237,41 +227,6 @@
 .answer ol {
   margin: 4px 0 8px;
   padding-left: 18px;
-}
-
-.primary,
-.primaryLink {
-  align-self: flex-start;
-  padding: 7px 16px;
-  border: none;
-  border-radius: 6px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.primary:hover,
-.primaryLink:hover {
-  background: var(--accent-strong);
-}
-
-.secondary,
-.secondaryLink {
-  padding: 5px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 12px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.secondary:hover,
-.secondaryLink:hover {
-  border-color: var(--info);
 }
 
 .choices {

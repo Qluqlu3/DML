@@ -3,6 +3,7 @@ import type { LintIssue } from '../engine/rules/linter';
 import type { SimResult, TrafficProfile } from '../engine/simulator/types';
 import { NodeView, Overview, type SelectedNode } from '../incidents/IncidentPanel';
 import base from '../learning/GuidePanel.module.css';
+import { CollapseButton, SecondaryButton } from '../ui/buttons';
 import styles from './SandboxPanel.module.css';
 
 export type SandboxTab = 'check' | 'simulate';
@@ -171,9 +172,7 @@ function SimulateTab({ settings, onSettings, azNames, sim, selected }: SandboxPa
             </button>
           ))}
           {canFail && (
-            <button
-              type='button'
-              className={base.secondary}
+            <SecondaryButton
               onClick={() =>
                 onSettings({
                   ...settings,
@@ -182,7 +181,7 @@ function SimulateTab({ settings, onSettings, azNames, sim, selected }: SandboxPa
               }
             >
               「{selected.name}」を停止
-            </button>
+            </SecondaryButton>
           )}
           {!settings.failed.length && !canFail && (
             <span className={styles.hint}>ノードを選ぶと停止させられます</span>
@@ -245,14 +244,9 @@ export function SandboxPanel(props: SandboxPanelProps) {
             シミュレーション
           </button>
         </div>
-        <button
-          type='button'
-          className={base.collapse}
-          onClick={() => setCollapsed(!collapsed)}
-          aria-expanded={!collapsed}
-        >
+        <CollapseButton onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}>
           {collapsed ? '開く' : 'たたむ'}
-        </button>
+        </CollapseButton>
       </header>
       {!collapsed && (
         <div className={base.body}>

@@ -4,6 +4,7 @@ import base from '../learning/GuidePanel.module.css';
 import { RichText } from '../learning/RichText';
 import { TopicIcon } from '../learning/TopicIcon';
 import { topicTitle } from '../learning/topics';
+import { CollapseButton, PrimaryButton, SecondaryButton } from '../ui/buttons';
 import styles from './ChallengePanel.module.css';
 import { type Evaluation, HINT_PENALTY, type RuleOutcome, type Score } from './challenges';
 import type { ChallengeProgress } from './progressStore';
@@ -84,9 +85,7 @@ function Hints({
       ))}
       {used < challenge.hints.length && (
         <div className={base.helpButtons}>
-          <button type='button' className={base.secondary} onClick={onHint}>
-            ヒントを見る（−{HINT_PENALTY} 点）
-          </button>
+          <SecondaryButton onClick={onHint}>ヒントを見る（−{HINT_PENALTY} 点）</SecondaryButton>
         </div>
       )}
     </div>
@@ -188,29 +187,23 @@ function ResultView(props: ChallengePanelProps & { result: Submission }) {
           <RichText text={challenge.explanation} className={base.why} />
           <Topics challenge={challenge} />
           <div className={base.helpButtons}>
-            <button type='button' className={base.secondary} onClick={props.onViewAnswer}>
-              模範解答を見る
-            </button>
-            <button type='button' className={base.secondary} onClick={props.onCloseResult}>
-              構成に戻る
-            </button>
+            <SecondaryButton onClick={props.onViewAnswer}>模範解答を見る</SecondaryButton>
+            <SecondaryButton onClick={props.onCloseResult}>構成に戻る</SecondaryButton>
           </div>
           {next ? (
-            <Link to={`/challenges/${next.id}`} className={base.primaryLink}>
-              次の問題へ: {next.title}
-            </Link>
+            <PrimaryButton asChild>
+              <Link to={`/challenges/${next.id}`}>次の問題へ: {next.title}</Link>
+            </PrimaryButton>
           ) : (
-            <Link to='/challenges' className={base.primaryLink}>
-              問題一覧へ
-            </Link>
+            <PrimaryButton asChild>
+              <Link to='/challenges'>問題一覧へ</Link>
+            </PrimaryButton>
           )}
         </>
       ) : (
         <>
           <Hints challenge={challenge} used={progress.hintsUsed} onHint={props.onHint} />
-          <button type='button' className={base.primary} onClick={props.onCloseResult}>
-            構成を直す
-          </button>
+          <PrimaryButton onClick={props.onCloseResult}>構成を直す</PrimaryButton>
         </>
       )}
     </div>
@@ -235,12 +228,8 @@ function BriefView(props: ChallengePanelProps) {
       <CostMeter cost={props.costUsd} budget={challenge.budgetUsd} />
       <Hints challenge={challenge} used={progress.hintsUsed} onHint={props.onHint} />
       <div className={styles.actions}>
-        <button type='button' className={base.primary} onClick={props.onSubmit}>
-          提出する
-        </button>
-        <button type='button' className={base.secondary} onClick={props.onViewAnswer}>
-          模範解答を見る
-        </button>
+        <PrimaryButton onClick={props.onSubmit}>提出する</PrimaryButton>
+        <SecondaryButton onClick={props.onViewAnswer}>模範解答を見る</SecondaryButton>
       </div>
       {progress.answerViewed && !progress.cleared && (
         <p className={styles.note}>模範解答を見たため、この挑戦の点数は記録されません。</p>
@@ -256,9 +245,7 @@ function AnswerView(props: ChallengePanelProps) {
         <strong>模範解答を表示しています</strong>
         <span>この表示で編集した内容は保存されません。自分の構成は保存してあります。</span>
       </div>
-      <button type='button' className={base.primary} onClick={props.onBackToMine}>
-        自分の構成に戻る
-      </button>
+      <PrimaryButton onClick={props.onBackToMine}>自分の構成に戻る</PrimaryButton>
       <div className={base.whyLabel}>解説</div>
       <RichText text={props.challenge.explanation} className={base.why} />
       <Topics challenge={props.challenge} />
@@ -273,14 +260,9 @@ export function ChallengePanel(props: ChallengePanelProps) {
     <section className={`${base.panel} ${collapsed ? base.collapsed : ''}`} aria-label='問題'>
       <header className={base.panelHeader}>
         <span className={base.panelTitle}>{props.challenge.title}</span>
-        <button
-          type='button'
-          className={base.collapse}
-          onClick={() => setCollapsed(!collapsed)}
-          aria-expanded={!collapsed}
-        >
+        <CollapseButton onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}>
           {collapsed ? '開く' : 'たたむ'}
-        </button>
+        </CollapseButton>
       </header>
       {!collapsed &&
         (props.viewingAnswer ? (

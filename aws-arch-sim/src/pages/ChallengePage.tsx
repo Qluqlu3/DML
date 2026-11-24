@@ -24,6 +24,7 @@ import { vpcTemplate } from '../engine/templates';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import { loadStored, saveStored } from '../store/persistence';
+import { ToolbarButton } from '../ui/buttons';
 import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
@@ -152,16 +153,14 @@ function ChallengeWorkspace({ challenge, index }: { challenge: Challenge; index:
       <UndoRedoButtons />
       <ToolbarSeparator />
       {canAddVpc && (
-        <button type='button' onClick={addVpcTemplate} disabled={viewingAnswer}>
+        <ToolbarButton onClick={addVpcTemplate} disabled={viewingAnswer}>
           VPC 雛形を追加
-        </button>
+        </ToolbarButton>
       )}
-      <button type='button' onClick={restartChallenge}>
-        最初から
-      </button>
-      <Link to='/guide' className={styles.toolbarLink}>
-        図鑑
-      </Link>
+      <ToolbarButton onClick={restartChallenge}>最初から</ToolbarButton>
+      <ToolbarButton asChild>
+        <Link to='/guide'>図鑑</Link>
+      </ToolbarButton>
     </>
   );
 

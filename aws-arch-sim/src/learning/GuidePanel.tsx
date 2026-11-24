@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { CollapseButton, PrimaryButton, SecondaryButton } from '../ui/buttons';
 import styles from './GuidePanel.module.css';
 import { describeOp, nextLesson, type StepEvaluation } from './lessons';
 import type { LessonProgress } from './progressStore';
@@ -105,9 +106,9 @@ function StepView({
               <RichText text={step.badExample} className={styles.why} />
             </>
           )}
-          <button type='button' className={styles.primary} onClick={onNext}>
+          <PrimaryButton onClick={onNext}>
             {last ? '理解チェックへ' : '次のステップへ'}
-          </button>
+          </PrimaryButton>
         </div>
       ) : (
         <div className={styles.help}>
@@ -119,25 +120,19 @@ function StepView({
           ))}
           <div className={styles.helpButtons}>
             {hintCount < step.hints.length && (
-              <button
-                type='button'
-                className={styles.secondary}
-                onClick={() => setHintCount(hintCount + 1)}
-              >
+              <SecondaryButton onClick={() => setHintCount(hintCount + 1)}>
                 ヒントを見る（{hintCount + 1}/{step.hints.length}）
-              </button>
+              </SecondaryButton>
             )}
             {!answerShown && (
-              <button
-                type='button'
-                className={styles.secondary}
+              <SecondaryButton
                 onClick={() => {
                   setAnswerShown(true);
                   onRevealAnswer();
                 }}
               >
                 答えを見る
-              </button>
+              </SecondaryButton>
             )}
           </div>
           {answerShown && (
@@ -148,9 +143,7 @@ function StepView({
                   <li key={key}>{text}</li>
                 ))}
               </ol>
-              <button type='button' className={styles.secondary} onClick={onApplyAnswer}>
-                自動で配置する
-              </button>
+              <SecondaryButton onClick={onApplyAnswer}>自動で配置する</SecondaryButton>
             </div>
           )}
         </div>
@@ -209,9 +202,7 @@ function Quiz({
         })}
       </div>
       {chosen !== null && (
-        <button
-          type='button'
-          className={styles.primary}
+        <PrimaryButton
           onClick={() => {
             if (last) {
               onFinish(correct);
@@ -222,7 +213,7 @@ function Quiz({
           }}
         >
           {last ? '結果を見る' : '次の問題へ'}
-        </button>
+        </PrimaryButton>
       )}
     </div>
   );
@@ -252,16 +243,14 @@ function Done({
       <RichText text={lesson.wrapUp} className={styles.instruction} />
       <div className={styles.helpButtons}>
         {next && (
-          <Link to={`/learn/${next.id}`} className={styles.primaryLink}>
-            次のレッスン: {next.title}
-          </Link>
+          <PrimaryButton asChild>
+            <Link to={`/learn/${next.id}`}>次のレッスン: {next.title}</Link>
+          </PrimaryButton>
         )}
-        <Link to='/learn' className={styles.secondaryLink}>
-          コース一覧へ
-        </Link>
-        <button type='button' className={styles.secondary} onClick={onRestart}>
-          もう一度やる
-        </button>
+        <SecondaryButton asChild>
+          <Link to='/learn'>コース一覧へ</Link>
+        </SecondaryButton>
+        <SecondaryButton onClick={onRestart}>もう一度やる</SecondaryButton>
       </div>
     </div>
   );
@@ -292,14 +281,9 @@ export function GuidePanel(props: GuidePanelProps) {
     >
       <header className={styles.panelHeader}>
         <span className={styles.panelTitle}>{lesson.title}</span>
-        <button
-          type='button'
-          className={styles.collapse}
-          onClick={() => setCollapsed(!collapsed)}
-          aria-expanded={!collapsed}
-        >
+        <CollapseButton onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}>
           {collapsed ? '開く' : 'たたむ'}
-        </button>
+        </CollapseButton>
       </header>
       {!collapsed && progress.phase === 'steps' && step && (
         <StepView

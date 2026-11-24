@@ -52,25 +52,6 @@
   margin-left: auto;
 }
 
-.toolbar button {
-  padding: 4px 10px;
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: var(--radius);
-  background: transparent;
-  color: #fff;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.toolbar button:hover:not(:disabled) {
-  background: rgb(255 255 255 / 10%);
-}
-
-.toolbar button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
 .separator {
   width: 1px;
   height: 20px;

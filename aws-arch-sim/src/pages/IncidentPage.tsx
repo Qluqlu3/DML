@@ -14,6 +14,7 @@ import {
 import type { Incident } from '../incidents/types';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { loadStored, saveStored } from '../store/persistence';
+import { ToolbarButton } from '../ui/buttons';
 import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
@@ -138,12 +139,10 @@ function IncidentWorkspace({ incident, index }: { incident: Incident; index: num
     <>
       <UndoRedoButtons />
       <ToolbarSeparator />
-      <button type='button' onClick={restartIncident}>
-        最初から
-      </button>
-      <Link to='/guide' className={styles.toolbarLink}>
-        図鑑
-      </Link>
+      <ToolbarButton onClick={restartIncident}>最初から</ToolbarButton>
+      <ToolbarButton asChild>
+        <Link to='/guide'>図鑑</Link>
+      </ToolbarButton>
     </>
   );
 

@@ -71,19 +71,6 @@
   font-size: 12px;
 }
 
-.start {
-  align-self: flex-end;
-  margin-top: 12px;
-  padding: 8px 28px;
-  border: none;
-  border-radius: 6px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
 .card {
   position: absolute;
   right: 12px;
@@ -124,12 +111,4 @@
 .more {
   color: var(--info);
   font-size: 12px;
-}
-
-.close {
-  padding: 4px 14px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
-  cursor: pointer;
 }

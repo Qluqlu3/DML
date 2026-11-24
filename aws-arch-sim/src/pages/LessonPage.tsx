@@ -12,6 +12,7 @@ import type { Course, GuideTopic, Lesson } from '../learning/types';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
 import { newId } from '../store/id';
 import { loadStored } from '../store/persistence';
+import { ToolbarButton } from '../ui/buttons';
 import { confirmDialog } from '../ui/confirm';
 import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
@@ -143,12 +144,9 @@ function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson })
       <UndoRedoButtons />
       <ToolbarSeparator />
       {progress.phase === 'steps' && (
-        <button type='button' onClick={resetStep}>
-          このステップをやり直す
-        </button>
+        <ToolbarButton onClick={resetStep}>このステップをやり直す</ToolbarButton>
       )}
-      <button
-        type='button'
+      <ToolbarButton
         onClick={async () => {
           if (
             await confirmDialog({
@@ -161,10 +159,10 @@ function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson })
         }}
       >
         最初から
-      </button>
-      <Link to='/guide' className={styles.toolbarLink}>
-        図鑑
-      </Link>
+      </ToolbarButton>
+      <ToolbarButton asChild>
+        <Link to='/guide'>図鑑</Link>
+      </ToolbarButton>
     </>
   );
 

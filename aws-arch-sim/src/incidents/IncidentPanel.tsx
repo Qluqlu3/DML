@@ -8,6 +8,7 @@ import base from '../learning/GuidePanel.module.css';
 import { RichText } from '../learning/RichText';
 import { TopicIcon } from '../learning/TopicIcon';
 import { topicTitle } from '../learning/topics';
+import { CollapseButton, PrimaryButton, SecondaryButton } from '../ui/buttons';
 import styles from './IncidentPanel.module.css';
 import { formatPct, type IncidentRun, type IncidentScore } from './incidents';
 import type { IncidentProgress, TurnRecord } from './progressStore';
@@ -207,9 +208,7 @@ function Hints({
       ))}
       {used < incident.hints.length && (
         <div className={base.helpButtons}>
-          <button type='button' className={base.secondary} onClick={onHint}>
-            ヒントを見る（−5 点）
-          </button>
+          <SecondaryButton onClick={onHint}>ヒントを見る（−5 点）</SecondaryButton>
         </div>
       )}
     </div>
@@ -301,17 +300,15 @@ function SolvedView(props: IncidentPanelProps) {
       <Explanation incident={incident} />
       <History turns={progress.turns} />
       {next ? (
-        <Link to={`/incidents/${next.id}`} className={base.primaryLink}>
-          次のインシデントへ: {next.title}
-        </Link>
+        <PrimaryButton asChild>
+          <Link to={`/incidents/${next.id}`}>次のインシデントへ: {next.title}</Link>
+        </PrimaryButton>
       ) : (
-        <Link to='/incidents' className={base.primaryLink}>
-          インシデント一覧へ
-        </Link>
+        <PrimaryButton asChild>
+          <Link to='/incidents'>インシデント一覧へ</Link>
+        </PrimaryButton>
       )}
-      <button type='button' className={base.secondary} onClick={props.onRestart}>
-        最初からやり直す
-      </button>
+      <SecondaryButton onClick={props.onRestart}>最初からやり直す</SecondaryButton>
     </div>
   );
 }
@@ -376,14 +373,9 @@ function WorkingView(props: IncidentPanelProps) {
         ) : (
           <p className={styles.placeholder}>キャンバスで構成を変更すると、ここに一覧が出ます。</p>
         )}
-        <button
-          type='button'
-          className={base.primary}
-          onClick={props.onApply}
-          disabled={!pendingChanges.length}
-        >
+        <PrimaryButton onClick={props.onApply} disabled={!pendingChanges.length}>
           変更を適用（ターン {turn + 1}）
-        </button>
+        </PrimaryButton>
       </div>
 
       <Hints incident={incident} used={progress.hintsUsed} onHint={props.onHint} />
@@ -410,14 +402,9 @@ export function IncidentPanel(props: IncidentPanelProps) {
     >
       <header className={base.panelHeader}>
         <span className={base.panelTitle}>{props.incident.title}</span>
-        <button
-          type='button'
-          className={base.collapse}
-          onClick={() => setCollapsed(!collapsed)}
-          aria-expanded={!collapsed}
-        >
+        <CollapseButton onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}>
           {collapsed ? '開く' : 'たたむ'}
-        </button>
+        </CollapseButton>
       </header>
       {!collapsed &&
         (props.progress.solved ? <SolvedView {...props} /> : <WorkingView {...props} />)}
