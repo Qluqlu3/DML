@@ -23,8 +23,8 @@ const MODES = [
   {
     to: '/challenges',
     title: '問題モード',
-    body: '要件に合う構成を組み立て、ルール判定で採点する。',
-    ready: false,
+    body: '依頼に合う構成を自分で考えて組み立て、ルール判定で採点する。',
+    ready: true,
   },
   {
     to: '/incidents',
