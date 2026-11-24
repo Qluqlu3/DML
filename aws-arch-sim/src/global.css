@@ -106,3 +106,8 @@ select {
 .is-exporting .react-flow__handle {
   visibility: hidden;
 }
+
+.page-loading {
+  padding: 32px;
+  color: var(--text-muted);
+}
