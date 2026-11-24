@@ -268,6 +268,24 @@ describe('追加の述語と操作', () => {
     expect(sgHasRule(EC2, 3306)(m).pass).toBe(false);
   });
 
+  it('remove / disconnect', () => {
+    const { doc, errors } = applyAnswer(
+      built().doc,
+      [
+        { op: 'disconnect', from: ALB, to: { kind: 'ec2', where: { az: 'first' } } },
+        { op: 'remove', target: RDS },
+        { op: 'disconnect', from: USER, to: RDS },
+      ],
+      makeId,
+    );
+    expect(errors).toHaveLength(1); // 存在しない接続の削除
+    const m = buildModel(doc);
+    expect(select(m, RDS)).toHaveLength(0);
+    expect(m.edges.filter((e) => m.byId.get(e.target)?.kind === 'rds')).toHaveLength(0);
+    expect(connected(ALB, EC2, { every: 'to' })(m).pass).toBe(false);
+    expect(connected(ALB, EC2)(m).pass).toBe(true);
+  });
+
   it('distinctValues: 異なる値の数', () => {
     const m = buildModel(base());
     expect(distinctValues({ kind: 'az' }, 'azName', 2)(m).pass).toBe(true);

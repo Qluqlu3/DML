@@ -64,7 +64,7 @@ export function vpcTemplate(origin: { x: number; y: number }, makeId: (prefix: s
         parentId: azId,
         position: { x: 20, y: 242 },
         width: 340,
-        height: 186,
+        height: 190,
       },
     );
   }

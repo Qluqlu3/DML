@@ -11,7 +11,7 @@ import {
 } from './catalog';
 import type { ArchDocument, DocEdge, DocNode, SgSource } from './document';
 import { buildModel, type ModelNode } from './model';
-import { absolutePosition, indexById, nodeSize } from './placement';
+import { absolutePosition, descendantIds, indexById, nodeSize } from './placement';
 import { describe, type Selector, select } from './rules/selector';
 
 /** 学習モードの「自動で配置」で適用する操作。対象はセレクターで解決する */
@@ -23,7 +23,11 @@ export type AnswerOp =
   | { op: 'createSg'; for: Selector; name: string }
   | { op: 'allow'; to: Selector; from: Selector | { cidr: string }; port: number }
   /** サブネットのデフォルトルートを、同じ VPC の IGW / NAT Gateway に向ける */
-  | { op: 'route'; subnets: Selector; to: Selector };
+  | { op: 'route'; subnets: Selector; to: Selector }
+  /** ノードを削除する（中身と接続も消える） */
+  | { op: 'remove'; target: Selector }
+  /** 接続を削除する */
+  | { op: 'disconnect'; from: Selector; to: Selector };
 
 export type ApplyResult = { doc: ArchDocument; errors: string[] };
 
@@ -255,6 +259,30 @@ function applyOne(
           config: { ...n.config, route: routeOf.get(n.id) ?? 'none' },
         })),
       };
+    }
+
+    case 'remove': {
+      const targets = pick(op.target);
+      if (!targets.length) return { doc, error: `${describe(op.target)} が見つかりません` };
+      const removed = new Set(targets.map((t) => t.id));
+      for (const t of targets) for (const d of descendantIds(t.id, doc.nodes)) removed.add(d);
+      return {
+        doc: {
+          ...doc,
+          nodes: doc.nodes.filter((n) => !removed.has(n.id)),
+          edges: doc.edges.filter((e) => !removed.has(e.source) && !removed.has(e.target)),
+        },
+      };
+    }
+
+    case 'disconnect': {
+      const from = new Set(pick(op.from).map((n) => n.id));
+      const to = new Set(pick(op.to).map((n) => n.id));
+      const edges = doc.edges.filter((e) => !(from.has(e.source) && to.has(e.target)));
+      if (edges.length === doc.edges.length) {
+        return { doc, error: `${describe(op.from)} から ${describe(op.to)} への接続がありません` };
+      }
+      return { doc: { ...doc, edges } };
     }
 
     case 'allow': {

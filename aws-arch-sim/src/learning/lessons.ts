@@ -115,5 +115,9 @@ export function describeOp(op: AnswerOp): string {
     }
     case 'route':
       return `${describe(op.subnets)} のデフォルトルートを ${describe(op.to)} に向ける`;
+    case 'remove':
+      return `${describe(op.target)} を削除`;
+    case 'disconnect':
+      return `${describe(op.from)} から ${describe(op.to)} への接続を削除`;
   }
 }
