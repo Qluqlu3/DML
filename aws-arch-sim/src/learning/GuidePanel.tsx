@@ -8,6 +8,16 @@ import { TopicIcon } from './TopicIcon';
 import { topicTitle } from './topics';
 import type { GuideTopic, Lesson, QuizQuestion, Step } from './types';
 
+/** 同じ文が並んでも重ならないキーを付ける（静的な一覧用） */
+function uniqueKeys(texts: string[]): { key: string; text: string }[] {
+  const seen = new Map<string, number>();
+  return texts.map((text) => {
+    const n = (seen.get(text) ?? 0) + 1;
+    seen.set(text, n);
+    return { key: `${text}#${n}`, text };
+  });
+}
+
 type StepViewProps = {
   lesson: Lesson;
   step: Step;
@@ -134,8 +144,8 @@ function StepView({
             <div className={styles.answer}>
               <div className={styles.hintLabel}>答え</div>
               <ol>
-                {step.answer.map((op) => (
-                  <li key={describeOp(op)}>{describeOp(op)}</li>
+                {uniqueKeys(step.answer.map(describeOp)).map(({ key, text }) => (
+                  <li key={key}>{text}</li>
                 ))}
               </ol>
               <button type='button' className={styles.secondary} onClick={onApplyAnswer}>

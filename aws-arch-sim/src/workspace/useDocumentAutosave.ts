@@ -1,4 +1,4 @@
-import { useReactFlow } from '@xyflow/react';
+import { type FitViewOptions, useReactFlow } from '@xyflow/react';
 import { useEffect, useRef } from 'react';
 import type { ArchDocument } from '../engine/document';
 import { toDocument, useCanvasStore } from '../store/canvasStore';
@@ -10,16 +10,24 @@ const AUTOSAVE_DELAY_MS = 500;
  * 画面を開いたときに load() の構成でキャンバスを置き換え、以降の変更を key に自動保存する。
  * key が null のときは保存しない。
  */
-export function useDocumentAutosave(key: string | null, load: () => ArchDocument) {
+const DEFAULT_FIT: FitViewOptions = { padding: 0.12 };
+
+export function useDocumentAutosave(
+  key: string | null,
+  load: () => ArchDocument,
+  fitOptions: FitViewOptions = DEFAULT_FIT,
+) {
   const replaceDocument = useCanvasStore((s) => s.replaceDocument);
   const { fitView } = useReactFlow();
   const loadRef = useRef(load);
   loadRef.current = load;
+  const fitRef = useRef(fitOptions);
+  fitRef.current = fitOptions;
 
   useEffect(() => {
     const doc = loadRef.current();
     replaceDocument(doc);
-    if (doc.nodes.length) requestAnimationFrame(() => fitView({ padding: 0.12 }));
+    if (doc.nodes.length) requestAnimationFrame(() => fitView(fitRef.current));
     if (!key) return;
 
     let timer: ReturnType<typeof setTimeout> | undefined;

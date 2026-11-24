@@ -75,19 +75,37 @@ function freeSlot(
   }
 
   if (!siblings.length) return { x: 0, y: 0 };
-  const minX = Math.min(...siblings.map((s) => s.x));
-  const minY = Math.min(...siblings.map((s) => s.y));
   if (isContainerKind(kind)) {
     const maxX = Math.max(...siblings.map((s) => s.x + s.width));
+    const minY = Math.min(...siblings.map((s) => s.y));
     return { x: maxX + 80, y: minY };
   }
-  for (let c = 1; c <= 20; c++) {
-    for (let r = 0; r < 8; r++) {
-      const rect = { x: minX - (size.width + 48) * c, y: minY + (size.height + 24) * r, ...size };
-      if (free(rect)) return { x: rect.x, y: rect.y };
+  const stepX = size.width + 48;
+  const stepY = size.height + 24;
+  const containers = doc.nodes.filter((n) => !n.parentId && isContainerKind(n.kind));
+  if (containers.length) {
+    // VPC がある構成: VPC の左側に、上から下へ詰め、列が埋まったら左へ折り返す
+    const left = Math.min(...containers.map((n) => n.position.x));
+    const top = Math.min(...containers.map((n) => n.position.y));
+    for (let c = 1; c <= 20; c++) {
+      for (let r = 0; r < 4; r++) {
+        const rect = { x: left - stepX * c, y: top + stepY * r, ...size };
+        if (free(rect)) return { x: rect.x, y: rect.y };
+      }
+    }
+  } else {
+    // VPC がない構成: 最初のノードから右へ 4 列ずつ並べ、下の段へ折り返す
+    const first = siblings[0] ?? { x: 0, y: 0 };
+    for (let r = 0; r < 20; r++) {
+      for (let c = 0; c < 4; c++) {
+        const rect = { x: first.x + stepX * c, y: first.y + stepY * r, ...size };
+        if (free(rect)) return { x: rect.x, y: rect.y };
+      }
     }
   }
-  return { x: minX - 400, y: minY };
+  const minX = Math.min(...siblings.map((s) => s.x));
+  const minY = Math.min(...siblings.map((s) => s.y));
+  return { x: minX - stepX, y: minY };
 }
 
 function uniqueName(doc: ArchDocument, kind: NodeKind): string {

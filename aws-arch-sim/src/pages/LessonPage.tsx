@@ -17,6 +17,11 @@ import { useThrottledDocument } from '../workspace/useThrottledDocument';
 import { ToolbarSeparator, UndoRedoButtons, Workspace } from '../workspace/Workspace';
 import styles from './LessonPage.module.css';
 
+/** ガイドパネル（左上・幅 360px）に隠れないよう、全体表示の左側の余白を広げる */
+const LESSON_FIT = {
+  padding: { top: '32px', right: '32px', bottom: '32px', left: '396px' },
+} as const;
+
 function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson }) {
   const progress = useLessonProgress(lesson.id);
   const update = useProgressStore((s) => s.update);
@@ -198,6 +203,7 @@ function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson })
       highlightIds={highlightIds}
       problemIds={problemIds}
       overlay={overlay}
+      fitViewOptions={LESSON_FIT}
     />
   );
 }

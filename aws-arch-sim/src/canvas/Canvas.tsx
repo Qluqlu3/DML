@@ -5,6 +5,7 @@ import {
   Controls,
   type Edge,
   type EdgeChangeset,
+  type FitViewOptions,
   MarkerType,
   MiniMap,
   type OnConnectEnd,
@@ -74,9 +75,11 @@ type CanvasProps = {
   highlightIds?: ReadonlySet<string>;
   /** 問題があるノード */
   problemIds?: ReadonlySet<string>;
+  /** 「全体を表示」の余白（キャンバスに重ねたパネルを避けるため） */
+  fitViewOptions?: FitViewOptions;
 };
 
-export function Canvas({ highlightIds, problemIds }: CanvasProps = {}) {
+export function Canvas({ highlightIds, problemIds, fitViewOptions }: CanvasProps = {}) {
   const nodes = useCanvasStore((s) => s.nodes);
   const edges = useCanvasStore((s) => s.edges);
   const onNodesChange = useCanvasStore((s) => s.onNodesChange);
@@ -262,7 +265,7 @@ export function Canvas({ highlightIds, problemIds }: CanvasProps = {}) {
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
         <Background gap={16} />
-        <Controls showInteractive={false} />
+        <Controls showInteractive={false} fitViewOptions={fitViewOptions} />
         <MiniMap<AppNode> nodeColor={miniMapColor} pannable zoomable />
       </ReactFlow>
     </div>

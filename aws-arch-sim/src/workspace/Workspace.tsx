@@ -1,4 +1,4 @@
-import { useReactFlow } from '@xyflow/react';
+import { type FitViewOptions, useReactFlow } from '@xyflow/react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Canvas } from '../canvas/Canvas';
@@ -54,6 +54,8 @@ type WorkspaceProps = {
   problemIds?: ReadonlySet<string>;
   /** キャンバスの上に重ねる要素（学習ガイドなど） */
   overlay?: ReactNode;
+  /** 「全体を表示」の余白 */
+  fitViewOptions?: FitViewOptions;
 };
 
 /** パレット・キャンバス・インスペクターからなる編集画面。各モードで共通 */
@@ -65,6 +67,7 @@ export function Workspace({
   highlightIds,
   problemIds,
   overlay,
+  fitViewOptions,
 }: WorkspaceProps) {
   const addNode = useCanvasStore((s) => s.addNode);
   const viewportCenter = useViewportCenter();
@@ -80,7 +83,11 @@ export function Workspace({
       </header>
       <Palette onAdd={(kind) => addNode(kind, viewportCenter())} highlightKinds={highlightKinds} />
       <main className={styles.main}>
-        <Canvas highlightIds={highlightIds} problemIds={problemIds} />
+        <Canvas
+          highlightIds={highlightIds}
+          problemIds={problemIds}
+          fitViewOptions={fitViewOptions}
+        />
         {overlay}
         <NoticeToast />
       </main>

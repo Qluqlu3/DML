@@ -98,7 +98,7 @@ export function describeOp(op: AnswerOp): string {
     case 'add':
       return op.in
         ? `${describe(op.in)} の中に ${kindLabel(op.kind)} を追加${op.name ? `（名前: ${op.name}）` : ''}`
-        : `キャンバス（VPC の外）に ${kindLabel(op.kind)} を追加`;
+        : `キャンバス（VPC の外）に ${kindLabel(op.kind)} を追加${op.name ? `（名前: ${op.name}）` : ''}`;
     case 'connect':
       return `${describe(op.from)} から ${describe(op.to)} へ接続`;
     case 'config':
