@@ -56,3 +56,40 @@ select {
   outline: 2px dashed var(--danger);
   outline-offset: 4px;
 }
+
+/* シミュレーション結果の状態（インシデントモード） */
+.react-flow__node.sim-ok,
+.react-flow__node.sim-warn,
+.react-flow__node.sim-crit {
+  border-radius: 12px;
+  outline-offset: 4px;
+}
+
+.react-flow__node.sim-ok {
+  outline: 2px solid rgb(44 138 18 / 55%);
+}
+
+.react-flow__node.sim-warn {
+  outline: 3px solid #e8a200;
+}
+
+.react-flow__node.sim-crit {
+  outline: 3px solid var(--danger);
+  animation: sim-crit 1.4s ease-in-out infinite;
+}
+
+.react-flow__node.sim-down {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+@keyframes sim-crit {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(209 50 18 / 45%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px rgb(209 50 18 / 0%);
+  }
+}

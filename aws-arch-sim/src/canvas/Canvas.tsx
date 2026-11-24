@@ -75,11 +75,18 @@ type CanvasProps = {
   highlightIds?: ReadonlySet<string>;
   /** 問題があるノード */
   problemIds?: ReadonlySet<string>;
+  /** ノードごとに足す class（シミュレーション結果の状態など） */
+  nodeClasses?: ReadonlyMap<string, string>;
   /** 「全体を表示」の余白（キャンバスに重ねたパネルを避けるため） */
   fitViewOptions?: FitViewOptions;
 };
 
-export function Canvas({ highlightIds, problemIds, fitViewOptions }: CanvasProps = {}) {
+export function Canvas({
+  highlightIds,
+  problemIds,
+  nodeClasses,
+  fitViewOptions,
+}: CanvasProps = {}) {
   const nodes = useCanvasStore((s) => s.nodes);
   const edges = useCanvasStore((s) => s.edges);
   const onNodesChange = useCanvasStore((s) => s.onNodesChange);
@@ -98,6 +105,7 @@ export function Canvas({ highlightIds, problemIds, fitViewOptions }: CanvasProps
         const classes = [
           highlightIds?.has(n.id) ? 'is-highlight' : '',
           problemIds?.has(n.id) ? 'is-problem' : '',
+          nodeClasses?.get(n.id) ?? '',
         ]
           .filter(Boolean)
           .join(' ');
@@ -109,7 +117,7 @@ export function Canvas({ highlightIds, problemIds, fitViewOptions }: CanvasProps
         }
         return { ...n, dragHandle, zIndex, className: classes || undefined };
       }),
-    [nodes, highlightIds, problemIds],
+    [nodes, highlightIds, problemIds, nodeClasses],
   );
 
   // vpc 配置のサービス → 配置サブネットの点線を、設定から導出して重ねる

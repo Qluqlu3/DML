@@ -54,6 +54,8 @@ type WorkspaceProps = {
   highlightIds?: ReadonlySet<string>;
   /** キャンバスで問題を示すノード */
   problemIds?: ReadonlySet<string>;
+  /** ノードごとに足す class（シミュレーション結果の状態など） */
+  nodeClasses?: ReadonlyMap<string, string>;
   /** キャンバスの上に重ねる要素（学習ガイドなど） */
   overlay?: ReactNode;
   /** 「全体を表示」の余白 */
@@ -69,6 +71,7 @@ export function Workspace({
   paletteKinds,
   highlightIds,
   problemIds,
+  nodeClasses,
   overlay,
   fitViewOptions,
 }: WorkspaceProps) {
@@ -93,6 +96,7 @@ export function Workspace({
         <Canvas
           highlightIds={highlightIds}
           problemIds={problemIds}
+          nodeClasses={nodeClasses}
           fitViewOptions={fitViewOptions}
         />
         {overlay}
