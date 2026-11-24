@@ -57,7 +57,13 @@ function Delta({ now, before, better }: { now: number; before?: number; better: 
   );
 }
 
-function Overview({ sim, previous }: { sim: SimResult; previous: IncidentPanelProps['previous'] }) {
+export function Overview({
+  sim,
+  previous,
+}: {
+  sim: SimResult;
+  previous?: IncidentPanelProps['previous'];
+}) {
   return (
     <div className={styles.overview}>
       <div className={styles.stat}>
@@ -95,7 +101,7 @@ function Overview({ sim, previous }: { sim: SimResult; previous: IncidentPanelPr
   );
 }
 
-function NodeView({ selected }: { selected: SelectedNode | null }) {
+export function NodeView({ selected }: { selected: SelectedNode | null }) {
   if (!selected) {
     return (
       <p className={styles.placeholder}>

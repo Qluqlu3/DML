@@ -93,3 +93,16 @@ select {
     box-shadow: 0 0 0 10px rgb(209 50 18 / 0%);
   }
 }
+
+/* PNG 書き出し中は、判定・シミュレーションの装飾と接続点を消す */
+.react-flow.is-exporting .react-flow__node.react-flow__node {
+  outline: none;
+  opacity: 1;
+  filter: none;
+  animation: none;
+  box-shadow: none;
+}
+
+.is-exporting .react-flow__handle {
+  visibility: hidden;
+}

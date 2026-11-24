@@ -11,6 +11,8 @@ export type Selector = {
     az?: 'first' | 'second' | string;
     /** 名前の部分一致 */
     name?: string;
+    /** ノード ID（サンドボックスで選んだノードを指すとき） */
+    id?: string;
     /** 設定値の一致 */
     config?: Record<string, ConfigValue>;
   };
@@ -41,6 +43,7 @@ export function select(model: ArchModel, sel: Selector): ModelNode[] {
   return model.nodes.filter((n) => {
     if (!allowed.includes(n.kind)) return false;
     if (w.name && !n.name.includes(w.name)) return false;
+    if (w.id && n.id !== w.id) return false;
     if (w.subnetType) {
       if (!n.subnetIds.length) return false;
       if (!n.subnetIds.every((s) => subnetTypeOf(model, s) === w.subnetType)) return false;
