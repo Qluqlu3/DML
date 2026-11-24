@@ -1,4 +1,5 @@
 import { type ConfigValue, defaultPort } from '../catalog';
+import { monthlyCost } from '../cost';
 import type { SecurityGroup } from '../document';
 import type { ArchModel, ModelNode } from '../model';
 import { cidrContains } from './cidr';
@@ -376,6 +377,21 @@ export function distinctValues(sel: Selector, key: string, n: number, label?: st
       : fail(
           `${describe(sel)} の${label ?? key}が ${n} 種類必要です（現在 ${values.size}）`,
           found.map((x) => x.id),
+        );
+  };
+}
+
+// ---- コスト ----
+
+/** 月額コストの概算が usd 以下 */
+export function costBelow(usd: number): Rule {
+  return (m) => {
+    const { total, lines } = monthlyCost(m.doc);
+    return total <= usd
+      ? ok
+      : fail(
+          `月額の概算 $${total} が予算 $${usd} を超えています`,
+          lines.slice(0, 3).map((l) => l.nodeId),
         );
   };
 }
