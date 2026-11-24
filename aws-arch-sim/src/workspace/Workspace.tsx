@@ -48,6 +48,8 @@ type WorkspaceProps = {
   toolbar?: ReactNode;
   /** パレットで光らせる項目 */
   highlightKinds?: NodeKind[];
+  /** パレットに出す項目の制限 */
+  paletteKinds?: NodeKind[];
   /** キャンバスで光らせるノード（置き場所など） */
   highlightIds?: ReadonlySet<string>;
   /** キャンバスで問題を示すノード */
@@ -64,6 +66,7 @@ export function Workspace({
   title,
   toolbar,
   highlightKinds,
+  paletteKinds,
   highlightIds,
   problemIds,
   overlay,
@@ -81,7 +84,11 @@ export function Workspace({
         {title && <span className={styles.title}>{title}</span>}
         <div className={styles.toolbar}>{toolbar}</div>
       </header>
-      <Palette onAdd={(kind) => addNode(kind, viewportCenter())} highlightKinds={highlightKinds} />
+      <Palette
+        onAdd={(kind) => addNode(kind, viewportCenter())}
+        highlightKinds={highlightKinds}
+        allowedKinds={paletteKinds}
+      />
       <main className={styles.main}>
         <Canvas
           highlightIds={highlightIds}

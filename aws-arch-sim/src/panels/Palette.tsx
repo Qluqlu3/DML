@@ -23,9 +23,11 @@ type PaletteProps = {
   onAdd: (kind: NodeKind) => void;
   /** 光らせる項目（学習モード） */
   highlightKinds?: NodeKind[];
+  /** 出す項目の制限（問題モード）。省略時はすべて */
+  allowedKinds?: NodeKind[];
 };
 
-export function Palette({ onAdd, highlightKinds }: PaletteProps) {
+export function Palette({ onAdd, highlightKinds, allowedKinds }: PaletteProps) {
   const listRef = useRef<HTMLElement>(null);
   const highlightKey = highlightKinds?.join(',') ?? '';
   // 光らせる項目が見えるようにスクロールする
@@ -40,22 +42,27 @@ export function Palette({ onAdd, highlightKinds }: PaletteProps) {
 
   const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
+  const allowedKey = allowedKinds?.join(',') ?? '';
 
   const groups = useMemo(
     () =>
       CATEGORY_ORDER.map((category) => ({
         category,
-        kinds: SERVICE_KINDS.filter((k) => SERVICES[k].category === category).filter(
-          (k) =>
-            !q ||
-            SERVICES[k].label.toLowerCase().includes(q) ||
-            SERVICES[k].short.toLowerCase().includes(q),
-        ),
+        kinds: SERVICE_KINDS.filter((k) => SERVICES[k].category === category)
+          .filter((k) => !allowedKey || allowedKey.split(',').includes(k))
+          .filter(
+            (k) =>
+              !q ||
+              SERVICES[k].label.toLowerCase().includes(q) ||
+              SERVICES[k].short.toLowerCase().includes(q),
+          ),
       })).filter((g) => g.kinds.length),
-    [q],
+    [q, allowedKey],
   );
   const containers = CONTAINER_ORDER.filter(
-    (k) => !q || CONTAINERS[k].label.toLowerCase().includes(q),
+    (k) =>
+      (!allowedKinds || allowedKinds.includes(k)) &&
+      (!q || CONTAINERS[k].label.toLowerCase().includes(q)),
   );
 
   return (
@@ -68,6 +75,7 @@ export function Palette({ onAdd, highlightKinds }: PaletteProps) {
         onChange={(e) => setQuery(e.target.value)}
       />
       <p className={styles.tip}>ドラッグで配置（クリックで画面中央に追加）</p>
+      {allowedKinds && <p className={styles.tip}>この問題で使えるサービスだけを表示しています</p>}
 
       {containers.length > 0 && (
         <section>

@@ -6,16 +6,17 @@ import { saveStored } from '../store/persistence';
 
 const AUTOSAVE_DELAY_MS = 500;
 
-/**
- * 画面を開いたときに load() の構成でキャンバスを置き換え、以降の変更を key に自動保存する。
- * key が null のときは保存しない。
- */
 const DEFAULT_FIT: FitViewOptions = { padding: 0.12 };
 
+/**
+ * 画面を開いたときに load() の構成でキャンバスを置き換え、以降の変更を key に自動保存する。
+ * key が null のときは保存しない。paused.current が true の間は保存しない（模範解答の表示中など）。
+ */
 export function useDocumentAutosave(
   key: string | null,
   load: () => ArchDocument,
   fitOptions: FitViewOptions = DEFAULT_FIT,
+  paused?: { readonly current: boolean },
 ) {
   const replaceDocument = useCanvasStore((s) => s.replaceDocument);
   const { fitView } = useReactFlow();
@@ -23,8 +24,11 @@ export function useDocumentAutosave(
   loadRef.current = load;
   const fitRef = useRef(fitOptions);
   fitRef.current = fitOptions;
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   useEffect(() => {
+    const isPaused = () => pausedRef.current?.current === true;
     const doc = loadRef.current();
     replaceDocument(doc);
     if (doc.nodes.length) requestAnimationFrame(() => fitView(fitRef.current));
@@ -40,12 +44,13 @@ export function useDocumentAutosave(
         return;
       }
       clearTimeout(timer);
+      if (isPaused()) return;
       timer = setTimeout(() => saveStored(key, toDocument(state)), AUTOSAVE_DELAY_MS);
     });
     return () => {
       // 画面を離れるときは保留中の保存をすぐ行う
       clearTimeout(timer);
-      saveStored(key, toDocument(useCanvasStore.getState()));
+      if (!isPaused()) saveStored(key, toDocument(useCanvasStore.getState()));
       unsubscribe();
     };
   }, [key, replaceDocument, fitView]);
