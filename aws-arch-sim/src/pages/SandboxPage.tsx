@@ -130,7 +130,8 @@ function SandboxLayout() {
 
   const issues = useMemo(() => lint(model), [model]);
   const sim = useMemo(() => {
-    if (tab !== 'simulate') return null;
+    // ユーザーがいなければリクエストの起点がないので計算しない（パネルに案内を出す）
+    if (tab !== 'simulate' || !model.nodes.some((n) => n.kind === 'client')) return null;
     const faults: Fault[] = [
       ...(settings.azDown ? [{ type: 'az-down' as const, az: settings.azDown }] : []),
       ...settings.failed.map((f) => ({

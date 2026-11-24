@@ -1,4 +1,4 @@
-@layer reset, base, tokens, recipes;
+/* CSS レイヤーの優先順は index.html の先頭で宣言している（reset → base → xyflow → tokens → recipes） */
 
 :root {
   color-scheme: dark;
