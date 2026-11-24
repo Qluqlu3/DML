@@ -20,6 +20,8 @@ import styles from './LessonPage.module.css';
 /** ガイドパネル（左上・幅 360px）に隠れないよう、全体表示の左側の余白を広げる */
 const LESSON_FIT = {
   padding: { top: '32px', right: '32px', bottom: '32px', left: '396px' },
+  /** ノードが少ないときに拡大しすぎない */
+  maxZoom: 1,
 } as const;
 
 function LessonWorkspace({ course, lesson }: { course: Course; lesson: Lesson }) {
