@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { CollapseButton, PrimaryButton, SecondaryButton } from '../ui/buttons';
+import {
+  ChipButton,
+  ChoiceButton,
+  CollapseButton,
+  PrimaryButton,
+  SecondaryButton,
+} from '../ui/buttons';
 import styles from './GuidePanel.module.css';
 import { describeOp, nextLesson, type StepEvaluation } from './lessons';
 import type { LessonProgress } from './progressStore';
@@ -56,10 +62,10 @@ function StepView({
       {step.introduces && step.introduces.length > 0 && (
         <div className={styles.topics}>
           {step.introduces.map((t) => (
-            <button key={t} type='button' className={styles.topic} onClick={() => onShowGuide(t)}>
+            <ChipButton key={t} onClick={() => onShowGuide(t)}>
               <TopicIcon topic={t} size={18} />
               {topicTitle(t)} とは？
-            </button>
+            </ChipButton>
           ))}
         </div>
       )}
@@ -174,19 +180,18 @@ function Quiz({
       <h2 className={styles.stepTitle}>{q.question}</h2>
       <div className={styles.choices}>
         {q.choices.map((c, i) => {
-          const state =
+          const result =
             chosen === null
-              ? ''
+              ? undefined
               : c.correct
-                ? styles.choiceCorrect
+                ? 'correct'
                 : chosen === i
-                  ? styles.choiceWrong
-                  : '';
+                  ? 'wrong'
+                  : undefined;
           return (
-            <button
+            <ChoiceButton
               key={c.text}
-              type='button'
-              className={`${styles.choice} ${state}`}
+              result={result}
               disabled={chosen !== null}
               onClick={() => {
                 setChosen(i);
@@ -197,7 +202,7 @@ function Quiz({
               {chosen !== null && (chosen === i || c.correct) && (
                 <span className={styles.explanation}>{c.explanation}</span>
               )}
-            </button>
+            </ChoiceButton>
           );
         })}
       </div>

@@ -4,7 +4,7 @@ import type { LintIssue } from '../engine/rules/linter';
 import type { SimResult, TrafficProfile } from '../engine/simulator/types';
 import { NodeView, Overview, type SelectedNode } from '../incidents/IncidentPanel';
 import base from '../learning/GuidePanel.module.css';
-import { CollapseButton, SecondaryButton } from '../ui/buttons';
+import { CollapseButton, RowButton, SecondaryButton } from '../ui/buttons';
 import { SelectInput } from '../ui/forms';
 import styles from './SandboxPanel.module.css';
 
@@ -96,12 +96,7 @@ function CheckTab({ issues, focusedIssue, onFocusIssue }: SandboxPanelProps) {
         const open = focusedIssue === issue.id;
         return (
           <li key={issue.id}>
-            <button
-              type='button'
-              className={`${styles.issue} ${open ? styles.issueOpen : ''}`}
-              onClick={() => onFocusIssue(open ? null : issue.id)}
-              aria-expanded={open}
-            >
+            <RowButton open={open} onClick={() => onFocusIssue(open ? null : issue.id)}>
               <span
                 className={issue.severity === 'warning' ? styles.warning : styles.info}
                 role='img'
@@ -113,7 +108,7 @@ function CheckTab({ issues, focusedIssue, onFocusIssue }: SandboxPanelProps) {
                 {issue.title}
                 {open && <span className={styles.detail}>{issue.detail}</span>}
               </span>
-            </button>
+            </RowButton>
           </li>
         );
       })}

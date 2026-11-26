@@ -23,28 +23,6 @@
   list-style: none;
 }
 
-.issue {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  padding: 6px 8px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: none;
-  color: var(--text);
-  font-size: 12px;
-  line-height: 1.5;
-  text-align: left;
-  cursor: pointer;
-}
-
-.issue:hover,
-.issueOpen {
-  border-color: var(--border);
-  background: var(--surface-muted);
-}
-
 .warning,
 .info {
   display: inline-flex;
