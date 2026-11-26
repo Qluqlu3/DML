@@ -38,10 +38,11 @@ AWS サービスをボックスとして D&D で配置・接続し、構成図�
 
 ### UI の方針（Chakra UI への移行後）
 
-- 基礎部品は Chakra UI を使い、`src/ui/` に用途を決めたラッパー（`ToolbarButton` / `PrimaryButton` / `SecondaryButton` / `CollapseButton`、`SelectInput` / `CheckInput` / `TextButton` / `DangerButton`、`StatusBadge`、`Meter`）を置く。各画面はラッパー経由で使う
+- 基礎部品は Chakra UI を使い、`src/ui/` に用途を決めたラッパー（`ToolbarButton` / `PrimaryButton` / `SecondaryButton` / `CollapseButton` / `ChipButton` / `ChoiceButton` / `RowButton`、`SelectInput` / `CheckInput` / `TextButton` / `DangerButton`、`StatusBadge`、`Meter`）を置く。各画面はラッパー経由で使う
 - 確認は `confirmDialog()`（Promise を返す）、通知はキャンバスストアの `notify()` をそのまま使う（Chakra のトーストに流れる）
 - 配色は `src/ui/system.ts` のテーマと `global.css` のトークンを同じ値にそろえる。常にダーク（`index.html` の `class="dark"`）
 - キャンバスのノード・シェイプ・接続線は SVG と CSS Modules のまま（ノード数が多いときの描画負荷と、立体表現の自由度のため）
+- パレットの項目はキャンバスへのドラッグ元なので、ネイティブの `button` と CSS Modules のまま（ハイライトの点滅と、クラス名でのスクロール位置合わせを持つ）。JSON 読み込みの隠しファイル入力もネイティブの `input` のまま
 - CSS レイヤーの優先順は `index.html` の先頭で `reset, base, xyflow, tokens, recipes` と宣言する。読み込む CSS ファイルの順で React Flow のスタイルが負けるのを防ぐため
 - `global.css` の要素の既定スタイル（見出し・段落・リストなど）は `@layer base` に置く。Chakra のリセットより強く、Chakra の部品より弱い
 
