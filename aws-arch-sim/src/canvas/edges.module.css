@@ -1,11 +1,40 @@
+/*
+ * 接続線。色は global.css の --edge 系のトークン。
+ * 通常は明るい青、選択中のノードにつながる線はより明るく、選択中の線はオレンジ。
+ */
 .path {
-  stroke: #8b97a8;
-  stroke-width: 1.8;
+  stroke: var(--edge);
+  stroke-width: 2;
 }
 
-.selectedPath {
-  stroke: var(--info);
-  stroke-width: 2.5;
+.halo {
+  stroke: var(--bg);
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.arrow {
+  fill: var(--edge);
+}
+
+.active .path {
+  stroke: var(--edge-active);
+  stroke-width: 2.4;
+}
+
+.active .arrow {
+  fill: var(--edge-active);
+}
+
+.selected .path {
+  stroke: var(--edge-selected);
+  stroke-width: 2.6;
+}
+
+.selected .arrow {
+  fill: var(--edge-selected);
 }
 
 .flow {
@@ -17,6 +46,43 @@
   to {
     stroke-dashoffset: -12;
   }
+}
+
+.dots {
+  pointer-events: none;
+}
+
+/* 玉の周りの太い半透明の縁で、ぼんやり光って見せる（SVG フィルターより軽い） */
+.dot {
+  fill: var(--edge-dot);
+  stroke: var(--edge-dot);
+  stroke-opacity: 0.3;
+  stroke-width: 6;
+}
+
+.active .dot {
+  fill: #fff;
+}
+
+.selected .dot {
+  fill: var(--edge-selected);
+  stroke: var(--edge-selected);
+}
+
+/* 動きを減らす設定では玉を出さない */
+@media (prefers-reduced-motion: reduce) {
+  .dots {
+    display: none;
+  }
+
+  .flow {
+    animation: none;
+  }
+}
+
+/* PNG 書き出しでは、途中の位置で止まった玉を写さない */
+:global(.is-exporting) .dots {
+  display: none;
 }
 
 .label {
@@ -31,8 +97,8 @@
 }
 
 .labelSelected {
-  border-color: var(--info);
-  color: var(--info);
+  border-color: var(--edge-selected);
+  color: var(--edge-selected);
 }
 
 .attachment {

@@ -6,7 +6,6 @@ import {
   type Edge,
   type EdgeChangeset,
   type FitViewOptions,
-  MarkerType,
   MiniMap,
   type OnConnectEnd,
   ReactFlow,
@@ -32,7 +31,6 @@ export const DND_MIME = 'application/x-aws-arch-kind';
 
 const nodeTypes = { service: ServiceNode, container: ContainerNode };
 const edgeTypes = { traffic: TrafficEdge, attachment: AttachmentEdge };
-const defaultEdgeOptions = { markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 } };
 const ATTACH_PREFIX = 'attach:';
 /** 入れ子は親 + 1 ずつ重なるので、VPC > AZ > サブネット > サービス（4 段）より上にする */
 const TOP_LEVEL_SERVICE_Z = 10;
@@ -254,7 +252,6 @@ export function Canvas({
         edges={flowEdges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        defaultEdgeOptions={defaultEdgeOptions}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={connect}

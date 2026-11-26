@@ -29,6 +29,12 @@
   --warn: #f5b830;
   --warn-bg: rgb(245 184 48 / 14%);
   --down: #5d6878;
+
+  /* 接続線 */
+  --edge: #7fb2ea;
+  --edge-active: #b9d8ff;
+  --edge-selected: #ffb84d;
+  --edge-dot: #8be9ff;
   --radius: 6px;
 
   font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
