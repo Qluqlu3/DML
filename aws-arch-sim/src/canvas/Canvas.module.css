@@ -3,3 +3,18 @@
   width: 100%;
   height: 100%;
 }
+
+/* 図に重なりにくいよう小さめにし、キャンバスと区別できる枠を付ける */
+.minimap {
+  width: 168px;
+  height: 112px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 35%);
+}
+
+.minimap svg {
+  width: 100%;
+  height: 100%;
+}

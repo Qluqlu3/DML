@@ -270,8 +270,8 @@ export function Canvas({
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
         <Background gap={16} />
-        <Controls showInteractive={false} fitViewOptions={fitViewOptions} />
-        <MiniMap<AppNode> nodeColor={miniMapColor} pannable zoomable />
+        <Controls position='top-right' showInteractive={false} fitViewOptions={fitViewOptions} />
+        <MiniMap<AppNode> nodeColor={miniMapColor} pannable zoomable className={styles.minimap} />
       </ReactFlow>
     </div>
   );
