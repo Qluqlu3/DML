@@ -62,7 +62,7 @@ function Toolbar() {
     if (!file) return;
     try {
       loadDocument(await readJsonFile(file));
-      requestAnimationFrame(() => fitView({ padding: 0.1 }));
+      requestAnimationFrame(() => fitView(SANDBOX_FIT));
       notify(`${file.name} を読み込みました（元に戻すで取り消せます）`);
     } catch (err) {
       notify(
@@ -85,6 +85,8 @@ function Toolbar() {
   const addVpcTemplate = () => {
     const center = viewportCenter();
     insertNodes(vpcTemplate({ x: center.x - 440, y: center.y - 340 }, newId));
+    // 置いた雛形が左上のパネルに隠れないよう、全体が見える位置に寄せる
+    requestAnimationFrame(() => fitView(SANDBOX_FIT));
   };
 
   return (
