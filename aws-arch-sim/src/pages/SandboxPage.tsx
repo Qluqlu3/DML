@@ -116,9 +116,9 @@ function Toolbar() {
   );
 }
 
-/** 左上パネル（幅 380px）に隠れないよう、全体表示の左側の余白を広げる */
+/** 左上パネル（幅 400px）に隠れないよう、全体表示の左側の余白を広げる */
 const SANDBOX_FIT = {
-  padding: { top: '32px', right: '32px', bottom: '32px', left: '416px' },
+  padding: { top: '32px', right: '32px', bottom: '32px', left: '436px' },
   maxZoom: 1,
 } as const;
 

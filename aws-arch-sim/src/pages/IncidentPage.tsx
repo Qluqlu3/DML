@@ -21,9 +21,9 @@ import { useThrottledDocument } from '../workspace/useThrottledDocument';
 import { ToolbarSeparator, UndoRedoButtons, Workspace } from '../workspace/Workspace';
 import styles from './LessonPage.module.css';
 
-/** インシデントパネル（左上・幅 380px）に隠れないよう、全体表示の左側の余白を広げる */
+/** インシデントパネル（左上・幅 400px）に隠れないよう、全体表示の左側の余白を広げる */
 const INCIDENT_FIT = {
-  padding: { top: '32px', right: '32px', bottom: '32px', left: '416px' },
+  padding: { top: '32px', right: '32px', bottom: '32px', left: '436px' },
   maxZoom: 1,
 } as const;
 

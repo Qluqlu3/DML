@@ -1,7 +1,7 @@
 .layout {
   display: grid;
   grid-template-rows: 48px minmax(0, 1fr);
-  grid-template-columns: 232px minmax(0, 1fr) 320px;
+  grid-template-columns: clamp(232px, 15vw, 300px) minmax(0, 1fr) clamp(320px, 22vw, 420px);
   grid-template-areas:
     "header header header"
     "palette main inspector";

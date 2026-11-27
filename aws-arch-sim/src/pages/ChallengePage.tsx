@@ -36,9 +36,9 @@ import {
 } from '../workspace/Workspace';
 import styles from './LessonPage.module.css';
 
-/** 問題パネル（左上・幅 360px）に隠れないよう、全体表示の左側の余白を広げる */
+/** 問題パネル（左上・幅 380px）に隠れないよう、全体表示の左側の余白を広げる */
 const CHALLENGE_FIT = {
-  padding: { top: '32px', right: '32px', bottom: '32px', left: '396px' },
+  padding: { top: '32px', right: '32px', bottom: '32px', left: '416px' },
   /** ノードが少ないときに拡大しすぎない */
   maxZoom: 1,
 } as const;
