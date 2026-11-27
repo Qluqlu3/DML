@@ -23,6 +23,7 @@ import { useDocumentAutosave } from '../workspace/useDocumentAutosave';
 import { useExportPng } from '../workspace/useExportPng';
 import { useThrottledDocument } from '../workspace/useThrottledDocument';
 import {
+  CanvasEmptyHint,
   ToolbarSeparator,
   UndoRedoButtons,
   useViewportCenter,
@@ -185,18 +186,30 @@ function SandboxLayout() {
       nodeClasses={nodeClasses}
       fitViewOptions={SANDBOX_FIT}
       overlay={
-        <SandboxPanel
-          tab={tab}
-          onTab={setTab}
-          issues={issues}
-          focusedIssue={focusedIssue}
-          onFocusIssue={setFocusedIssue}
-          settings={settings}
-          onSettings={setSettings}
-          azNames={azNames}
-          sim={sim}
-          selected={selected}
-        />
+        <>
+          {model.nodes.length === 0 && (
+            <CanvasEmptyHint>
+              <strong>まずは何か置いてみましょう</strong>
+              <ol>
+                <li>上の「VPC 雛形を追加」で、2 AZ × Public / Private の土台を置く</li>
+                <li>左のパレットからサービスをドラッグして配置する</li>
+                <li>ノードの縁の点からドラッグして、別のノードへ接続する</li>
+              </ol>
+            </CanvasEmptyHint>
+          )}
+          <SandboxPanel
+            tab={tab}
+            onTab={setTab}
+            issues={issues}
+            focusedIssue={focusedIssue}
+            onFocusIssue={setFocusedIssue}
+            settings={settings}
+            onSettings={setSettings}
+            azNames={azNames}
+            sim={sim}
+            selected={selected}
+          />
+        </>
       }
     />
   );

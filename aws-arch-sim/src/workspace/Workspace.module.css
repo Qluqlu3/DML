@@ -70,3 +70,38 @@
   border-left: 1px solid var(--border);
   background: var(--surface);
 }
+
+/* 左上のパネル（幅 400px）を避けた残りの領域の中央に置く */
+.emptyHint {
+  position: absolute;
+  inset: 0 0 0 424px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.emptyHintBox {
+  max-width: 420px;
+  padding: 24px 28px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: rgb(24 32 43 / 85%);
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.emptyHintBox strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.emptyHintBox ol {
+  margin: 0;
+  padding-inline-start: 1.4em;
+}

@@ -37,6 +37,15 @@ export function UndoRedoButtons() {
   );
 }
 
+/** キャンバスが空のときに中央へ出す始め方の案内（クリックはキャンバスへ通す） */
+export function CanvasEmptyHint({ children }: { children: ReactNode }) {
+  return (
+    <div className={styles.emptyHint}>
+      <div className={styles.emptyHintBox}>{children}</div>
+    </div>
+  );
+}
+
 export function ToolbarSeparator() {
   return <span className={styles.separator} />;
 }
