@@ -81,3 +81,34 @@ export type QuizQuestion = {
   question: string;
   choices: { text: string; correct: boolean; explanation: string }[];
 };
+
+/** 図鑑の「比べて覚える」。迷いやすいサービス・設定の違いを表にする */
+export type Comparison = {
+  id: string;
+  title: string;
+  /** 一言で違いを */
+  summary: string;
+  /** 比べる対象のトピック（図鑑の各ページからリンクする） */
+  topics: GuideTopic[];
+  /** 表の列見出し（比べる対象） */
+  columns: string[];
+  /** 表の行。cells は columns と同じ数・順 */
+  rows: { label: string; cells: string[] }[];
+  /** 選び方の目安 */
+  choose: string[];
+};
+
+export type GlossaryCategory = 'network' | 'availability' | 'async' | 'security' | 'operation';
+
+/** 用語集の 1 語 */
+export type GlossaryTerm = {
+  /** URL のアンカーに使う */
+  id: string;
+  term: string;
+  /** 英語の正式名・略称の元など */
+  aka?: string;
+  category: GlossaryCategory;
+  description: string;
+  /** 関係するトピック（図鑑へのリンク） */
+  topics?: GuideTopic[];
+};
