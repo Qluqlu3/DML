@@ -1,5 +1,13 @@
 import { GUIDES } from '../content/guides';
-import { CATEGORIES, CONTAINERS, isContainerKind, kindLabel, SERVICES } from '../engine/catalog';
+import {
+  CATEGORIES,
+  CONTAINERS,
+  isContainerKind,
+  kindLabel,
+  SERVICE_KINDS,
+  SERVICES,
+  type ServiceKind,
+} from '../engine/catalog';
 import { ALL_LESSONS } from './lessons';
 import type { GuideTopic, Lesson } from './types';
 
@@ -32,3 +40,29 @@ export const ALL_TOPICS: GuideTopic[] = [
   ...(Object.keys(SERVICES) as GuideTopic[]),
   'sg',
 ];
+
+/** キャンバスのどこに置くか（概念の SG は null） */
+export function placementText(topic: GuideTopic): string | null {
+  if (topic === 'sg') return null;
+  if (topic === 'vpc')
+    return 'キャンバスに直接置く（VPC の外側がインターネット・AWS のサービス側）';
+  if (topic === 'az') return 'VPC の中に置く';
+  if (topic === 'subnet') return 'AZ の中に置く（1 つのサブネットは 1 つの AZ にだけ属する）';
+  switch (SERVICES[topic].placement) {
+    case 'global':
+      return 'VPC の外に置く（AWS が管理する場所で動く）';
+    case 'vpc':
+      return 'VPC の中・サブネットの外に置き、使うサブネットを設定で選ぶ';
+    case 'subnet':
+      return 'サブネットの中に置く';
+  }
+}
+
+/** そのサービスから線でつなげる先 / そのサービスへつながってくる元 */
+export function connectionsOf(topic: GuideTopic): { to: ServiceKind[]; from: ServiceKind[] } {
+  if (topic === 'sg' || isContainerKind(topic)) return { to: [], from: [] };
+  return {
+    to: SERVICES[topic].canConnectTo,
+    from: SERVICE_KINDS.filter((k) => SERVICES[k].canConnectTo.includes(topic)),
+  };
+}

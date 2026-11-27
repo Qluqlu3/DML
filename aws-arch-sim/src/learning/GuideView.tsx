@@ -1,8 +1,17 @@
 import { Link } from 'react-router';
+import { comparisonsFor } from '../content/comparisons';
+import { GLOSSARY } from '../content/glossary';
 import { GUIDES } from '../content/guides';
 import styles from './GuideView.module.css';
 import { TopicIcon } from './TopicIcon';
-import { lessonsFor, topicColor, topicDescription, topicTitle } from './topics';
+import {
+  connectionsOf,
+  lessonsFor,
+  placementText,
+  topicColor,
+  topicDescription,
+  topicTitle,
+} from './topics';
 import type { GuideTopic } from './types';
 
 type Props = {
@@ -14,6 +23,10 @@ type Props = {
 export function GuideView({ topic, variant }: Props) {
   const guide = GUIDES[topic];
   const full = variant === 'full';
+  const placement = placementText(topic);
+  const { to, from } = connectionsOf(topic);
+  const comparisons = comparisonsFor(topic);
+  const terms = GLOSSARY.filter((t) => t.topics?.includes(topic));
   return (
     <article
       className={`${styles.guide} ${full ? styles.full : ''}`}
@@ -60,6 +73,45 @@ export function GuideView({ topic, variant }: Props) {
         <p className={styles.text}>詳しい解説は準備中です。</p>
       )}
 
+      {full && placement && (
+        <section>
+          <h4 className={styles.sectionTitle}>キャンバスでの置き場所</h4>
+          <p className={styles.text}>{placement}</p>
+        </section>
+      )}
+      {full && to.length > 0 && <TopicChips title='線でつなげる先' topics={to} />}
+      {full && from.length > 0 && <TopicChips title='線でつながってくる元' topics={from} />}
+
+      {comparisons.length > 0 && (
+        <section>
+          <h4 className={styles.sectionTitle}>比べて覚える</h4>
+          <ul className={styles.list}>
+            {comparisons.map((c) => (
+              <li key={c.id}>
+                <Link to={`/guide/compare/${c.id}`}>{c.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {full && terms.length > 0 && (
+        <section>
+          <h4 className={styles.sectionTitle}>関係する用語</h4>
+          <div className={styles.chips}>
+            {terms.map((t) => (
+              <Link
+                key={t.id}
+                to={`/guide/terms?term=${t.id}`}
+                className={`${styles.chip} ${styles.termChip}`}
+              >
+                {t.term}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {full && lessonsFor(topic).length > 0 && (
         <section>
           <h4 className={styles.sectionTitle}>このテーマを学べるレッスン</h4>
@@ -73,6 +125,22 @@ export function GuideView({ topic, variant }: Props) {
         </section>
       )}
     </article>
+  );
+}
+
+function TopicChips({ title, topics }: { title: string; topics: GuideTopic[] }) {
+  return (
+    <section>
+      <h4 className={styles.sectionTitle}>{title}</h4>
+      <div className={styles.chips}>
+        {topics.map((t) => (
+          <Link key={t} to={`/guide/${t}`} className={styles.chip}>
+            <TopicIcon topic={t} size={18} />
+            {topicTitle(t)}
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 
