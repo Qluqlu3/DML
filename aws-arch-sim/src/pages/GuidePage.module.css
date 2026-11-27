@@ -42,10 +42,59 @@
   margin-top: 16px;
 }
 
+/* 目次が長いので、解説と同じくスクロールに追従させ、目次だけでもスクロールできるようにする */
 .list {
+  position: sticky;
+  top: 24px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  align-self: start;
+  max-height: calc(100vh - 48px);
+  padding-right: 6px;
+  overflow-y: auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+}
+
+.groupTitle {
+  margin: 0 0 4px;
+  padding: 0 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.noMatch {
+  margin: 8px 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* 比べて覚える・用語集の目印（アイコンの代わり） */
+.vs {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: rgb(255 153 0 / 18%);
+  color: var(--accent-strong);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.count {
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 .item {
@@ -72,20 +121,12 @@
   flex: 1;
 }
 
-.learned,
-.pending {
+.learned {
   padding: 0 6px;
   border-radius: 3px;
   font-size: 11px;
-}
-
-.learned {
   background: var(--ok-bg);
   color: var(--ok);
-}
-
-.pending {
-  color: var(--text-muted);
 }
 
 /* 一覧の下の方を選んでも解説が画面内に見えるよう、スクロールに追従させる */
@@ -103,6 +144,55 @@
 
 .placeholder {
   color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.placeholder p {
+  margin: 0 0 8px;
+}
+
+.appearances {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 16px;
+}
+
+.appearancesTitle {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.appearances ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.appearances li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kind {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 4px;
+  background: rgb(255 153 0 / 15%);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.kindIncident {
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 @media (width <= 720px) {
@@ -110,7 +200,8 @@
     grid-template-columns: 1fr;
   }
 
-  .detail {
+  .detail,
+  .list {
     position: static;
     max-height: none;
   }

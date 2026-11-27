@@ -38,6 +38,8 @@ export function App() {
           <Route path='/incidents' element={<IncidentsPage />} />
           <Route path='/incidents/:incidentId' element={<IncidentPage />} />
           <Route path='/guide' element={<GuidePage />} />
+          <Route path='/guide/terms' element={<GuidePage />} />
+          <Route path='/guide/compare/:compareId' element={<GuidePage />} />
           <Route path='/guide/:topic' element={<GuidePage />} />
         </Routes>
       </Suspense>
