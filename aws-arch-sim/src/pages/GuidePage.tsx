@@ -16,7 +16,7 @@ export function GuidePage() {
     <main className={styles.page}>
       <header className={styles.header}>
         <div className={styles.nav}>
-          <Link to='/'>トップ</Link>
+          <Link to='/'>← トップ</Link>
           <Link to='/learn'>学習モード</Link>
         </div>
         <h1 className={styles.title}>サービス図鑑</h1>

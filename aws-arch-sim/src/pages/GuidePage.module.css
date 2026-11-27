@@ -12,6 +12,18 @@
 
 .nav a {
   color: var(--text-muted);
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--text);
+}
+
+/* パンくずの区切り */
+.nav a + a::before {
+  margin-right: 12px;
+  color: var(--border);
+  content: "/";
 }
 
 .title {
@@ -76,9 +88,14 @@
   color: var(--text-muted);
 }
 
+/* 一覧の下の方を選んでも解説が画面内に見えるよう、スクロールに追従させる */
 .detail {
+  position: sticky;
+  top: 24px;
   align-self: start;
-  padding: 20px;
+  max-height: calc(100vh - 48px);
+  padding: 24px 28px;
+  overflow-y: auto;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface);
@@ -91,5 +108,10 @@
 @media (width <= 720px) {
   .columns {
     grid-template-columns: 1fr;
+  }
+
+  .detail {
+    position: static;
+    max-height: none;
   }
 }
