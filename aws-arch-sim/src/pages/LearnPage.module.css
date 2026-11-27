@@ -31,7 +31,8 @@
 
 .courseHeader {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -40,9 +41,33 @@
   font-size: 20px;
 }
 
+.continue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 14px 18px;
+  border: 1px solid rgb(255 153 0 / 45%);
+  border-radius: 10px;
+  background: rgb(255 153 0 / 8%);
+}
+
+.continueLabel {
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.continueTitle {
+  flex: 1;
+  min-width: 200px;
+  font-weight: 700;
+}
+
 .courseProgress {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .courseDescription {
@@ -71,6 +96,16 @@
   transition:
     border-color 0.15s,
     transform 0.15s;
+}
+
+.lesson.cleared {
+  border-color: var(--ok-border);
+  background: linear-gradient(180deg, var(--ok-bg), transparent 60%), var(--surface);
+}
+
+.lesson.next {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .lesson:hover {

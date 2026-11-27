@@ -3,6 +3,7 @@ import { Stars } from '../challenges/ChallengePanel';
 import { CHALLENGES } from '../challenges/challenges';
 import { NEW_CHALLENGE, useChallengeStore } from '../challenges/progressStore';
 import type { Challenge } from '../challenges/types';
+import { ProgressBar } from '../ui/ProgressBar';
 import { StatusBadge } from '../ui/StatusBadge';
 import styles from './LearnPage.module.css';
 
@@ -16,7 +17,10 @@ function ChallengeCard({ challenge, number }: { challenge: Challenge; number: nu
       ? { label: '挑戦中', tone: 'doing' as const }
       : null;
   return (
-    <Link to={`/challenges/${challenge.id}`} className={styles.lesson}>
+    <Link
+      to={`/challenges/${challenge.id}`}
+      className={`${styles.lesson} ${progress.cleared ? styles.cleared : ''}`}
+    >
       <div className={styles.lessonTop}>
         <span className={styles.number}>問題 {number}</span>
         <Stars n={challenge.difficulty} />
@@ -51,6 +55,7 @@ export function ChallengesPage() {
       <section className={styles.course}>
         <div className={styles.courseHeader}>
           <h2 className={styles.courseTitle}>問題一覧</h2>
+          <ProgressBar done={cleared} total={CHALLENGES.length} />
           <span className={styles.courseProgress}>
             {cleared} / {CHALLENGES.length} クリア
           </span>

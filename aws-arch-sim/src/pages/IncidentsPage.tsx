@@ -3,6 +3,7 @@ import { Stars } from '../challenges/ChallengePanel';
 import { INCIDENTS } from '../incidents/incidents';
 import { NEW_INCIDENT, useIncidentStore } from '../incidents/progressStore';
 import type { Incident } from '../incidents/types';
+import { ProgressBar } from '../ui/ProgressBar';
 import { StatusBadge } from '../ui/StatusBadge';
 import styles from './LearnPage.module.css';
 
@@ -16,7 +17,10 @@ function IncidentCard({ incident, number }: { incident: Incident; number: number
       ? { label: `対応中（${progress.turns.length} ターン）`, tone: 'doing' as const }
       : null;
   return (
-    <Link to={`/incidents/${incident.id}`} className={styles.lesson}>
+    <Link
+      to={`/incidents/${incident.id}`}
+      className={`${styles.lesson} ${progress.everSolved ? styles.cleared : ''}`}
+    >
       <div className={styles.lessonTop}>
         <span className={styles.number}>インシデント {number}</span>
         <Stars n={incident.difficulty} />
@@ -50,6 +54,7 @@ export function IncidentsPage() {
       <section className={styles.course}>
         <div className={styles.courseHeader}>
           <h2 className={styles.courseTitle}>インシデント一覧</h2>
+          <ProgressBar done={solved} total={INCIDENTS.length} />
           <span className={styles.courseProgress}>
             {solved} / {INCIDENTS.length} 解決
           </span>
