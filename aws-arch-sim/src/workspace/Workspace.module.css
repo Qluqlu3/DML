@@ -29,14 +29,14 @@
   border-radius: 999px;
   background: var(--accent);
   color: var(--on-accent);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .title {
   overflow: hidden;
   color: rgb(255 255 255 / 85%);
-  font-size: 13px;
+  font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

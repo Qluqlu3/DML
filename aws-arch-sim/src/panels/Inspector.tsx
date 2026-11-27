@@ -179,16 +179,29 @@ export function Inspector() {
       onValueChange={(e) => setTab(e.value as Tab)}
       variant='line'
       size='sm'
-      fitted
       colorPalette='aws'
       lazyMount
       unmountOnExit
     >
       <Tabs.List className={styles.tabs}>
-        <Tabs.Trigger value='props' fontSize='xs' whiteSpace='nowrap'>
+        <Tabs.Trigger
+          value='props'
+          fontSize='sm'
+          whiteSpace='nowrap'
+          flex='auto'
+          justifyContent='center'
+          px='3'
+        >
           プロパティ
         </Tabs.Trigger>
-        <Tabs.Trigger value='sg' fontSize='xs' whiteSpace='nowrap'>
+        <Tabs.Trigger
+          value='sg'
+          fontSize='sm'
+          whiteSpace='nowrap'
+          flex='auto'
+          justifyContent='center'
+          px='3'
+        >
           セキュリティグループ ({sgCount})
         </Tabs.Trigger>
       </Tabs.List>

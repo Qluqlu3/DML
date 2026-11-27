@@ -120,7 +120,7 @@ export function ConfigFieldInput(props: FieldProps) {
       return field.unit ? (
         <Group attached>
           {input}
-          <InputAddon fontSize='xs' color='fg.muted'>
+          <InputAddon fontSize='sm' color='fg.muted'>
             {field.unit}
           </InputAddon>
         </Group>

@@ -65,10 +65,10 @@ function Slider({
       onValueChange={(e) => onChange(e.value[0] ?? value)}
     >
       <HStack justify='space-between'>
-        <ChakraSlider.Label fontSize='xs' fontWeight='normal'>
+        <ChakraSlider.Label fontSize='sm' fontWeight='normal'>
           {label}
         </ChakraSlider.Label>
-        <Text fontSize='xs' fontWeight='bold'>
+        <Text fontSize='sm' fontWeight='bold'>
           {format(value)}
         </Text>
       </HStack>
@@ -152,7 +152,7 @@ function SimulateTab({ settings, onSettings, azNames, sim, selected }: SandboxPa
           onChange={(cacheableRatio) => setTraffic({ cacheableRatio })}
         />
         <Field.Root>
-          <Field.Label fontSize='xs' fontWeight='normal'>
+          <Field.Label fontSize='sm' fontWeight='normal'>
             AZ 障害
           </Field.Label>
           <SelectInput
@@ -236,7 +236,7 @@ export function SandboxPanel(props: SandboxPanelProps) {
           }}
         >
           <Tabs.List border='none'>
-            <Tabs.Trigger value='check' fontSize='xs' fontWeight='bold'>
+            <Tabs.Trigger value='check' fontSize='sm' fontWeight='bold'>
               チェック
               {props.issues.length > 0 && (
                 <Badge size='xs' variant='solid' colorPalette={warnings ? 'aws' : 'gray'}>
@@ -244,7 +244,7 @@ export function SandboxPanel(props: SandboxPanelProps) {
                 </Badge>
               )}
             </Tabs.Trigger>
-            <Tabs.Trigger value='simulate' fontSize='xs' fontWeight='bold'>
+            <Tabs.Trigger value='simulate' fontSize='sm' fontWeight='bold'>
               シミュレーション
             </Tabs.Trigger>
           </Tabs.List>

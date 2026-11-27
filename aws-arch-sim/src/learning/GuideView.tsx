@@ -16,7 +16,7 @@ export function GuideView({ topic, variant }: Props) {
   const full = variant === 'full';
   return (
     <article
-      className={styles.guide}
+      className={`${styles.guide} ${full ? styles.full : ''}`}
       style={{ '--topic-color': topicColor(topic) } as React.CSSProperties}
     >
       <header className={styles.header}>

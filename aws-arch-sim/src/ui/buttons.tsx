@@ -17,8 +17,9 @@ export const ToolbarButton = forwardRef<HTMLButtonElement, ButtonProps>((props, 
     borderColor='border.emphasized'
     textDecoration='none'
     fontWeight='normal'
-    fontSize='13px'
+    fontSize='14px'
     _hover={{ bg: 'bg.emphasized' }}
+    _disabled={{ opacity: 0.35 }}
     {...props}
   />
 ));
@@ -81,7 +82,7 @@ export const ChipButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref
     gap='1'
     ps='1'
     pe='2.5'
-    fontSize='12px'
+    fontSize='13px'
     fontWeight='normal'
     _hover={{ borderColor: 'fg.info', color: 'fg.info', bg: 'bg.panel' }}
     {...props}
@@ -139,7 +140,7 @@ export const RowButton = forwardRef<HTMLButtonElement, ButtonProps & { open?: bo
       gap='2'
       py='1.5'
       px='2'
-      fontSize='12px'
+      fontSize='13px'
       lineHeight='1.5'
       border='1px solid'
       borderColor={open ? 'border' : 'transparent'}

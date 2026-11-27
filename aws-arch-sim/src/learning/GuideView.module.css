@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -16,7 +16,7 @@
 
 .title {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .tagline {
@@ -35,14 +35,14 @@
 .analogyLabel {
   display: block;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .sectionTitle {
   margin: 0 0 2px;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .text {
@@ -72,10 +72,26 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   color: inherit;
-  font-size: 12px;
+  font-size: 13px;
   text-decoration: none;
 }
 
 .chip:hover {
   border-color: var(--topic-color);
+}
+
+/* 図鑑ページの全文表示は、読み物として一回り大きく・ゆったり組む */
+.full {
+  gap: 16px;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.full .title {
+  font-size: 24px;
+}
+
+.full .sectionTitle,
+.full .analogyLabel {
+  font-size: 14px;
 }
