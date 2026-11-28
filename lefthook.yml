@@ -1,4 +1,3 @@
-# git フックは git ルートで 1 つしか設定できないため、ここで dml / aws-arch-sim の両方を扱う。
 # 各ジョブは root で指定したフォルダで実行され、そのフォルダの依存（biome 等）と設定を使う。
 pre-commit:
   parallel: true
@@ -21,12 +20,6 @@ pre-commit:
       stage_fixed: true
       run: pnpm exec stylelint --fix {staged_files}
 
-    - name: aws-arch-sim biome
-      root: aws-arch-sim/
-      glob: "*.{ts,tsx,js,jsx,json,css}"
-      stage_fixed: true
-      run: pnpm exec biome check --write --error-on-warnings --no-errors-on-unmatched {staged_files}
-
 pre-push:
   parallel: true
   jobs:
@@ -45,15 +38,3 @@ pre-push:
     - name: dml typecheck
       root: dml/
       run: pnpm run typecheck
-
-    - name: aws-arch-sim check
-      root: aws-arch-sim/
-      run: pnpm exec biome check --error-on-warnings .
-
-    - name: aws-arch-sim typecheck
-      root: aws-arch-sim/
-      run: pnpm run typecheck
-
-    - name: aws-arch-sim test
-      root: aws-arch-sim/
-      run: pnpm test
